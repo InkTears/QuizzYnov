@@ -8,6 +8,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: Quizz
     steps:
       - name: Connexion SSH et Déploiement
         uses: appleboy/ssh-action@v1.0.3
