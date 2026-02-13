@@ -1,0 +1,34 @@
+name: Deploy to Ionos VPS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Connexion SSH et Déploiement
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            # 1. On va dans le dossier du projet
+            cd /var/www/html/Quizzynov
+            
+            # 2. On récupère le nouveau code
+            git pull origin main
+            
+            # 3. Mise à jour du Backend
+            cd backend
+            npm install
+            npx tsc
+            pm2 restart api-filess # Ou le nom que tu as donné à ton process PM2
+            
+            # 4. Mise à jour du Frontend
+            cd ../frontend
+            npm install
+            npm run build
