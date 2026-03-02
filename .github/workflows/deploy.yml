@@ -18,17 +18,15 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           passphrase: ${{ secrets.SERVER_PASSPHRASE }}
           script: |
-            # 1. On va dans le dossier du projet
-            cd /var/www/html/Quizzynov
-            
-            # 2. On récupère le nouveau code
+            set -e
+            cd /var/www/html/QuizzYnov
             git pull origin main
             
             # 3. Mise à jour du Backend
             cd backend
             npm install
             npx tsc
-            pm2 restart api-filess # Ou le nom que tu as donné à ton process PM2
+            pm2 restart api-filess
             
             # 4. Mise à jour du Frontend
             cd ../frontend
