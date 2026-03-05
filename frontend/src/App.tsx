@@ -17,7 +17,7 @@ function App() {
 
     return (
         <div style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
-            <h1>Utilisateurs depuis test 🚀</h1>
+            <h1>Utilisateurs depuis Files 🚀</h1>
             <pre style={{ background: '#f4f4f4', padding: '1rem' }}>
         {JSON.stringify(users, null, 2)}
       </pre>
