@@ -19,3 +19,4 @@ AppDataSource.initialize().then(async () => {
 
     app.listen(3000, () => console.log("🚀 Serveur sur le port 3000"))
 }).catch(err => console.error("❌ Erreur DB :", err))
+
