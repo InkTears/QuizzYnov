@@ -3,6 +3,9 @@ import express from "express"
 import cors from "cors"
 import { AppDataSource } from "./data-source"
 import { User } from "./entity/User"
+import { questionRouter } from "./feature/question/question.routes"
+import { quizRouter } from "./feature/quiz/quiz.routes"
+import { leaderboardRouter } from "./feature/leaderboard/leaderboard.routes"
 
 const app = express()
 app.use(cors())
@@ -17,6 +20,10 @@ AppDataSource.initialize().then(async () => {
         res.json(users)
     })
 
+    // Routes features
+    app.use("/api/questions", questionRouter)
+    app.use("/api/quiz", quizRouter)
+    app.use("/api/leaderboard", leaderboardRouter)
+
     app.listen(3000, () => console.log("🚀 Serveur sur le port 3000"))
 }).catch(err => console.error("❌ Erreur DB :", err))
-
