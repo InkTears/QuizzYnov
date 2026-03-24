@@ -6,7 +6,7 @@ interface Question {
     id?: string;
     text: string;
     options: string[];
-    correctAnswer: number;
+    correctAnswers: number[]; // Changement : c'est maintenant un tableau
 }
 
 const CRUDQuestionAdmin: React.FC = () => {
@@ -14,10 +14,9 @@ const CRUDQuestionAdmin: React.FC = () => {
     const [newQuestion, setNewQuestion] = useState<Question>({
         text: '',
         options: ['', '', '', ''],
-        correctAnswer: 0
+        correctAnswers: [] // Initialisé vide
     });
 
-    // 1. Charger les questions au démarrage
     useEffect(() => {
         fetchQuestions();
     }, []);
@@ -27,32 +26,43 @@ const CRUDQuestionAdmin: React.FC = () => {
             const data = await quizService.getAllQuestions();
             setQuestions(data || []);
         } catch (err) {
-            console.error("Erreur lors de la récupération des questions", err);
+            console.error("Erreur récupération", err);
         }
     };
 
-    // 2. Gérer l'ajout d'une nouvelle question
+    // Logique pour ajouter/retirer un index de réponse correcte
+    const handleToggleCorrect = (index: number) => {
+        setNewQuestion(prev => {
+            const currentAnswers = [...prev.correctAnswers];
+            if (currentAnswers.includes(index)) {
+                // Si déjà présent, on le retire
+                return { ...prev, correctAnswers: currentAnswers.filter(i => i !== index) };
+            } else {
+                // Sinon, on l'ajoute
+                return { ...prev, correctAnswers: [...currentAnswers, index] };
+            }
+        });
+    };
+
     const handleAddQuestion = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (newQuestion.correctAnswers.length === 0) {
+            alert("Veuillez cocher au moins une bonne réponse.");
+            return;
+        }
         try {
             await quizService.createQuestion(newQuestion);
-            // Réinitialisation du formulaire
-            setNewQuestion({ text: '', options: ['', '', '', ''], correctAnswer: 0 });
-            fetchQuestions(); // Rafraîchir la liste
+            setNewQuestion({ text: '', options: ['', '', '', ''], correctAnswers: [] });
+            fetchQuestions();
         } catch (err) {
-            alert("Erreur lors de l'ajout de la question");
+            alert("Erreur lors de l'ajout");
         }
     };
 
-    // 3. Gérer la suppression d'une question
     const handleDelete = async (id: string) => {
-        if (window.confirm("Êtes-vous sûr de vouloir supprimer cette question ?")) {
-            try {
-                await quizService.deleteQuestion(id);
-                fetchQuestions();
-            } catch (err) {
-                alert("Erreur lors de la suppression");
-            }
+        if (window.confirm("Supprimer cette question ?")) {
+            await quizService.deleteQuestion(id);
+            fetchQuestions();
         }
     };
 
@@ -60,9 +70,8 @@ const CRUDQuestionAdmin: React.FC = () => {
         <div className="crud-container">
             <h1>Gestion des Questions</h1>
 
-            {/* Formulaire de création */}
             <section className="card">
-                <h3>Nouvelle Question</h3>
+                <h3>Nouvelle Question (Choix multiples possibles)</h3>
                 <form onSubmit={handleAddQuestion}>
                     <input
                         className="main-input"
@@ -74,20 +83,17 @@ const CRUDQuestionAdmin: React.FC = () => {
 
                     <div className="options-grid">
                         {newQuestion.options.map((opt, i) => {
-                            // On vérifie si l'index actuel (i) est celui stocké dans correctAnswer
-                            const isSelected = newQuestion.correctAnswer === i;
-
+                            const isSelected = newQuestion.correctAnswers.includes(i);
                             return (
                                 <div
                                     key={i}
                                     className={`option-field ${isSelected ? 'is-correct' : 'is-incorrect'}`}
                                 >
                                     <input
-                                        type="radio"
+                                        type="checkbox" // Changement : radio -> checkbox
                                         id={`opt-${i}`}
-                                        name="correct"
                                         checked={isSelected}
-                                        onChange={() => setNewQuestion({...newQuestion, correctAnswer: i})}
+                                        onChange={() => handleToggleCorrect(i)}
                                     />
                                     <input
                                         type="text"
@@ -100,7 +106,6 @@ const CRUDQuestionAdmin: React.FC = () => {
                                         }}
                                         required
                                     />
-                                    {/* ICI LA CORRECTION : Affichage dynamique du texte */}
                                     <label htmlFor={`opt-${i}`} className="radio-label">
                                         {isSelected ? 'CORRECTE' : 'INCORRECTE'}
                                     </label>
@@ -112,14 +117,13 @@ const CRUDQuestionAdmin: React.FC = () => {
                 </form>
             </section>
 
-            {/* Table d'affichage de la base de données */}
             <section className="questions-list">
                 <h3>Base de données ({questions.length})</h3>
                 <table className="admin-table">
                     <thead>
                     <tr>
                         <th>Question</th>
-                        <th>État</th>
+                        <th>Réponses</th>
                         <th style={{textAlign: 'right'}}>Actions</th>
                     </tr>
                     </thead>
@@ -127,7 +131,9 @@ const CRUDQuestionAdmin: React.FC = () => {
                     {questions.map((q) => (
                         <tr key={q.id}>
                             <td style={{fontWeight: '600'}}>{q.text}</td>
-                            <td style={{color: '#718096'}}>{q.options.length} réponses enregistrées</td>
+                            <td style={{color: '#718096'}}>
+                                {q.options.length} options ({q.correctAnswers?.length || 0} correctes)
+                            </td>
                             <td style={{textAlign: 'right'}}>
                                 <button className="btn-delete" onClick={() => q.id && handleDelete(q.id)}>
                                     Supprimer
@@ -135,13 +141,6 @@ const CRUDQuestionAdmin: React.FC = () => {
                             </td>
                         </tr>
                     ))}
-                    {questions.length === 0 && (
-                        <tr>
-                            <td colSpan={3} style={{textAlign: 'center', padding: '40px', color: '#718096'}}>
-                                Aucune question disponible dans la base de données.
-                            </td>
-                        </tr>
-                    )}
                     </tbody>
                 </table>
             </section>
