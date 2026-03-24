@@ -2,9 +2,13 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 =======
 import { useEffect, useState } from 'react'
+<<<<<<< HEAD
 import Header from './components/layout/Header'
 import Hero from './components/layout/Hero';
 >>>>>>> c91ad24 (add homepage)
+=======
+import QuizPage from './pages/Quiz_page'
+>>>>>>> a396cad (add logic quiz)
 
 // Import de tes pages
 import LoginPageUser from './pages/Login_page.tsx';
@@ -33,12 +37,11 @@ function App() {
       </pre>
 =======
         <div style={{ fontFamily: 'sans-serif', minHeight: '100vh' }}>
-            <Header />
-            <Hero />
+            <QuizPage />
 
-            <div style={{ padding: '2rem' }}>
-                <h1>Utilisateurs depuis Files 🚀</h1>
-                <pre style={{ background: '#f4f4f4', padding: '1rem' }}>
+            <div style={{ padding: '2rem', borderTop: '1px solid #eee', marginTop: '2rem' }}>
+                <h2 style={{ fontSize: '1.2rem' }}>Debug : Utilisateurs API 🚀</h2>
+                <pre style={{ background: '#f4f4f4', padding: '1rem', borderRadius: '8px', fontSize: '0.8rem' }}>
                     {JSON.stringify(users, null, 2)}
                 </pre>
             </div>
