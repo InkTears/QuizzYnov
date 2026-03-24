@@ -1,0 +1,81 @@
+/* src/css/auth.css */
+
+.auth-page-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    /* Un gris très léger pour le fond de page pour faire ressortir la div blanche */
+    background-color: #f4f7f6;
+}
+
+.login-container {
+    background: #8e93f9; /* Fond blanc de la div */
+    padding: 40px;
+    border-radius: 16px; /* Coins plus arrondis comme sur l'image */
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05); /* Ombre plus douce */
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    color: #1a1a1a; /* Texte principal noir/anthracite */
+    border: 1px solid #eaeaea;
+}
+
+.login-container h2 {
+    margin-bottom: 30px;
+    font-size: 1.8rem;
+    font-weight: 800;
+}
+
+/* Couleurs dynamiques pour les titres */
+.theme-user h2 { color: #5849FF; } /* Bleu QuizzYnov */
+.theme-admin h2 { color: #e67e22; }
+
+.form-group {
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #000000; /* Gris foncé pour la lisibilité */
+    font-weight: 500;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #cbd5e0;
+    background: #ffffff; /* Fond blanc pour l'input */
+    color: #1a1a1a; /* Texte saisi en noir */
+    box-sizing: border-box;
+    transition: border-color 0.2s;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #5849FF;
+    box-shadow: 0 0 0 3px rgba(88, 73, 255, 0.1);
+}
+
+.btn-login {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: transform 0.1s;
+}
+
+.btn-login:active {
+    transform: scale(0.98);
+}
+
+/* Boutons spécifiques */
+.theme-user .btn-login { background-color: #5849FF; }
+.theme-admin .btn-login { background-color: #e67e22; }
