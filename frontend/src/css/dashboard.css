@@ -1,0 +1,140 @@
+/* src/css/dashboard.css */
+
+:root {
+    --quizz-primary: #5849FF;
+    --quizz-admin: #e67e22;
+    --bg-light: #f4f7f6;
+    --text-dark: #1a1a1a;
+    --border-color: #eaeaea;
+}
+
+.dashboard-container {
+    min-height: 100vh;
+    background-color: var(--bg-light);
+    font-family: 'Inter', sans-serif;
+    color: var(--text-dark);
+}
+
+/* Header style QuizzYnov */
+.dashboard-header {
+    background-color: var(--quizz-primary);
+    padding: 1.2rem 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    box-shadow: 0 4px 12px rgba(88, 73, 255, 0.2);
+}
+
+.dashboard-header h1 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin: 0;
+}
+
+/* Grille de statistiques */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 25px;
+    padding: 40px 5%;
+}
+
+.stat-card {
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.03);
+    border: 1px solid var(--border-color);
+    text-align: center;
+    transition: transform 0.2s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+}
+
+.stat-card h3 {
+    color: #718096;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+}
+
+.stat-number {
+    display: block;
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: var(--quizz-primary);
+}
+
+/* Section Actions & Tableaux */
+.admin-content {
+    padding: 0 5% 40px 5%;
+}
+
+.card-table {
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.03);
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.admin-table th {
+    text-align: left;
+    padding: 15px;
+    border-bottom: 2px solid var(--bg-light);
+    color: #718096;
+    font-weight: 600;
+}
+
+.admin-table td {
+    padding: 15px;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 0.95rem;
+}
+
+/* Boutons style QuizzYnov */
+.btn-action {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-primary {
+    background-color: var(--quizz-primary);
+    color: white;
+}
+
+.btn-outline {
+    background-color: transparent;
+    border: 2px solid var(--quizz-primary);
+    color: var(--quizz-primary);
+}
+
+.btn-action:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+.btn-danger {
+    background-color: #fff5f5;
+    color: #f56565;
+    border: 1px solid #fed7d7;
+}
+
+.btn-danger:hover {
+    background-color: #f56565;
+    color: white;
+}
