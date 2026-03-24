@@ -1,4 +1,10 @@
+<<<<<<< HEAD
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+=======
+import { useEffect, useState } from 'react'
+import Header from './components/layout/Header'
+import Hero from './components/layout/Hero';
+>>>>>>> c91ad24 (add homepage)
 
 // Import de tes pages
 import LoginPageUser from './pages/Login_page.tsx';
@@ -15,6 +21,7 @@ import './App.css';
 function App() {
     return (
 <<<<<<< HEAD
+<<<<<<< HEAD
         <div style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
 <<<<<<< HEAD
             <h1>Utilisateurs depuis Filess 🚀</h1>
@@ -24,6 +31,18 @@ function App() {
             <pre style={{ background: '#f4f4f4', padding: '1rem' }}>
         {JSON.stringify(users, null, 2)}
       </pre>
+=======
+        <div style={{ fontFamily: 'sans-serif', minHeight: '100vh' }}>
+            <Header />
+            <Hero />
+
+            <div style={{ padding: '2rem' }}>
+                <h1>Utilisateurs depuis Files 🚀</h1>
+                <pre style={{ background: '#f4f4f4', padding: '1rem' }}>
+                    {JSON.stringify(users, null, 2)}
+                </pre>
+            </div>
+>>>>>>> c91ad24 (add homepage)
         </div>
     )
 =======
