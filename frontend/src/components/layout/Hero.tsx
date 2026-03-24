@@ -1,6 +1,10 @@
 import { motion } from "framer-motion";
 
-function Hero() {
+interface HeroProps {
+  onStart: () => void;
+}
+
+function Hero({ onStart }: HeroProps) {
   return (
     <motion.section
       initial={{ opacity: 0, y: 20 }}
@@ -15,6 +19,7 @@ function Hero() {
       </p>
 
       <motion.button
+        onClick={onStart}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         style={{
@@ -27,7 +32,7 @@ function Hero() {
           cursor: "pointer",
         }}
       >
-        Démarrer le Quiz 🚀
+        Démarrer le Quiz
       </motion.button>
     </motion.section>
   );
