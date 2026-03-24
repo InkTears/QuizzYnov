@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
-import Header from './components/layout/Header'
-import Hero from './components/layout/Hero';
+import QuizPage from './pages/Quiz_page'
 
 interface User {
     id: number;
@@ -19,12 +18,11 @@ function App() {
 
     return (
         <div style={{ fontFamily: 'sans-serif', minHeight: '100vh' }}>
-            <Header />
-            <Hero />
+            <QuizPage />
 
-            <div style={{ padding: '2rem' }}>
-                <h1>Utilisateurs depuis Files 🚀</h1>
-                <pre style={{ background: '#f4f4f4', padding: '1rem' }}>
+            <div style={{ padding: '2rem', borderTop: '1px solid #eee', marginTop: '2rem' }}>
+                <h2 style={{ fontSize: '1.2rem' }}>Debug : Utilisateurs API 🚀</h2>
+                <pre style={{ background: '#f4f4f4', padding: '1rem', borderRadius: '8px', fontSize: '0.8rem' }}>
                     {JSON.stringify(users, null, 2)}
                 </pre>
             </div>

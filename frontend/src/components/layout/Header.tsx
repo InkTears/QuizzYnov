@@ -12,7 +12,7 @@ function QuizHeader() {
         backgroundColor: "#4f46e5",
         color: "white",
         display: "flex",
-        justifyContent: "space-between", // Titre à gauche, Nav à droite
+        justifyContent: "space-between",
         alignItems: "center",
         boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
         position: "sticky",
@@ -20,7 +20,6 @@ function QuizHeader() {
         zIndex: 1000
       }}
     >
-      {/* LOGO / TITRE */}
       <motion.div 
         whileHover={{ scale: 1.05 }}
         style={{ fontSize: "1.5rem", fontWeight: "bold", cursor: "pointer" }}
@@ -28,15 +27,12 @@ function QuizHeader() {
         QuizzYnov
       </motion.div>
 
-      {/* NAVIGATION (Basée sur tes pages) */}
       <nav style={{ display: "flex", gap: "1.5rem", alignItems: "center" }}>
         <HeaderLink label="Jouer" href="/quiz" />
         <HeaderLink label="Classement" href="/leaderboard" />
         
-        {/* Séparateur visuel */}
         <div style={{ width: "1px", height: "20px", backgroundColor: "rgba(255,255,255,0.3)" }} />
 
-        {/* Bouton Connexion (Lien vers Login_page_user) */}
         <motion.button
           whileHover={{ scale: 1.05, backgroundColor: "#4338ca" }}
           whileTap={{ scale: 0.95 }}
@@ -57,7 +53,6 @@ function QuizHeader() {
   );
 }
 
-// Petit sous-composant interne pour les liens animés
 function HeaderLink({ label, href }: { label: string; href: string }) {
   return (
     <motion.a
