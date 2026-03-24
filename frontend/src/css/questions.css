@@ -69,7 +69,19 @@
     flex: 1;
     padding: 8px;
 }
+/* Style pour les checkboxes */
+.option-field input[type="checkbox"] {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    accent-color: #48BB78; /* Se met en vert quand coché par défaut */
+    margin-right: 12px;
+}
 
+/* On s'assure que si c'est incorrect (rouge), la checkbox suit */
+.option-field.is-incorrect input[type="checkbox"] {
+    accent-color: #F56565;
+}
 .radio-label {
     color: #4a5568; /* "Correcte" en gris foncé */
     font-size: 0.85rem;
