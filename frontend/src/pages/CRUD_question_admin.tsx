@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import '../css/questions.css';
 import quizService from '../api/quizApi';
 
@@ -15,7 +17,29 @@ const EMPTY_QUESTION: Question = {
     correctAnswers: []
 };
 
+const containerVariants = {
+    hidden: { opacity: 0 },
+    show: {
+        opacity: 1,
+        transition: {
+            staggerChildren: 0.08,
+            delayChildren: 0.08
+        }
+    }
+};
+
+const itemVariants = {
+    hidden: { opacity: 0, y: 12 },
+    show: {
+        opacity: 1,
+        y: 0,
+        transition: { duration: 0.28 }
+    }
+};
+
 const CRUDQuestionAdmin: React.FC = () => {
+    const shouldReduceMotion = useReducedMotion();
+    const navigate = useNavigate();
     const [questions, setQuestions] = useState<Question[]>([]);
     const [newQuestion, setNewQuestion] = useState<Question>(EMPTY_QUESTION);
     const [isImporting, setIsImporting] = useState(false);
@@ -124,8 +148,6 @@ const CRUDQuestionAdmin: React.FC = () => {
                 return;
             }
 
-            // Header expected:
-            // question;option1;option2;option3;option4;correctAnswers
             let successCount = 0;
             let failedCount = 0;
 
@@ -187,25 +209,42 @@ const CRUDQuestionAdmin: React.FC = () => {
     };
 
     return (
-        <div className="crud-container">
-            <h1>Gestion des Questions</h1>
+        <motion.div className="crud-container" initial="hidden" animate="show" variants={containerVariants}>
+            <motion.div className="crud-header" variants={itemVariants}>
+                <h1>Gestion des Questions</h1>
+                <motion.button
+                    type="button"
+                    className="btn-back-dashboard"
+                    onClick={() => navigate('/admin/dashboard')}
+                    whileHover={shouldReduceMotion ? undefined : { y: -1 }}
+                    whileTap={shouldReduceMotion ? undefined : { scale: 0.985 }}
+                >
+                    Retour au dashboard
+                </motion.button>
+            </motion.div>
 
-            <section className="card">
+            <motion.section className="card" variants={itemVariants}>
                 <h3>Nouvelle Question (choix multiples possibles)</h3>
                 <form onSubmit={handleAddQuestion}>
-                    <input
+                    <motion.input
                         className="main-input"
                         placeholder="Enoncez votre question ici..."
                         value={newQuestion.text}
                         onChange={(e) => setNewQuestion({ ...newQuestion, text: e.target.value })}
                         required
+                        whileFocus={shouldReduceMotion ? undefined : { scale: 1.005 }}
                     />
 
                     <div className="options-grid">
                         {newQuestion.options.map((opt, i) => {
                             const isSelected = newQuestion.correctAnswers.includes(i);
                             return (
-                                <div key={i} className={`option-field ${isSelected ? 'is-correct' : 'is-incorrect'}`}>
+                                <motion.div
+                                    key={i}
+                                    className={`option-field ${isSelected ? 'is-correct' : 'is-incorrect'}`}
+                                    layout
+                                    whileHover={shouldReduceMotion ? undefined : { y: -1 }}
+                                >
                                     <input
                                         type="checkbox"
                                         id={`opt-${i}`}
@@ -226,24 +265,36 @@ const CRUDQuestionAdmin: React.FC = () => {
                                     <label htmlFor={`opt-${i}`} className="radio-label">
                                         {isSelected ? 'CORRECTE' : 'INCORRECTE'}
                                     </label>
-                                </div>
+                                </motion.div>
                             );
                         })}
                     </div>
-                    <button type="submit" className="btn-save">
-                        Enregistrer la question
-                    </button>
-                </form>
-            </section>
 
-            <section className="card import-card">
+                    <motion.button
+                        type="submit"
+                        className="btn-save"
+                        whileHover={shouldReduceMotion ? undefined : { y: -1 }}
+                        whileTap={shouldReduceMotion ? undefined : { scale: 0.985 }}
+                    >
+                        Enregistrer la question
+                    </motion.button>
+                </form>
+            </motion.section>
+
+            <motion.section className="card import-card" variants={itemVariants}>
                 <h3>Importer via Excel (CSV)</h3>
                 <p className="import-help">
                     Colonnes: question ; option1 ; option2 ; option3 ; option4 ; correctAnswers (ex: 1|3)
                 </p>
-                <button type="button" className="btn-template" onClick={handleDownloadTemplate}>
+                <motion.button
+                    type="button"
+                    className="btn-template"
+                    onClick={handleDownloadTemplate}
+                    whileHover={shouldReduceMotion ? undefined : { y: -1 }}
+                    whileTap={shouldReduceMotion ? undefined : { scale: 0.985 }}
+                >
                     Telecharger le template CSV
-                </button>
+                </motion.button>
                 <div className="import-row">
                     <input
                         type="file"
@@ -253,10 +304,23 @@ const CRUDQuestionAdmin: React.FC = () => {
                         className="file-input"
                     />
                 </div>
-                {importMessage && <p className="import-message">{importMessage}</p>}
-            </section>
+                <AnimatePresence mode="wait" initial={false}>
+                    {importMessage && (
+                        <motion.p
+                            key={importMessage}
+                            className="import-message"
+                            initial={{ opacity: 0, y: -6 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -6 }}
+                            transition={{ duration: 0.2 }}
+                        >
+                            {importMessage}
+                        </motion.p>
+                    )}
+                </AnimatePresence>
+            </motion.section>
 
-            <section className="questions-list">
+            <motion.section className="card questions-list-card" variants={itemVariants}>
                 <h3>Base de donnees ({questions.length})</h3>
                 <table className="admin-table">
                     <thead>
@@ -267,23 +331,37 @@ const CRUDQuestionAdmin: React.FC = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {questions.map((q) => (
-                            <tr key={q.id}>
-                                <td style={{ fontWeight: '600' }}>{q.text}</td>
-                                <td style={{ color: '#718096' }}>
-                                    {q.options.length} options ({q.correctAnswers?.length || 0} correctes)
-                                </td>
-                                <td style={{ textAlign: 'right' }}>
-                                    <button className="btn-delete" onClick={() => q.id && handleDelete(q.id)}>
-                                        Supprimer
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
+                        <AnimatePresence initial={false}>
+                            {questions.map((q) => (
+                                <motion.tr
+                                    key={q.id || q.text}
+                                    layout
+                                    initial={{ opacity: 0, y: 8 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -8 }}
+                                    transition={{ duration: 0.22 }}
+                                >
+                                    <td style={{ fontWeight: '600' }}>{q.text}</td>
+                                    <td style={{ color: '#718096' }}>
+                                        {q.options.length} options ({q.correctAnswers?.length || 0} correctes)
+                                    </td>
+                                    <td style={{ textAlign: 'right' }}>
+                                        <motion.button
+                                            className="btn-delete"
+                                            onClick={() => q.id && handleDelete(q.id)}
+                                            whileHover={shouldReduceMotion ? undefined : { y: -1 }}
+                                            whileTap={shouldReduceMotion ? undefined : { scale: 0.985 }}
+                                        >
+                                            Supprimer
+                                        </motion.button>
+                                    </td>
+                                </motion.tr>
+                            ))}
+                        </AnimatePresence>
                     </tbody>
                 </table>
-            </section>
-        </div>
+            </motion.section>
+        </motion.div>
     );
 };
 
