@@ -1,38 +1,69 @@
-import React from 'react';
+import React, { useRef } from 'react';
+import { motion, useInView, useReducedMotion, useScroll, useSpring, useTransform } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import Login from '../modules/auth/Login';
 import authService from '../services/authService';
-import { useNavigate } from 'react-router-dom';
 import '../css/auth.css';
 
 const LoginPageUser: React.FC = () => {
     const navigate = useNavigate();
+    const pageRef = useRef<HTMLDivElement | null>(null);
+    const footerRef = useRef<HTMLDivElement | null>(null);
+    const shouldReduceMotion = useReducedMotion();
 
-    const handleUserLogin = async (credentials: any) => {
+    const { scrollYProgress } = useScroll({
+        target: pageRef,
+        offset: ['start start', 'end end']
+    });
+    const progressScaleX = useSpring(scrollYProgress, { stiffness: 140, damping: 26 });
+    const orbY = useTransform(scrollYProgress, [0, 1], ['-10%', '10%']);
+    const orbOpacity = useTransform(scrollYProgress, [0, 1], [0.24, 0.36]);
+    const footerInView = useInView(footerRef, { amount: 0.7, once: true });
+
+    const handleUserLogin = async (credentials: { email: string; password: string }) => {
         try {
-            // On utilise le même service d'authentification
             const response = await authService.login(credentials);
-
             if (response.token) {
-                // Une fois connecté, on redirige l'utilisateur vers la page du Quiz
-                // ou sa page de résultats selon ta logique
                 navigate('/quiz');
+                return;
             }
+            throw new Error('Token non recu');
         } catch (error) {
-            // Petit message d'erreur si les identifiants sont faux
-            alert("Erreur de connexion : " + error);
+            throw new Error(`Erreur de connexion: ${String(error)}`);
         }
     };
 
     return (
-        <div className="user-page-wrapper">
-            <Login
-                title="Connexion Joueur"
-                onLogin={handleUserLogin}
+        <motion.div
+            ref={pageRef}
+            className="auth-page-wrapper auth-page-user"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.35 }}
+        >
+            <motion.div
+                className="auth-progress"
+                style={shouldReduceMotion ? undefined : { scaleX: progressScaleX }}
+                aria-hidden="true"
             />
-            <div className="login-footer">
+            <motion.div
+                className="auth-orb"
+                style={shouldReduceMotion ? undefined : { y: orbY, opacity: orbOpacity }}
+                aria-hidden="true"
+            />
+
+            <Login title="Connexion Joueur" onLogin={handleUserLogin} theme="user" />
+
+            <motion.div
+                ref={footerRef}
+                className="login-footer"
+                initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 12 }}
+                animate={footerInView || shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
+                transition={{ duration: 0.32 }}
+            >
                 <p>Pas encore de compte ? Contactez votre administrateur.</p>
-            </div>
-        </div>
+            </motion.div>
+        </motion.div>
     );
 };
 
