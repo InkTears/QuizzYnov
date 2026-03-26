@@ -1,20 +1,27 @@
 import React, { useState } from 'react';
-import {
-    AnimatePresence,
-    motion,
-    useReducedMotion
-} from 'framer-motion';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 
-interface LoginProps {
-    onLogin: (credentials: { email: string; password: string }) => Promise<void> | void;
+export interface RegisterPayload {
+    pseudo: string;
+    email: string;
+    role: string;
+    password: string;
+    confirmPassword: string;
+}
+
+interface RegisterProps {
+    onRegister: (payload: RegisterPayload) => Promise<void> | void;
     title: string;
     theme: 'user' | 'admin';
     helperText?: string;
 }
 
-const Login: React.FC<LoginProps> = ({ onLogin, title, theme, helperText }) => {
+const Register: React.FC<RegisterProps> = ({ onRegister, title, theme, helperText }) => {
+    const [pseudo, setPseudo] = useState('');
     const [email, setEmail] = useState('');
+    const [role, setRole] = useState('user');
     const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
 
@@ -23,11 +30,17 @@ const Login: React.FC<LoginProps> = ({ onLogin, title, theme, helperText }) => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setErrorMessage('');
+
+        if (password !== confirmPassword) {
+            setErrorMessage('Les mots de passe ne correspondent pas.');
+            return;
+        }
+
         setIsSubmitting(true);
         try {
-            await onLogin({ email, password });
+            await onRegister({ pseudo, email, role, password, confirmPassword });
         } catch (error) {
-            const message = error instanceof Error ? error.message : String(error || 'Erreur de connexion');
+            const message = error instanceof Error ? error.message : String(error || "Erreur d'inscription");
             setErrorMessage(message);
         } finally {
             setIsSubmitting(false);
@@ -68,6 +81,22 @@ const Login: React.FC<LoginProps> = ({ onLogin, title, theme, helperText }) => {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.16 }}
                 >
+                    <label>Pseudo</label>
+                    <input
+                        type="text"
+                        value={pseudo}
+                        onChange={(e) => setPseudo(e.target.value)}
+                        disabled={isSubmitting}
+                        required
+                    />
+                </motion.div>
+
+                <motion.div
+                    className="form-group"
+                    initial={{ opacity: 0, x: 10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.2 }}
+                >
                     <label>Email</label>
                     <input
                         type="email"
@@ -80,15 +109,44 @@ const Login: React.FC<LoginProps> = ({ onLogin, title, theme, helperText }) => {
 
                 <motion.div
                     className="form-group"
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.24 }}
+                >
+                    <label>Role</label>
+                    <select value={role} onChange={(e) => setRole(e.target.value)} disabled={isSubmitting} required>
+                        <option value="user">Utilisateur</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </motion.div>
+
+                <motion.div
+                    className="form-group"
                     initial={{ opacity: 0, x: 10 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.22 }}
+                    transition={{ delay: 0.28 }}
                 >
                     <label>Mot de passe</label>
                     <input
                         type="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
+                        disabled={isSubmitting}
+                        required
+                    />
+                </motion.div>
+
+                <motion.div
+                    className="form-group"
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.32 }}
+                >
+                    <label>Confirmation du mot de passe</label>
+                    <input
+                        type="password"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
                         disabled={isSubmitting}
                         required
                     />
@@ -102,11 +160,11 @@ const Login: React.FC<LoginProps> = ({ onLogin, title, theme, helperText }) => {
                     whileTap={shouldReduceMotion ? undefined : { scale: 0.985 }}
                     transition={{ duration: 0.15 }}
                 >
-                    {isSubmitting ? 'Connexion...' : 'Se connecter'}
+                    {isSubmitting ? 'Inscription...' : "S'inscrire"}
                 </motion.button>
             </form>
         </motion.div>
     );
 };
 
-export default Login;
+export default Register;
