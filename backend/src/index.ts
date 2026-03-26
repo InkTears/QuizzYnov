@@ -1,3 +1,5 @@
+import * as dotenv from 'dotenv';
+dotenv.config({ path: __dirname + '/.env' });
 import "reflect-metadata"
 import express from "express"
 import cors from "cors"
@@ -6,10 +8,12 @@ import { User } from "./entity/User"
 import { questionRouter } from "./feature/question/question.routes"
 import { quizRouter } from "./feature/quiz/quiz.routes"
 import { leaderboardRouter } from "./feature/leaderboard/leaderboard.routes"
+import { authRouter } from "./feature/auth/auth.routes";
 
 const app = express()
 app.use(cors())
 app.use(express.json())
+
 
 AppDataSource.initialize().then(async () => {
     console.log("🔥 Connecté à Filess")
@@ -19,6 +23,10 @@ AppDataSource.initialize().then(async () => {
         const users = await AppDataSource.getRepository(User).find()
         res.json(users)
     })
+
+    // route feature auth 
+    app.use("/api/auth", authRouter);
+
 
     // Routes features
     app.use("/api/questions", questionRouter)
