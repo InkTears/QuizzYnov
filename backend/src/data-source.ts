@@ -1,6 +1,7 @@
 import "reflect-metadata"
 import { DataSource } from "typeorm"
 import { User } from "./entity/User"
+import { Question } from "./entity/Question"
 import * as dotenv from "dotenv"
 import { Question } from "./entity/Question"
 import { QuizSession } from "./entity/QuizSession"
@@ -16,6 +17,10 @@ export const AppDataSource = new DataSource({
     database: process.env.DB_NAME,
     synchronize: true,
     logging: false,
+<<<<<<< HEAD
     entities: [User, Question, QuizSession],
+=======
+    entities: [User, Question],
+>>>>>>> 076696d (projet front presque complet( manque framer-motion))
 })
 /* test de voir si ça change*/
