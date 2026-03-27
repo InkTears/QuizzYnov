@@ -65,7 +65,7 @@
 .login-helper {
     margin: -8px 0 18px;
     text-align: center;
-    font-size: 1.05rem;
+    font-size: 1.25rem;
     color: rgba(0, 0, 0, 0.72);
 }
 
@@ -92,7 +92,8 @@
     color: #111111;
 }
 
-.form-group input {
+.form-group input,
+.form-group select {
     width: 100%;
     height: 52px;
     padding: 0 16px;
@@ -110,7 +111,8 @@
     box-shadow: 0 0 0 4px rgba(79, 87, 218, 0.15);
 }
 
-.form-group input:disabled {
+.form-group input:disabled,
+.form-group select:disabled {
     opacity: 0.75;
     cursor: not-allowed;
 }
@@ -143,6 +145,12 @@
     z-index: 1;
 }
 
+.login-footer a {
+    color: #c9cdf7;
+    text-decoration: underline;
+    font-weight: 700;
+}
+
 @media (max-width: 900px) {
     .login-container {
         max-width: 94vw;
@@ -164,7 +172,8 @@
         font-size: 1.25rem;
     }
 
-    .form-group input {
+    .form-group input,
+    .form-group select {
         height: 52px;
         font-size: 1rem;
         border-radius: 10px;

@@ -13,6 +13,8 @@
     background-color: var(--bg-light);
     font-family: 'Inter', sans-serif;
     color: var(--text-dark);
+    display: flex;
+    flex-direction: column;
 }
 
 /* Header style QuizzYnov */
@@ -91,7 +93,8 @@
 }
 
 .quick-actions {
-    padding: 0 5% 40px 5%;
+    margin-top: auto;
+    padding: 8px 5% 40px 5%;
 }
 
 .quick-actions h2 {

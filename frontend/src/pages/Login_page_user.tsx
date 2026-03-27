@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { motion, useInView, useReducedMotion, useScroll, useSpring, useTransform } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Login from '../modules/auth/Login';
 import authService from '../services/authService';
 import '../css/auth.css';
@@ -24,6 +24,15 @@ const LoginPageUser: React.FC = () => {
         try {
             const response = await authService.login(credentials);
             if (response.token) {
+                const role = String(response.role || response.user?.role || localStorage.getItem('userRole') || '')
+                    .toLowerCase()
+                    .trim();
+
+                if (role === 'admin') {
+                    navigate('/admin/dashboard');
+                    return;
+                }
+
                 navigate('/quiz');
                 return;
             }
@@ -52,7 +61,12 @@ const LoginPageUser: React.FC = () => {
                 aria-hidden="true"
             />
 
-            <Login title="Connexion Joueur" onLogin={handleUserLogin} theme="user" />
+            <Login
+                title="Connexion"
+                onLogin={handleUserLogin}
+                theme="user"
+                helperText="Un seul acces: redirection automatique selon votre profil."
+            />
 
             <motion.div
                 ref={footerRef}
@@ -61,7 +75,9 @@ const LoginPageUser: React.FC = () => {
                 animate={footerInView || shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
                 transition={{ duration: 0.32 }}
             >
-                <p>Pas encore de compte ? Contactez votre administrateur.</p>
+                <p>
+                    Pas encore de compte ? <Link to="/register">S'inscrire</Link>
+                </p>
             </motion.div>
         </motion.div>
     );

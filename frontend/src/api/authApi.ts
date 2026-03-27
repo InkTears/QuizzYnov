@@ -1,21 +1,39 @@
 import axios from 'axios';
 
-// Remplace par l'URL de ton backend
 const API_URL = 'http://localhost:5000/api/auth';
 
+export interface LoginCredentials {
+    email: string;
+    password: string;
+}
+
+export interface RegisterRequest {
+    pseudo: string;
+    email: string;
+    role: string;
+    password: string;
+}
+
 export const authApi = {
-    // Envoi des identifiants au serveur
-    login: async (credentials: any) => {
+    login: async (credentials: LoginCredentials) => {
         try {
             const response = await axios.post(`${API_URL}/login`, credentials);
-            return response.data; // Retourne souvent { token: '...', user: {...} }
-        } catch (error: any) {
-            throw error.response?.data?.message || "Erreur de connexion au serveur";
+            return response.data;
+        } catch (error: unknown) {
+            const axiosError = error as { response?: { data?: { message?: string } } };
+            throw axiosError.response?.data?.message || 'Erreur de connexion au serveur';
         }
     },
 
-    // Optionnel : si tu as une route de déconnexion
-    logout: async () => {
-        // Logique de logout côté API si nécessaire
-    }
+    register: async (payload: RegisterRequest) => {
+        try {
+            const response = await axios.post(`${API_URL}/register`, payload);
+            return response.data;
+        } catch (error: unknown) {
+            const axiosError = error as { response?: { data?: { message?: string } } };
+            throw axiosError.response?.data?.message || "Erreur d'inscription au serveur";
+        }
+    },
+
+    logout: async () => {}
 };

@@ -1,14 +1,12 @@
-import { authApi } from '../api/authApi';
+import { authApi, type LoginCredentials, type RegisterRequest } from '../api/authApi';
 
 const authService = {
-    login: async (credentials: any) => {
+    login: async (credentials: LoginCredentials) => {
         const data = await authApi.login(credentials);
 
         if (data.token) {
-            // On sauvegarde le token pour rester connecté après un refresh
             localStorage.setItem('userToken', data.token);
 
-            // Si tu as des rôles, tu peux aussi les stocker
             if (data.role) {
                 localStorage.setItem('userRole', data.role);
             }
@@ -17,13 +15,27 @@ const authService = {
         return data;
     },
 
+    register: async (payload: RegisterRequest & { confirmPassword: string }) => {
+        if (payload.password !== payload.confirmPassword) {
+            throw new Error('Les mots de passe ne correspondent pas');
+        }
+
+        const data = await authApi.register({
+            pseudo: payload.pseudo,
+            email: payload.email,
+            role: payload.role,
+            password: payload.password
+        });
+
+        return data;
+    },
+
     logout: () => {
         localStorage.removeItem('userToken');
         localStorage.removeItem('userRole');
-        window.location.href = '/login'; // Redirection propre
+        window.location.href = '/login';
     },
 
-    // Petite fonction utilitaire pour vérifier si on est connecté
     isAuthenticated: () => {
         return !!localStorage.getItem('userToken');
     }
