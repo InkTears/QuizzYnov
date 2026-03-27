@@ -1,9 +1,14 @@
 #root {
+<<<<<<< HEAD
   width: 100%;
   max-width: none;
   min-height: 100vh;
   margin: 0;
   padding: 0;
+=======
+  margin: 0 auto;
+  padding: 2rem;
+>>>>>>> 42e9c7c (center quiz layout and implement 2x2 responsive grid)
   text-align: center;
 }
 
