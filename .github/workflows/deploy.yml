@@ -1,0 +1,34 @@
+name: Deploy to Ionos VPS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: Quizz
+    steps:
+      - name: Connexion SSH et Déploiement
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          passphrase: ${{ secrets.SERVER_PASSPHRASE }}
+          script: |
+            set -e
+            cd /var/www/html/QuizzYnov
+            git pull origin main
+            
+            # 3. Mise à jour du Backend
+            cd backend
+            npm install
+            npx tsc
+            pm2 restart api-filess
+            
+            # 4. Mise à jour du Frontend
+            cd ../frontend
+            npm install
+            npm run build
