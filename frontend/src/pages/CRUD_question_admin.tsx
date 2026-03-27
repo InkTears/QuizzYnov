@@ -71,7 +71,7 @@ const CRUDQuestionAdmin: React.FC = () => {
     const handleAddQuestion = async (e: React.FormEvent) => {
         e.preventDefault();
         if (newQuestion.correctAnswers.length === 0) {
-            alert('Veuillez cocher au moins une bonne reponse.');
+            alert('Veuillez cocher au moins une bonne réponse.');
             return;
         }
         try {
@@ -253,7 +253,7 @@ const CRUDQuestionAdmin: React.FC = () => {
                                     />
                                     <input
                                         type="text"
-                                        placeholder={`Reponse ${i + 1}`}
+                                        placeholder={`Réponse ${i + 1}`}
                                         value={opt}
                                         onChange={(e) => {
                                             const newOpts = [...newQuestion.options];
@@ -326,7 +326,7 @@ const CRUDQuestionAdmin: React.FC = () => {
                     <thead>
                         <tr>
                             <th>Question</th>
-                            <th>Reponses</th>
+                            <th>Réponses</th>
                             <th style={{ textAlign: 'right' }}>Actions</th>
                         </tr>
                     </thead>

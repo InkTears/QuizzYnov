@@ -65,7 +65,7 @@ const LoginPageUser: React.FC = () => {
                 title="Connexion"
                 onLogin={handleUserLogin}
                 theme="user"
-                helperText="Un seul acces: redirection automatique selon votre profil."
+                helperText="Connectez-vous pour accéder à votre espace personnalisé."
             />
 
             <motion.div

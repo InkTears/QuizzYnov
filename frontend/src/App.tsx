@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
 // Import de tes pages
-import LoginPageUser from './pages/Login_page_user';
+import LoginPageUser from './pages/Login_page.tsx';
 import RegisterPageUser from './pages/Register_page_user';
 import TableauDeBoardAdmin from './pages/Tableau_de_board_admin';
 import CRUDQuestionAdmin from './pages/CRUD_question_admin.tsx'

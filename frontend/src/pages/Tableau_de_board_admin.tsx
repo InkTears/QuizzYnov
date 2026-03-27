@@ -73,7 +73,7 @@ const TableauDeBoardAdmin: React.FC = () => {
                     variants={itemVariants}
                     whileHover={shouldReduceMotion ? undefined : { y: -6 }}
                 >
-                    <h3>Parties Jouees</h3>
+                    <h3>Parties Jouées</h3>
                     <p className="stat-number">{stats.totalParties}</p>
                 </motion.div>
 
@@ -97,7 +97,7 @@ const TableauDeBoardAdmin: React.FC = () => {
                         whileTap={shouldReduceMotion ? undefined : { scale: 0.985 }}
                         onClick={() => navigate('/admin/questions')}
                     >
-                        Gerer la base de questions
+                        Gérer la base de questions
                     </motion.button>
                     <motion.button
                         className="btn-action btn-outline"
@@ -106,7 +106,7 @@ const TableauDeBoardAdmin: React.FC = () => {
                         whileTap={shouldReduceMotion ? undefined : { scale: 0.985 }}
                         onClick={() => navigate('/leaderboard')}
                     >
-                        Voir le classement general
+                        Voir le classement général
                     </motion.button>
                     <motion.button
                         className="btn-action btn-danger"
@@ -114,7 +114,7 @@ const TableauDeBoardAdmin: React.FC = () => {
                         whileHover={shouldReduceMotion ? undefined : { y: -1 }}
                         whileTap={shouldReduceMotion ? undefined : { scale: 0.985 }}
                     >
-                        Reinitialiser les scores
+                        Réinitialiser les scores
                     </motion.button>
                 </motion.div>
             </motion.section>

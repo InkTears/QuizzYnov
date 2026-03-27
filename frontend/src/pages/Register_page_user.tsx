@@ -52,7 +52,7 @@ const RegisterPageUser: React.FC = () => {
                 title="Inscription"
                 onRegister={handleRegister}
                 theme="user"
-                helperText="Creez votre compte avec votre pseudo, email, role et mot de passe."
+                helperText="Prêt à nous rejoindre ? Remplissez ces quelques informations."
             />
 
             <motion.div
