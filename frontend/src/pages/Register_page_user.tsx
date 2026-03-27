@@ -1,11 +1,11 @@
 import React, { useRef } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion, useInView, useReducedMotion, useScroll, useSpring, useTransform } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
-import Login from '../modules/auth/Login';
+import Register, { type RegisterPayload } from '../modules/auth/Register';
 import authService from '../services/authService';
 import '../css/auth.css';
 
-const LoginPageAdmin: React.FC = () => {
+const RegisterPageUser: React.FC = () => {
     const navigate = useNavigate();
     const pageRef = useRef<HTMLDivElement | null>(null);
     const footerRef = useRef<HTMLDivElement | null>(null);
@@ -20,23 +20,19 @@ const LoginPageAdmin: React.FC = () => {
     const orbOpacity = useTransform(scrollYProgress, [0, 1], [0.24, 0.36]);
     const footerInView = useInView(footerRef, { amount: 0.7, once: true });
 
-    const handleAdminLogin = async (credentials: { email: string; password: string }) => {
+    const handleRegister = async (payload: RegisterPayload) => {
         try {
-            const response = await authService.login(credentials);
-            if (response.token) {
-                navigate('/admin/dashboard');
-                return;
-            }
-            throw new Error('Token non recu');
+            await authService.register(payload);
+            navigate('/login');
         } catch (error) {
-            throw new Error(`Erreur de connexion admin: ${String(error)}`);
+            throw new Error(`Erreur d'inscription: ${String(error)}`);
         }
     };
 
     return (
         <motion.div
             ref={pageRef}
-            className="auth-page-wrapper auth-page-admin"
+            className="auth-page-wrapper auth-page-user"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.35 }}
@@ -52,7 +48,12 @@ const LoginPageAdmin: React.FC = () => {
                 aria-hidden="true"
             />
 
-            <Login title="Connexion Admin" onLogin={handleAdminLogin} theme="admin" />
+            <Register
+                title="Inscription"
+                onRegister={handleRegister}
+                theme="user"
+                helperText="Prêt à nous rejoindre ? Remplissez ces quelques informations."
+            />
 
             <motion.div
                 ref={footerRef}
@@ -61,10 +62,12 @@ const LoginPageAdmin: React.FC = () => {
                 animate={footerInView || shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
                 transition={{ duration: 0.32 }}
             >
-                <p>Connexion reservee aux administrateurs.</p>
+                <p>
+                    Deja un compte ? <Link to="/login">Se connecter</Link>
+                </p>
             </motion.div>
         </motion.div>
     );
 };
 
-export default LoginPageAdmin;
+export default RegisterPageUser;
