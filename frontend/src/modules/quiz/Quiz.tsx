@@ -20,8 +20,15 @@ export const Quiz = () => {
     setScore(0);
   };
 
-  return (
-    <div className="w-full max-w-xl mx-auto mt-10">
+return (
+  <div style={{ 
+    display: "flex", 
+    justifyContent: "center", 
+    width: "100%",
+    marginTop: "3rem",
+    padding: "0 1rem"
+  }}>
+    <div style={{ width: "100%", maxWidth: "800px" }}>
       <AnimatePresence mode="wait">
         {!isFinished ? (
           <Question 
@@ -38,7 +45,8 @@ export const Quiz = () => {
         )}
       </AnimatePresence>
     </div>
-  );
+  </div>
+);
 };
 
 export default Quiz;
