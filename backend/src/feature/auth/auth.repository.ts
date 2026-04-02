@@ -7,9 +7,12 @@ class AuthRepository {
     return AppDataSource.getRepository(User);
   }
 
-  async findByEmail(email: string): Promise<User | null> {
-    return await this.repo.findOneBy({ email });
-  }
+async findByEmail(email: string): Promise<User | null> {
+  return await this.repo.findOne({
+    where: { email },
+    select: ["id", "email", "password", "name", "refreshToken"]
+  });
+}
 
   async findById(id: number): Promise<User | null> {
     return await this.repo.findOneBy({ id });

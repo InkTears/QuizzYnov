@@ -1,5 +1,8 @@
-import * as dotenv from 'dotenv';
-dotenv.config({ path: __dirname + '/.env' });
+import * as dotenv from "dotenv";
+import path from "path";
+
+dotenv.config({ path: path.resolve(process.cwd(), ".env") });
+
 import "reflect-metadata"
 import express from "express"
 import cors from "cors"
@@ -9,10 +12,15 @@ import { questionRouter } from "./feature/question/question.routes"
 import { quizRouter } from "./feature/quiz/quiz.routes"
 import { leaderboardRouter } from "./feature/leaderboard/leaderboard.routes"
 import { authRouter } from "./feature/auth/auth.routes";
+import { authMiddleware } from "./middlewares/auth.middleware";
+import cookieParser from "cookie-parser";
+
+
 
 const app = express()
 app.use(cors())
 app.use(express.json())
+app.use(cookieParser());
 
 
 AppDataSource.initialize().then(async () => {
@@ -30,7 +38,7 @@ AppDataSource.initialize().then(async () => {
 
     // Routes features
     app.use("/api/questions", questionRouter)
-    app.use("/api/quiz", quizRouter)
+    app.use("/api/quiz", authMiddleware, quizRouter)
     app.use("/api/leaderboard", leaderboardRouter)
 
     app.listen(3000, () => console.log("🚀 Serveur sur le port 3000"))
