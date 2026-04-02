@@ -62,8 +62,8 @@ async login(email: string, password: string) {
     if (!secret) {
       throw new Error("Configuration serveur invalide");
     }
-    const accessToken = jwt.sign({ userId }, secret, { expiresIn: "30d" });
-    const refreshToken = jwt.sign({ userId }, secret, { expiresIn: "30d" });
+    const accessToken = jwt.sign({ userId }, secret, { expiresIn: "1d" });
+    const refreshToken = jwt.sign({ userId }, secret, { expiresIn: "7d" });
 
     return { accessToken, refreshToken };
   }
