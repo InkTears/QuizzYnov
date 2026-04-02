@@ -1,52 +1,114 @@
+import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import bcrypt from "bcryptjs";
 import authRepository from "./auth.repository";
-import { User } from "../../entity/User";
 
 class AuthService {
-  async register(userData: Partial<User>) {
-    const existing = await authRepository.findByEmail(userData.email!);
-    if (existing) throw new Error("Email déjà utilisé");
 
-    const hashedPassword = await bcrypt.hash(userData.password!, 10);
-    const user = await authRepository.createUser({ ...userData, password: hashedPassword });
-    
-    const { password, refreshToken, ...userSafe } = user;
-    return userSafe;
-  }
 
-  async login(email: string, password: string) {
-    const user = await authRepository.findByEmail(email);
-    if (!user) throw new Error("Identifiants invalides");
+async login(email: string, password: string) {
 
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) throw new Error("Identifiants invalides");
+  const user = await authRepository.findByEmail(email);
+  if (!user) throw new Error("Identifiants invalides");
 
-    const tokens = this.generateTokens(user.id);
-    await authRepository.updateRefreshToken(user.id, tokens.refreshToken);
-    
+  const isMatch = await bcrypt.compare(password, user.password);
+  if (!isMatch) throw new Error("Identifiants invalides");
+
+  const tokens = this.generateTokens(user.id);
+  const hashedRefreshToken = await bcrypt.hash(tokens.refreshToken, 10);
+  await authRepository.updateRefreshToken(user.id, hashedRefreshToken);
+
+  return {
+    user: {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+    },
+    accessToken: tokens.accessToken,
+    refreshToken: tokens.refreshToken, 
+  };
+}
+
+  async register(name: string, email: string, password: string) {
+    if (!name || !email || !password) {
+      throw new Error("Données invalides");
+    }
+    const existingUser = await authRepository.findByEmail(email);
+    if (existingUser) {
+      throw new Error("Email déjà utilisé");
+    }
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = await authRepository.createUser({
+      name,
+      email,
+      password: hashedPassword,
+    });
+
     return {
-      user: { id: user.id, email: user.email, username: (user as any).username },
-      ...tokens
+      id: user.id,
+      email: user.email,
+      name: user.name,
     };
   }
 
-  private generateTokens(userId: number) {
-    const accessToken = jwt.sign({ id: userId }, process.env.ACCESS_TOKEN_SECRET!, { expiresIn: "15m" });
-    const refreshToken = jwt.sign({ id: userId }, process.env.REFRESH_TOKEN_SECRET!, { expiresIn: "7d" });
+  async logout(userId: number) {
+  await authRepository.updateRefreshToken(userId, null);
+}
+ 
+
+  generateTokens(userId: number) {
+
+    const secret = process.env.JWT_SECRET;
+
+    if (!secret) {
+      throw new Error("Configuration serveur invalide");
+    }
+    const accessToken = jwt.sign({ userId }, secret, { expiresIn: "30d" });
+    const refreshToken = jwt.sign({ userId }, secret, { expiresIn: "30d" });
+
     return { accessToken, refreshToken };
   }
 
-  async refresh(token: string) {
-    const payload = jwt.verify(token, process.env.REFRESH_TOKEN_SECRET!) as { id: number };
-    const user = await authRepository.findById(payload.id);
-    
-    if (!user || user.refreshToken !== token) throw new Error("Token invalide");
+  async refresh(refreshToken: string) {
 
-    const tokens = this.generateTokens(user.id);
-    await authRepository.updateRefreshToken(user.id, tokens.refreshToken);
-    return tokens;
+  if (!refreshToken) {
+    throw new Error("Token manquant");
   }
+
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    throw new Error("Configuration serveur invalide");
+  }
+
+  let decoded: any;
+
+  try {
+    decoded = jwt.verify(refreshToken, secret);
+  } catch {
+    throw new Error("Token invalide");
+  }
+
+  const user = await authRepository.findById(decoded.userId);
+  if (!user || !user.refreshToken) {
+    throw new Error("Token invalide");
+  }
+
+  const isMatch = await bcrypt.compare(refreshToken, user.refreshToken);
+
+  if (!isMatch) {
+    throw new Error("Token invalide");
+  }
+
+  const tokens = this.generateTokens(user.id);
+
+  const hashedRefreshToken = await bcrypt.hash(tokens.refreshToken, 10);
+
+  await authRepository.updateRefreshToken(user.id, hashedRefreshToken);
+
+  return {
+    accessToken: tokens.accessToken,
+    refreshToken: tokens.refreshToken,
+  };
+}
 }
 
 export default new AuthService();
