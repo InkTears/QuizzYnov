@@ -1,16 +1,29 @@
 .plans-page {
+    position: relative;
     min-height: 100vh;
     padding: 56px 24px 64px;
-    background:
-        radial-gradient(circle at 12% 12%, rgba(255, 196, 80, 0.25), transparent 38%),
-        radial-gradient(circle at 84% 20%, rgba(80, 148, 255, 0.24), transparent 42%),
-        linear-gradient(135deg, #111827, #0f172a 55%, #131a2b);
-    color: #f8fafc;
+    background: linear-gradient(90deg, #2a2a2d 0%, #1f1f21 100%);
+    color: #f1f3f8;
+    overflow: hidden;
+}
+
+.plans-page::before {
+    content: '';
+    position: absolute;
+    width: 520px;
+    height: 520px;
+    border-radius: 999px;
+    top: -140px;
+    right: -160px;
+    pointer-events: none;
 }
 
 .plans-hero {
+    position: relative;
     max-width: 860px;
     margin: 0 auto 34px;
+    text-align: center;
+    z-index: 1;
 }
 
 .plans-kicker {
@@ -18,7 +31,7 @@
     font-size: 0.95rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: #facc15;
+    color: #aab2ff;
     font-weight: 700;
 }
 
@@ -30,33 +43,33 @@
 }
 
 .plans-subtitle {
-    margin: 0;
+    margin: 0 auto;
     max-width: 68ch;
-    text-align: center;
-    margin-left: auto;
-    margin-right: auto;
-    color: rgba(248, 250, 252, 0.82);
+    color: rgba(241, 243, 248, 0.82);
 }
 
 .plans-grid {
+    position: relative;
     max-width: 1080px;
     margin: 0 auto;
     display: grid;
     gap: 18px;
     grid-template-columns: repeat(3, minmax(0, 1fr));
+    z-index: 1;
 }
 
 .plan-card {
     position: relative;
     border-radius: 18px;
     padding: 24px;
-    background: rgba(15, 23, 42, 0.9);
-    border: 1px solid rgba(148, 163, 184, 0.3);
+    background: #28282c;
+    border: 1px solid rgba(201, 205, 247, 0.18);
     text-align: left;
-    box-shadow: 0 12px 34px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 12px 34px rgba(0, 0, 0, 0.25);
     display: flex;
     flex-direction: column;
     gap: 12px;
+    color: #f1f3f8;
 }
 
 .plan-badge {
@@ -69,46 +82,60 @@
     text-transform: uppercase;
     letter-spacing: 0.06em;
     font-weight: 800;
-    background: #facc15;
-    color: #1f2937;
+    background: #c9cdf7;
+    color: #17181b;
 }
 
 .plan-card.is-highlighted {
-    border-color: #f59e0b;
-    background: linear-gradient(180deg, rgba(245, 158, 11, 0.18), rgba(15, 23, 42, 0.94));
+    background: #8388e6;
+    border-color: #c9cdf7;
     transform: translateY(-8px);
+    color: #111111;
 }
 
 .plan-card h2 {
     margin: 0;
     font-size: 1.45rem;
+    color: inherit;
 }
 
 .plan-price {
     margin: 0;
     font-size: 1rem;
-    color: rgba(248, 250, 252, 0.78);
+    color: rgba(241, 243, 248);
+}
+
+.plan-card.is-highlighted .plan-price {
+    color: rgb(0 0 0);
 }
 
 .plan-price span {
     margin-right: 6px;
     font-size: 2rem;
-    color: #ffffff;
+    color: inherit;
     font-weight: 800;
 }
 
 .plan-description {
     margin: 0;
-    color: rgba(248, 250, 252, 0.8);
+    color: rgba(241, 243, 248);
     min-height: 48px;
+}
+
+.plan-card.is-highlighted .plan-description {
+    color: rgba(0, 0, 0);
 }
 
 .plan-card ul {
     margin: 0;
     padding-left: 18px;
-    color: rgba(248, 250, 252, 0.86);
+    color: rgba(241, 243, 248, 0.86);
     display: grid;
     gap: 8px;
+}
+
+.plan-card.is-highlighted ul {
+    color: rgba(0, 0, 0, 0.82);
 }
 
 .plan-cta {
@@ -119,25 +146,37 @@
     border-radius: 10px;
     height: 44px;
     font-weight: 700;
-    background: #f8fafc;
-    color: #0f172a;
+    background: #7e88ff;
+    color: #ffffff;
     border: 1px solid transparent;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.plan-card.is-highlighted .plan-cta {
+    background: #17181b;
+    color: #ffffff;
 }
 
 .plan-cta:hover {
-    color: #0f172a;
-    border-color: #f8fafc;
-    background: #e2e8f0;
+    background: #6a74e8;
+    color: #ffffff;
+}
+
+.plan-card.is-highlighted .plan-cta:hover {
+    background: #2e2f36;
 }
 
 .plans-footer-cta {
+    position: relative;
     margin-top: 36px;
     text-align: center;
-    color: rgba(248, 250, 252, 0.9);
+    color: rgba(241, 243, 248, 0.9);
+    z-index: 1;
 }
 
 .plans-footer-cta a {
-    color: #facc15;
+    color: #aab2ff;
     font-weight: 700;
 }
 

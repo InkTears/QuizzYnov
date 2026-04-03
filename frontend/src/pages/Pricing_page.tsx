@@ -8,7 +8,7 @@ const plans = [
         name: 'Starter',
         price: '0 EUR',
         period: '/mois',
-        description: 'Ideal pour tester la plateforme et lancer vos premiers quiz.',
+        description: 'Ideal pour tester la plateforme et lancer tes premiers quiz.',
         features: ['5 quiz par mois', 'Acces au classement public', 'Support standard']
     },
     {
@@ -67,7 +67,7 @@ const PricingPage: React.FC = () => {
             </section>
 
             <section className="plans-footer-cta">
-                <p>Tu as deja un compte ?</p>
+                <p>Tu as déjà un compte? Connecte-toi ici</p>
                 <Link to="/login">Se connecter</Link>
             </section>
         </main>
