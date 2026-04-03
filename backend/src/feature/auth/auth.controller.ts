@@ -7,7 +7,7 @@ class AuthController {
       const user = await authService.register(req.body);
       res.status(201).json(user);
     } catch (e: any) {
-      res.status(400).json({ error: e.message });
+      res.status(400).json({ message: e.message });
     }
   }
 
@@ -17,7 +17,7 @@ class AuthController {
       const result = await authService.login(email, password);
       res.json(result);
     } catch (e: any) {
-      res.status(401).json({ error: e.message });
+      res.status(401).json({ message: e.message });
     }
   }
 
@@ -27,7 +27,7 @@ class AuthController {
       const tokens = await authService.refresh(refreshToken);
       res.json(tokens);
     } catch (e: any) {
-      res.status(401).json({ error: "Session expirée" });
+      res.status(401).json({ message: "Session expirée" });
     }
   }
 }

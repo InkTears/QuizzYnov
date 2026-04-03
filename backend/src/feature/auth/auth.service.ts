@@ -4,13 +4,18 @@ import authRepository from "./auth.repository";
 import { User } from "../../entity/User";
 
 class AuthService {
-  async register(userData: Partial<User>) {
-    const existing = await authRepository.findByEmail(userData.email!);
+  async register(userData: any) {
+    const existing = await authRepository.findByEmail(userData.email);
     if (existing) throw new Error("Email déjà utilisé");
 
-    const hashedPassword = await bcrypt.hash(userData.password!, 10);
-    const user = await authRepository.createUser({ ...userData, password: hashedPassword });
-    
+    const hashedPassword = await bcrypt.hash(userData.password, 10);
+    const user = await authRepository.createUser({
+      name: userData.pseudo ?? userData.name,
+      email: userData.email,
+      password: hashedPassword,
+      role: userData.role ?? 'user',
+    });
+
     const { password, refreshToken, ...userSafe } = user;
     return userSafe;
   }
@@ -24,9 +29,9 @@ class AuthService {
 
     const tokens = this.generateTokens(user.id);
     await authRepository.updateRefreshToken(user.id, tokens.refreshToken);
-    
+
     return {
-      user: { id: user.id, email: user.email, username: (user as any).username },
+      user: { id: user.id, name: user.name, email: user.email, role: user.role },
       ...tokens
     };
   }

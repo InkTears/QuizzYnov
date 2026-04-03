@@ -7,9 +7,8 @@ import PricingPage from './pages/Pricing_page';
 import PaymentPage from './pages/Payment_page';
 import TableauDeBoardAdmin from './pages/Tableau_de_board_admin';
 import CRUDQuestionAdmin from './pages/CRUD_question_admin.tsx'
-/*import QuizPage from './pages/Quiz_page';
-
-import Leaderboard from './pages/Leaderboard';*/
+import QuizPage from './pages/Quiz_page';
+/*import Leaderboard from './pages/Leaderboard';*/
 //import ProtectedRoute from './components/ProtectedRoute'; // Ajuste le chemin selon ton choix
 //import Navbar from './modules/Navbar';
 import './App.css';
@@ -33,6 +32,7 @@ function App() {
                     {/* Routes de l'application (à protéger plus tard) */}
                     {/*<Route element={<ProtectedRoute />}>*/}
 
+                    <Route path="/dashboard" element={<QuizPage />} />
                     <Route path="/admin/dashboard" element={<TableauDeBoardAdmin />} />
                     <Route path="/admin/questions" element={<CRUDQuestionAdmin />} />
                     {/* <Route path="/quiz" element={<QuizPage />} />

@@ -7,13 +7,16 @@ export class User {
 
     @Column()
     name: string
-    
+
     @Column({ unique: true })
-    email!: string; 
+    email!: string;
 
     @Column()
-    password!: string 
+    password!: string
+
+    @Column({ default: 'user' })
+    role: string
 
     @Column({ nullable: true })
-    refreshToken?: string 
+    refreshToken?: string
 }

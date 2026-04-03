@@ -4,11 +4,11 @@ const authService = {
     login: async (credentials: LoginCredentials) => {
         const data = await authApi.login(credentials);
 
-        if (data.token) {
-            localStorage.setItem('userToken', data.token);
+        if (data.accessToken) {
+            localStorage.setItem('userToken', data.accessToken);
 
-            if (data.role) {
-                localStorage.setItem('userRole', data.role);
+            if (data.user?.role) {
+                localStorage.setItem('userRole', data.user.role);
             }
         }
 
