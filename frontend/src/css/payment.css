@@ -1,0 +1,88 @@
+.payment-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background:
+        radial-gradient(circle at 18% 12%, rgba(34, 197, 94, 0.22), transparent 35%),
+        radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.24), transparent 40%),
+        linear-gradient(140deg, #0b1220, #0f1a2f);
+}
+
+.payment-card {
+    width: 100%;
+    max-width: 540px;
+    border-radius: 20px;
+    padding: 28px;
+    text-align: left;
+    background: rgba(15, 23, 42, 0.9);
+    border: 1px solid rgba(148, 163, 184, 0.3);
+    color: #f8fafc;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+}
+
+.payment-kicker {
+    margin: 0 0 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: #22c55e;
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.payment-card h1 {
+    margin: 0 0 10px;
+    font-size: clamp(1.6rem, 3.5vw, 2.3rem);
+    color: #ffffff;
+}
+
+.payment-plan-name {
+    margin: 0 0 6px;
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+.payment-price {
+    margin: 0 0 8px;
+    font-size: 1.45rem;
+    font-weight: 800;
+}
+
+.payment-description {
+    margin: 0 0 20px;
+    color: rgba(248, 250, 252, 0.82);
+}
+
+.payment-stripe-btn {
+    width: 100%;
+    height: 48px;
+    border-radius: 10px;
+    border: none;
+    font-size: 1rem;
+    font-weight: 700;
+    background: #635bff;
+    color: #ffffff;
+    cursor: pointer;
+}
+
+.payment-stripe-btn:hover {
+    background: #554de2;
+}
+
+.payment-warning {
+    margin: 0 0 16px;
+    color: #fde68a;
+    font-size: 0.95rem;
+}
+
+.payment-links {
+    margin-top: 16px;
+    display: flex;
+    gap: 16px;
+}
+
+.payment-links a {
+    color: #93c5fd;
+    text-decoration: underline;
+}

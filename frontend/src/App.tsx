@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 // Import de tes pages
 import LoginPageUser from './pages/Login_page.tsx';
 import RegisterPageUser from './pages/Register_page_user';
+import PricingPage from './pages/Pricing_page';
+import PaymentPage from './pages/Payment_page';
 import TableauDeBoardAdmin from './pages/Tableau_de_board_admin';
 import CRUDQuestionAdmin from './pages/CRUD_question_admin.tsx'
 /*import QuizPage from './pages/Quiz_page';
@@ -24,6 +26,8 @@ function App() {
                     {/* Routes publiques */}
                     <Route path="/login" element={<LoginPageUser />} />
                     <Route path="/register" element={<RegisterPageUser />} />
+                    <Route path="/forfaits" element={<PricingPage />} />
+                    <Route path="/paiement" element={<PaymentPage />} />
                     <Route path="/admin/login" element={<Navigate to="/login" replace />} />
 
                     {/* Routes de l'application (à protéger plus tard) */}

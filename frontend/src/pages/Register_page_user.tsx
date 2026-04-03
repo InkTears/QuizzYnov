@@ -65,6 +65,9 @@ const RegisterPageUser: React.FC = () => {
                 <p>
                     Deja un compte ? <Link to="/login">Se connecter</Link>
                 </p>
+                <p>
+                    Explorer les abonnements : <Link to="/forfaits">Voir les forfaits</Link>
+                </p>
             </motion.div>
         </motion.div>
     );

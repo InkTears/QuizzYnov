@@ -201,6 +201,6 @@ backend/src/
 - ✅ Leaderboard (agrégation SQL)
 - ✅ Seed mock idempotent
 - ✅ Entités TypeORM avec relations
-- ⏳ Auth (à venir)
+- ✅ Auth (à venir)
 - ⏳ Frontend integration
 

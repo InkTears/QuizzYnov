@@ -78,6 +78,9 @@ const LoginPageUser: React.FC = () => {
                 <p>
                     Pas encore de compte ? <Link to="/register">S'inscrire</Link>
                 </p>
+                <p>
+                    Voir les offres quiz : <Link to="/forfaits">Forfaits et abonnements</Link>
+                </p>
             </motion.div>
         </motion.div>
     );
