@@ -1,5 +1,5 @@
-import React, { useRef } from 'react';
-import { motion, useInView, useReducedMotion, useScroll, useSpring, useTransform } from 'framer-motion';
+import React, { useEffect, useRef, useState } from 'react';
+import { AnimatePresence, motion, useInView, useReducedMotion, useScroll, useSpring, useTransform } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import Login from '../modules/auth/Login';
 import authService from '../services/authService';
@@ -10,6 +10,16 @@ const LoginPageUser: React.FC = () => {
     const pageRef = useRef<HTMLDivElement | null>(null);
     const footerRef = useRef<HTMLDivElement | null>(null);
     const shouldReduceMotion = useReducedMotion();
+    const [registerToast, setRegisterToast] = useState<string | null>(null);
+
+    useEffect(() => {
+        const pseudo = sessionStorage.getItem('registerSuccess');
+        if (pseudo) {
+            sessionStorage.removeItem('registerSuccess');
+            setRegisterToast(pseudo);
+            setTimeout(() => setRegisterToast(null), 3000);
+        }
+    }, []);
 
     const { scrollYProgress } = useScroll({
         target: pageRef,
@@ -27,13 +37,15 @@ const LoginPageUser: React.FC = () => {
                 const role = String(response.role || response.user?.role || localStorage.getItem('userRole') || '')
                     .toLowerCase()
                     .trim();
+                const name = response.user?.name || response.user?.pseudo || '';
+
+                sessionStorage.setItem('loginSuccess', JSON.stringify({ name, role }));
 
                 if (role === 'admin') {
                     navigate('/admin/dashboard');
-                    return;
+                } else {
+                    navigate('/dashboard');
                 }
-
-                navigate('/dashboard');
                 return;
             }
             throw new Error('Token non recu');
@@ -60,6 +72,27 @@ const LoginPageUser: React.FC = () => {
                 style={shouldReduceMotion ? undefined : { y: orbY, opacity: orbOpacity }}
                 aria-hidden="true"
             />
+
+            <AnimatePresence>
+                {registerToast && (
+                    <motion.div
+                        className="login-toast-success login-toast-register"
+                        initial={{ opacity: 0, y: -24, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: -16, scale: 0.97 }}
+                        transition={{ duration: 0.3, ease: 'easeOut' }}
+                        role="status"
+                        aria-live="polite"
+                    >
+                        <span className="login-toast-icon">✓</span>
+                        <span>
+                            Compte créé avec succès, {registerToast} !
+                            <br />
+                            <small>Vous pouvez maintenant vous connecter</small>
+                        </span>
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
             <Login
                 title="Connexion"

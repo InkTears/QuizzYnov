@@ -23,6 +23,7 @@ const RegisterPageUser: React.FC = () => {
     const handleRegister = async (payload: RegisterPayload) => {
         try {
             await authService.register(payload);
+            sessionStorage.setItem('registerSuccess', payload.pseudo);
             navigate('/login');
         } catch (error) {
             throw new Error(`Erreur d'inscription: ${String(error)}`);
