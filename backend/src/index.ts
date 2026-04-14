@@ -26,17 +26,14 @@ app.use(cookieParser());
 AppDataSource.initialize().then(async () => {
     console.log("🔥 Connecté à Filess")
 
-    // Route pour récupérer les users
     app.get("/api/users", async (req, res) => {
         const users = await AppDataSource.getRepository(User).find()
         res.json(users)
     })
 
-    // route feature auth 
     app.use("/api/auth", authRouter);
 
 
-    // Routes features
     app.use("/api/questions", questionRouter)
     app.use("/api/quiz", authMiddleware, quizRouter)
     app.use("/api/leaderboard", leaderboardRouter)

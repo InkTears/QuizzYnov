@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
 
-// 1. Définition du sous-composant (indispensable pour ne pas avoir l'erreur)
 function HeaderLink({ label, href }: { label: string; href: string }) {
   return (
     <motion.a
@@ -19,7 +18,6 @@ function HeaderLink({ label, href }: { label: string; href: string }) {
   );
 }
 
-// 2. Le composant principal
 function QuizHeader() {
   return (
     <motion.header
