@@ -1,12 +1,10 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import Header from "../components/layout/Header";
 import Hero from "../components/layout/Hero";
 import Quiz from "../modules/quiz/Quiz";
 import quizService from "../services/quizService";
 
 export default function QuizPage() {
-  const navigate = useNavigate();
   const [hasStarted, setHasStarted] = useState(false);
   const [hasParticipatedToday, setHasParticipatedToday] = useState(false);
   const [isCheckingStatus, setIsCheckingStatus] = useState(true);
@@ -16,9 +14,6 @@ export default function QuizPage() {
       try {
         const status = await quizService.getTodayStatus();
         setHasParticipatedToday(status.hasParticipated);
-        if (status.hasParticipated) {
-          navigate("/profile", { replace: true });
-        }
       } catch {
         // En cas d'erreur API, on laisse le joueur tenter de lancer le quiz.
         setHasParticipatedToday(false);
@@ -28,7 +23,7 @@ export default function QuizPage() {
     };
 
     loadStatus();
-  }, [navigate]);
+  }, []);
 
   if (isCheckingStatus) {
     return (
