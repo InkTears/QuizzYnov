@@ -11,6 +11,7 @@ const LoginPageUser: React.FC = () => {
     const footerRef = useRef<HTMLDivElement | null>(null);
     const shouldReduceMotion = useReducedMotion();
     const [registerToast, setRegisterToast] = useState<string | null>(null);
+    const [paymentToast, setPaymentToast] = useState<{ plan: string; price: string } | null>(null);
 
     useEffect(() => {
         const pseudo = sessionStorage.getItem('registerSuccess');
@@ -18,6 +19,23 @@ const LoginPageUser: React.FC = () => {
             sessionStorage.removeItem('registerSuccess');
             setRegisterToast(pseudo);
             setTimeout(() => setRegisterToast(null), 3000);
+        }
+
+        const paymentSuccess = sessionStorage.getItem('paymentSimulationSuccess');
+        if (paymentSuccess) {
+            sessionStorage.removeItem('paymentSimulationSuccess');
+
+            try {
+                const parsedPayment = JSON.parse(paymentSuccess) as { plan?: string; price?: string };
+                setPaymentToast({
+                    plan: parsedPayment.plan || 'Abonnement',
+                    price: parsedPayment.price || ''
+                });
+                setTimeout(() => setPaymentToast(null), 4000);
+            } catch {
+                setPaymentToast({ plan: 'Abonnement', price: '' });
+                setTimeout(() => setPaymentToast(null), 4000);
+            }
         }
     }, []);
 
@@ -89,6 +107,25 @@ const LoginPageUser: React.FC = () => {
                             Compte créé avec succès, {registerToast} !
                             <br />
                             <small>Vous pouvez maintenant vous connecter</small>
+                        </span>
+                    </motion.div>
+                )}
+                {paymentToast && (
+                    <motion.div
+                        className="login-toast-success login-toast-register"
+                        initial={{ opacity: 0, y: -24, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: -16, scale: 0.97 }}
+                        transition={{ duration: 0.3, ease: 'easeOut' }}
+                        role="status"
+                        aria-live="polite"
+                    >
+                        <span className="login-toast-icon">✓</span>
+                        <span>
+                            Simulation Stripe validee pour {paymentToast.plan}
+                            {paymentToast.price ? ` (${paymentToast.price})` : ''}.
+                            <br />
+                            <small>Connectez-vous pour finaliser l activation de votre acces</small>
                         </span>
                     </motion.div>
                 )}
