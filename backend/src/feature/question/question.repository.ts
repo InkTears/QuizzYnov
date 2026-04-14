@@ -7,7 +7,7 @@ export type CreateQuestionPayload = {
     optionB: string
     optionC: string
     optionD: string
-    correctAnswer: AnswerOption
+    correctAnswers: AnswerOption[]
 }
 
 class QuestionRepository {

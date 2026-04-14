@@ -48,7 +48,7 @@ const LoginPageUser: React.FC = () => {
                 }
                 return;
             }
-            throw new Error('Token non recu');
+            throw new Error('Token non reçu');
         } catch (error) {
             throw new Error(`Erreur de connexion: ${String(error)}`);
         }

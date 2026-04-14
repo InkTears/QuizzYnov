@@ -5,7 +5,7 @@ import '../css/questions.css';
 import quizService from '../api/quizApi';
 
 interface Question {
-    id?: string;
+    id?: string | number;
     text: string;
     options: string[];
     correctAnswers: number[];
@@ -44,6 +44,7 @@ const CRUDQuestionAdmin: React.FC = () => {
     const [newQuestion, setNewQuestion] = useState<Question>(EMPTY_QUESTION);
     const [isImporting, setIsImporting] = useState(false);
     const [importMessage, setImportMessage] = useState('');
+    const [expandedQuestions, setExpandedQuestions] = useState<Set<string | number>>(new Set());
 
     useEffect(() => {
         fetchQuestions();
@@ -83,11 +84,25 @@ const CRUDQuestionAdmin: React.FC = () => {
         }
     };
 
-    const handleDelete = async (id: string) => {
+    const handleDelete = async (id: string | number | undefined) => {
+        if (!id) return;
         if (window.confirm('Supprimer cette question ?')) {
             await quizService.deleteQuestion(id);
             await fetchQuestions();
         }
+    };
+
+    const toggleQuestionExpanded = (id: string | number | undefined) => {
+        if (!id) return;
+        setExpandedQuestions((prev) => {
+            const newSet = new Set(prev);
+            if (newSet.has(id)) {
+                newSet.delete(id);
+            } else {
+                newSet.add(id);
+            }
+            return newSet;
+        });
     };
 
     const splitCsvLine = (line: string): string[] => {
@@ -322,30 +337,38 @@ const CRUDQuestionAdmin: React.FC = () => {
 
             <motion.section className="card questions-list-card" variants={itemVariants}>
                 <h3>Base de donnees ({questions.length})</h3>
-                <table className="admin-table">
-                    <thead>
-                        <tr>
-                            <th>Question</th>
-                            <th>Réponses</th>
-                            <th style={{ textAlign: 'right' }}>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <AnimatePresence initial={false}>
-                            {questions.map((q) => (
-                                <motion.tr
+                <div className="questions-list-wrapper">
+                    <AnimatePresence initial={false}>
+                        {questions.map((q) => {
+                            const isExpanded = expandedQuestions.has(q.id || q.text);
+                            return (
+                                <motion.div
                                     key={q.id || q.text}
+                                    className="question-card"
                                     layout
                                     initial={{ opacity: 0, y: 8 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, y: -8 }}
                                     transition={{ duration: 0.22 }}
                                 >
-                                    <td style={{ fontWeight: '600' }}>{q.text}</td>
-                                    <td style={{ color: '#718096' }}>
-                                        {q.options.length} options ({q.correctAnswers?.length || 0} correctes)
-                                    </td>
-                                    <td style={{ textAlign: 'right' }}>
+                                    <div className="question-row">
+                                        <div className="question-content">
+                                            <motion.button
+                                                type="button"
+                                                className="btn-expand"
+                                                onClick={() => toggleQuestionExpanded(q.id)}
+                                                whileHover={shouldReduceMotion ? undefined : { scale: 1.1 }}
+                                                whileTap={shouldReduceMotion ? undefined : { scale: 0.9 }}
+                                            >
+                                                {isExpanded ? '▼' : '▶'}
+                                            </motion.button>
+                                            <div className="question-text">
+                                                <p className="question-title">{q.text}</p>
+                                                <p className="question-stats">
+                                                    {q.options.length} options • {q.correctAnswers?.length || 0} correctes
+                                                </p>
+                                            </div>
+                                        </div>
                                         <motion.button
                                             className="btn-delete"
                                             onClick={() => q.id && handleDelete(q.id)}
@@ -354,12 +377,52 @@ const CRUDQuestionAdmin: React.FC = () => {
                                         >
                                             Supprimer
                                         </motion.button>
-                                    </td>
-                                </motion.tr>
-                            ))}
-                        </AnimatePresence>
-                    </tbody>
-                </table>
+                                    </div>
+
+                                    <AnimatePresence>
+                                        {isExpanded && (
+                                            <motion.div
+                                                className="question-details"
+                                                initial={{ opacity: 0, height: 0 }}
+                                                animate={{ opacity: 1, height: 'auto' }}
+                                                exit={{ opacity: 0, height: 0 }}
+                                                transition={{ duration: 0.2 }}
+                                            >
+                                                <div className="answers-section">
+                                                    {q.options.map((option, idx) => (
+                                                        <div
+                                                            key={idx}
+                                                            className={`answer-row ${q.correctAnswers.includes(idx) ? 'correct' : 'incorrect'}`}
+                                                        >
+                                                            <span className="answer-badge">
+                                                                {q.correctAnswers.includes(idx) ? '✓' : '✗'}
+                                                            </span>
+                                                            <span className="option-letter">
+                                                                {String.fromCharCode(65 + idx)}.
+                                                            </span>
+                                                            <span className="answer-text">{option}</span>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
+                                </motion.div>
+                            );
+                        })}
+                    </AnimatePresence>
+                </div>
+
+                {questions.length === 0 && (
+                    <motion.div
+                        className="empty-state"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.3 }}
+                    >
+                        <p>Aucune question pour le moment. Créez-en une!</p>
+                    </motion.div>
+                )}
             </motion.section>
         </motion.div>
     );

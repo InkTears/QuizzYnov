@@ -3,6 +3,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import '../css/dashboard.css';
 import '../css/auth.css';
+import quizService from '../api/quizApi';
 
 const containerVariants = {
     hidden: { opacity: 0 },
@@ -40,13 +41,23 @@ const TableauDeBoardAdmin: React.FC = () => {
 
         const loadDashboardData = async () => {
             try {
-                setStats({ totalQuestions: 24, totalParties: 156 });
+                const questions = await quizService.getAllQuestions();
+                setStats((prev) => ({
+                    ...prev,
+                    totalQuestions: questions.length
+                }));
             } catch (error) {
                 console.error('Erreur chargement stats', error);
             }
         };
         loadDashboardData();
     }, []);
+
+    const handleLogout = () => {
+        sessionStorage.clear();
+        localStorage.clear();
+        navigate('/login');
+    };
 
     return (
         <motion.div
@@ -77,14 +88,24 @@ const TableauDeBoardAdmin: React.FC = () => {
             </AnimatePresence>
             <motion.header className="dashboard-header" variants={itemVariants}>
                 <h1>Tableau de Bord Admin</h1>
-                <motion.button
-                    className="btn-add"
-                    onClick={() => navigate('/admin/questions')}
-                    whileHover={shouldReduceMotion ? undefined : { y: -1, scale: 1.01 }}
-                    whileTap={shouldReduceMotion ? undefined : { scale: 0.985 }}
-                >
-                    + Ajouter une Question
-                </motion.button>
+                <div className="header-actions">
+                    <motion.button
+                        className="btn-add"
+                        onClick={() => navigate('/admin/questions')}
+                        whileHover={shouldReduceMotion ? undefined : { y: -1, scale: 1.01 }}
+                        whileTap={shouldReduceMotion ? undefined : { scale: 0.985 }}
+                    >
+                        + Ajouter une Question
+                    </motion.button>
+                    <motion.button
+                        className="btn-add btn-logout"
+                        onClick={handleLogout}
+                        whileHover={shouldReduceMotion ? undefined : { y: -1, scale: 1.01 }}
+                        whileTap={shouldReduceMotion ? undefined : { scale: 0.985 }}
+                    >
+                        Déconnexion
+                    </motion.button>
+                </div>
             </motion.header>
 
             <motion.div className="stats-grid" variants={containerVariants}>

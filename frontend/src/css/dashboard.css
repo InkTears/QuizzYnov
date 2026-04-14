@@ -34,6 +34,12 @@
     margin: 0;
 }
 
+.header-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
 .btn-add {
     border: 1px solid rgba(255, 255, 255, 0.4);
     background: rgba(255, 255, 255, 0.14);
@@ -48,6 +54,15 @@
 
 .btn-add:hover {
     background: rgba(255, 255, 255, 0.22);
+}
+
+.btn-logout {
+    border-color: rgba(255, 127, 80, 0.4);
+    background: rgba(255, 127, 80, 0.14);
+}
+
+.btn-logout:hover {
+    background: rgba(255, 127, 80, 0.22);
 }
 
 /* Grille de statistiques */
@@ -182,6 +197,15 @@
     }
 
     .btn-add {
+        width: 100%;
+    }
+
+    .header-actions {
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .header-actions .btn-add {
         width: 100%;
     }
 

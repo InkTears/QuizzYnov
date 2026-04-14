@@ -8,7 +8,8 @@ import { User } from "./entity/User"
 import { questionRouter } from "./feature/question/question.routes"
 import { quizRouter } from "./feature/quiz/quiz.routes"
 import { leaderboardRouter } from "./feature/leaderboard/leaderboard.routes"
-import { authRouter } from "./feature/auth/auth.routes";
+import { authRouter } from "./feature/auth/auth.routes"
+import { seedMockData } from "./seed/mock.seed";
 
 const app = express()
 app.use(cors())
@@ -17,6 +18,9 @@ app.use(express.json())
 
 AppDataSource.initialize().then(async () => {
     console.log("🔥 Connecté à Filess")
+
+    // Seed mock data
+    await seedMockData()
 
     // Route pour récupérer les users
     app.get("/api/users", async (req, res) => {
@@ -33,5 +37,5 @@ AppDataSource.initialize().then(async () => {
     app.use("/api/quiz", quizRouter)
     app.use("/api/leaderboard", leaderboardRouter)
 
-    app.listen(3000, () => console.log("🚀 Serveur sur le port 3000"))
+    app.listen(5000, () => console.log("🚀 Serveur sur le port 5000"))
 }).catch(err => console.error("❌ Erreur DB :", err))

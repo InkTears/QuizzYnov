@@ -12,18 +12,12 @@ export async function seedMockData() {
     const questionRepository = AppDataSource.getRepository(Question)
     const quizSessionRepository = AppDataSource.getRepository(QuizSession)
 
-    const userCount = await userRepository.count()
-    if (userCount === 0) {
-        await userRepository.save([
-            userRepository.create({ name: "Alice" }),
-            userRepository.create({ name: "Bob" }),
-            userRepository.create({ name: "Chloe" }),
-            userRepository.create({ name: "David" }),
-        ])
-    }
+    console.log("📝 Seeding mock data...")
 
+    
     const questionCount = await questionRepository.count()
     if (questionCount === 0) {
+        console.log("❓ Creating questions...")
         await questionRepository.save([
             questionRepository.create({
                 content: "Quelle est la capitale de l'Allemagne ?",
@@ -31,7 +25,7 @@ export async function seedMockData() {
                 optionB: "Munich",
                 optionC: "Hambourg",
                 optionD: "Francfort",
-                correctAnswer: "A",
+                correctAnswers: ["A"],
             }),
             questionRepository.create({
                 content: "Combien de continents existe-t-il ?",
@@ -39,7 +33,7 @@ export async function seedMockData() {
                 optionB: "6",
                 optionC: "7",
                 optionD: "8",
-                correctAnswer: "C",
+                correctAnswers: ["C"],
             }),
             questionRepository.create({
                 content: "Quel langage est execute dans le navigateur ?",
@@ -47,7 +41,7 @@ export async function seedMockData() {
                 optionB: "Java",
                 optionC: "C",
                 optionD: "JavaScript",
-                correctAnswer: "D",
+                correctAnswers: ["D"],
             }),
             questionRepository.create({
                 content: "Quel est le resultat de 7 x 8 ?",
@@ -55,7 +49,7 @@ export async function seedMockData() {
                 optionB: "56",
                 optionC: "58",
                 optionD: "64",
-                correctAnswer: "B",
+                correctAnswers: ["B"],
             }),
             questionRepository.create({
                 content: "Quel ocean borde la cote ouest de la France ?",
@@ -63,7 +57,7 @@ export async function seedMockData() {
                 optionB: "Pacifique",
                 optionC: "Indien",
                 optionD: "Arctique",
-                correctAnswer: "A",
+                correctAnswers: ["A"],
             }),
             questionRepository.create({
                 content: "Qui a peint la Joconde ?",
@@ -71,13 +65,31 @@ export async function seedMockData() {
                 optionB: "Picasso",
                 optionC: "Leonard de Vinci",
                 optionD: "Monet",
-                correctAnswer: "C",
+                correctAnswers: ["C"],
+            }),
+            questionRepository.create({
+                content: "Quels sont les pays du Benelux ? (Multiple choice)",
+                optionA: "Belgique",
+                optionB: "Pays-Bas",
+                optionC: "Luxembourg",
+                optionD: "France",
+                correctAnswers: ["A", "B", "C"],
+            }),
+            questionRepository.create({
+                content: "Quels nombres sont pairs ?",
+                optionA: "1",
+                optionB: "2",
+                optionC: "3",
+                optionD: "4",
+                correctAnswers: ["B", "D"],
             }),
         ])
+        console.log("✓ Questions created")
     }
 
     const sessionCount = await quizSessionRepository.count()
     if (sessionCount === 0) {
+        console.log("📊 Creating quiz sessions...")
         const users = await userRepository.find({ order: { id: "ASC" } })
         const today = toIsoDate(new Date())
         const yesterday = toIsoDate(new Date(Date.now() - 86400000))
@@ -104,7 +116,9 @@ export async function seedMockData() {
 
         if (sessions.length > 0) {
             await quizSessionRepository.insert(sessions)
+            console.log("✓ Quiz sessions created")
         }
     }
+
 }
 

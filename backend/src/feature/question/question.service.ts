@@ -8,6 +8,7 @@ type PublicQuestion = {
     optionB: string
     optionC: string
     optionD: string
+    correctAnswers: AnswerOption[]
 }
 
 class QuestionService {
@@ -18,6 +19,7 @@ class QuestionService {
         optionB: string
         optionC: string
         optionD: string
+        correctAnswers: AnswerOption[]
     }): PublicQuestion {
         return {
             id: question.id,
@@ -26,6 +28,7 @@ class QuestionService {
             optionB: question.optionB,
             optionC: question.optionC,
             optionD: question.optionD,
+            correctAnswers: question.correctAnswers,
         }
     }
 
@@ -90,14 +93,21 @@ class QuestionService {
             "optionB",
             "optionC",
             "optionD",
-            "correctAnswer",
+            "correctAnswers",
         ]
 
         if (requireAll) {
             for (const field of requiredFields) {
-                const value = payload[field]
-                if (typeof value !== "string" || value.trim() === "") {
-                    throw new Error(`Field '${field}' is required`)
+                if (field === "correctAnswers") {
+                    const value = payload[field]
+                    if (!Array.isArray(value) || value.length === 0) {
+                        throw new Error(`Field 'correctAnswers' is required and must be non-empty`)
+                    }
+                } else {
+                    const value = payload[field]
+                    if (typeof value !== "string" || value.trim() === "") {
+                        throw new Error(`Field '${field}' is required`)
+                    }
                 }
             }
         }
@@ -118,12 +128,17 @@ class QuestionService {
             }
         }
 
-        if (payload.correctAnswer !== undefined) {
-            const answer = payload.correctAnswer.trim().toUpperCase() as AnswerOption
-            if (!["A", "B", "C", "D"].includes(answer)) {
-                throw new Error("Field 'correctAnswer' must be one of: A, B, C or D")
+        if (payload.correctAnswers !== undefined) {
+            if (!Array.isArray(payload.correctAnswers) || payload.correctAnswers.length === 0) {
+                throw new Error("Field 'correctAnswers' must be a non-empty array")
             }
-            result.correctAnswer = answer
+            const validAnswers = payload.correctAnswers.filter((answer) =>
+                ["A", "B", "C", "D"].includes(answer.toUpperCase())
+            )
+            if (validAnswers.length === 0) {
+                throw new Error("Field 'correctAnswers' must contain at least one valid answer (A, B, C, or D)")
+            }
+            result.correctAnswers = validAnswers.map((a) => a.toUpperCase() as AnswerOption)
         }
 
         return result

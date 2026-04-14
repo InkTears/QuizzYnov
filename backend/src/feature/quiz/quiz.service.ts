@@ -50,7 +50,7 @@ class QuizService {
             }
 
             const userAnswer = payload.answers[questionId]
-            if (userAnswer === question.correctAnswer) {
+            if (question.correctAnswers.includes(userAnswer)) {
                 correctCount++
             }
         }

@@ -22,8 +22,8 @@ export class Question {
     @Column({ name: "option_d" })
     optionD: string
 
-    @Column({ name: "correct_answer", type: "enum", enum: ["A", "B", "C", "D"] })
-    correctAnswer: AnswerOption
+    @Column({ name: "correct_answers", type: "simple-array" })
+    correctAnswers: AnswerOption[]
 
     @CreateDateColumn({ name: "created_at" })
     createdAt: Date
