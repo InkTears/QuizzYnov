@@ -53,6 +53,11 @@ class QuestionRepository {
         const entities = this.repository.create(questions)
         await this.repository.save(entities)
     }
+
+    async createManyQuestions(questions: CreateQuestionPayload[]) {
+        const entities = this.repository.create(questions)
+        return this.repository.save(entities)
+    }
 }
 
 export const questionRepository = new QuestionRepository()

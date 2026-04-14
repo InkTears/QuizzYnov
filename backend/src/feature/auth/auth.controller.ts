@@ -69,6 +69,21 @@ class AuthController {
       return res.status(500).json({ error: e.message });
     }
   }
+
+  async me(req: Request, res: Response) {
+    try {
+      const userId = (req as any).userId;
+
+      if (typeof userId !== "number" || userId <= 0) {
+        return res.status(401).json({ error: "Utilisateur non authentifie" });
+      }
+
+      const user = await authService.me(userId);
+      return res.json({ user });
+    } catch (e: any) {
+      return res.status(401).json({ error: e.message });
+    }
+  }
 }
 
 export default new AuthController();

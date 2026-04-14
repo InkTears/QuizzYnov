@@ -20,4 +20,8 @@ router.post("/logout", authMiddleware, (req: Request, res: Response) =>
   authController.logout(req, res)
 );
 
+router.get("/me", authMiddleware, (req: Request, res: Response) =>
+  authController.me(req, res)
+);
+
 export const authRouter = router;

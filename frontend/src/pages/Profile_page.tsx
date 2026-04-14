@@ -42,6 +42,7 @@ export default function ProfilePage() {
   const [sessions, setSessions] = useState<PlayerSession[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [role, setRole] = useState<string>((localStorage.getItem('userRole') || '').toLowerCase().trim());
 
   useEffect(() => {
     if (!authService.isAuthenticated()) {
@@ -50,6 +51,15 @@ export default function ProfilePage() {
     }
 
     const loadSessions = async () => {
+      try {
+        const sessionUser = await authService.syncSessionUser();
+        if (sessionUser?.role) {
+          setRole(sessionUser.role.toLowerCase());
+        }
+      } catch {
+        // On garde le role local si la synchro serveur echoue.
+      }
+
       try {
         const data = await profileService.getMySessions();
         setSessions(data);
@@ -70,6 +80,8 @@ export default function ProfilePage() {
 
     return localStorage.getItem('userName') || 'Joueur';
   }, [sessions]);
+
+  const isAdmin = role === 'admin';
 
   return (
     <Box sx={{ minHeight: '100vh', backgroundColor: '#f8fafc' }}>
@@ -126,6 +138,17 @@ export default function ProfilePage() {
               </TableContainer>
             ) : null}
           </Paper>
+
+          {isAdmin ? (
+            <Button
+              variant="contained"
+              color="primary"
+              size="large"
+              onClick={() => navigate('/admin/questions')}
+            >
+              Acceder a l'administration
+            </Button>
+          ) : null}
 
           <Button
             variant="contained"

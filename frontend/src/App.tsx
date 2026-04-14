@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import QuizPage from './pages/Quiz_page'
 import LoginPageUser from './pages/Login_page.tsx';
@@ -8,9 +9,33 @@ import Leaderboard from './pages/Leaderboard';
 import ProfilePage from './pages/Profile_page';
 import NotFoundPage from './pages/404';
 import ProtectedRoute from './utils/auth';
+import AdminRoute from './utils/admin';
+import authService from './services/authService';
 import './App.css';
 
 function App() {
+    useEffect(() => {
+        const sync = async () => {
+            if (!authService.isAuthenticated()) {
+                return;
+            }
+
+            await authService.syncSessionUser();
+        };
+
+        sync();
+
+        const onFocus = () => {
+            sync();
+        };
+
+        window.addEventListener('focus', onFocus);
+
+        return () => {
+            window.removeEventListener('focus', onFocus);
+        };
+    }, []);
+
     return (
         <Router>
             <div className="App">
@@ -21,8 +46,10 @@ function App() {
                     <Route path="/register" element={<RegisterPageUser />} />
                     <Route path="/admin/login" element={<Navigate to="/login" replace />} />
 
-                    <Route path="/admin/dashboard" element={<TableauDeBoardAdmin />} />
-                    <Route path="/admin/questions" element={<CRUDQuestionAdmin />} />
+                    <Route element={<AdminRoute />}>
+                        <Route path="/admin/dashboard" element={<TableauDeBoardAdmin />} />
+                        <Route path="/admin/questions" element={<CRUDQuestionAdmin />} />
+                    </Route>
 
                     <Route element={<ProtectedRoute />}>
                         <Route path="/quiz" element={<QuizPage />} />

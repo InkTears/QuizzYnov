@@ -1,4 +1,4 @@
-import { authApi, type LoginCredentials } from '../api/authApi';
+import { authApi, type LoginCredentials, type SessionUser } from '../api/authApi';
 
 type RegisterFormPayload = {
     pseudo: string;
@@ -54,6 +54,24 @@ const authService = {
 
     isAuthenticated: () => {
         return !!localStorage.getItem('userToken');
+    },
+
+    syncSessionUser: async (): Promise<SessionUser | null> => {
+        const token = localStorage.getItem('userToken');
+        if (!token) {
+            return null;
+        }
+
+        try {
+            const user = await authApi.me(token);
+            localStorage.setItem('userRole', user.role);
+            localStorage.setItem('userName', user.name);
+            localStorage.setItem('userId', String(user.id));
+
+            return user;
+        } catch {
+            return null;
+        }
     }
 };
 

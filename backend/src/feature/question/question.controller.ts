@@ -48,6 +48,36 @@ class QuestionController {
         }
     }
 
+    async importQuestionsBatch(req: Request, res: Response) {
+        try {
+            const { questions } = req.body
+
+            if (!Array.isArray(questions)) {
+                res.status(400).json({ message: "Field 'questions' must be an array" })
+                return
+            }
+
+            const mapped = questions.map((item: any) => ({
+                content: item.content,
+                optionA: item.option_a,
+                optionB: item.option_b,
+                optionC: item.option_c,
+                optionD: item.option_d,
+                correctAnswer: item.correct_answers,
+            }))
+
+            const result = await questionService.importQuestionsBatch(mapped)
+            res.status(201).json(result)
+        } catch (error) {
+            if (error instanceof Error) {
+                res.status(400).json({ message: error.message })
+                return
+            }
+
+            res.status(500).json({ message: "Unexpected error" })
+        }
+    }
+
     async updateQuestion(req: Request, res: Response) {
         try {
             const id = Number(req.params.id)
