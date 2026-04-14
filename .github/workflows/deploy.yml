@@ -21,14 +21,19 @@ jobs:
             set -e
             cd /var/www/html/QuizzYnov
             git pull origin main
-            
-            # 3. Mise à jour du Backend
+
+            # 3. Mise à jour des dépendances
+            npm install --include=dev
             cd backend
             npm install
-            npx tsc
-            pm2 restart api-filess
-            
-            # 4. Mise à jour du Frontend
             cd ../frontend
             npm install
-            npm run build
+            cd ..
+
+            # 4. Redémarrage (ou premier démarrage) PM2 en mode concurrently
+            if pm2 describe quizzynov > /dev/null 2>&1; then
+              pm2 restart quizzynov --update-env
+            else
+              pm2 start npm --name quizzynov --cwd /var/www/html/QuizzYnov -- run dev
+            fi
+            pm2 save

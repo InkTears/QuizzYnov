@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react'
 import QuizPage from './pages/Quiz_page'
 import { Leaderboard } from './pages/Leaderboard';
 import Home from './pages/Home';
+import { useEffect, useState } from 'react';
 
 interface User {
     id: number;
@@ -35,4 +35,4 @@ return (
 )
 }
 
-export default App
+export default App;
