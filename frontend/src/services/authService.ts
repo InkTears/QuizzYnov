@@ -1,29 +1,35 @@
-import { authApi, type LoginCredentials, type RegisterRequest } from '../api/authApi';
+import { authApi, type LoginCredentials } from '../api/authApi';
+
+type RegisterFormPayload = {
+    pseudo: string;
+    email: string;
+    password: string;
+    confirmPassword: string;
+};
 
 const authService = {
     login: async (credentials: LoginCredentials) => {
         const data = await authApi.login(credentials);
 
-        if (data.token) {
-            localStorage.setItem('userToken', data.token);
+        if (data.accessToken) {
+            localStorage.setItem('userToken', data.accessToken);
 
-            if (data.role) {
-                localStorage.setItem('userRole', data.role);
+            if (data.user?.role) {
+                localStorage.setItem('userRole', data.user.role);
             }
         }
 
         return data;
     },
 
-    register: async (payload: RegisterRequest & { confirmPassword: string }) => {
+    register: async (payload: RegisterFormPayload) => {
         if (payload.password !== payload.confirmPassword) {
             throw new Error('Les mots de passe ne correspondent pas');
         }
 
         const data = await authApi.register({
-            pseudo: payload.pseudo,
+            name: payload.pseudo,
             email: payload.email,
-            role: payload.role,
             password: payload.password
         });
 
