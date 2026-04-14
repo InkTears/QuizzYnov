@@ -2,10 +2,11 @@ import "reflect-metadata"
 import { DataSource } from "typeorm"
 import { User } from "./entity/User"
 import * as dotenv from "dotenv"
+import path from "path"
 import { Question } from "./entity/Question"
 import { QuizSession } from "./entity/QuizSession"
 
-dotenv.config()
+dotenv.config({ path: path.resolve(__dirname, "..", ".env") })
 
 export const AppDataSource = new DataSource({
     type: "mysql",
@@ -14,7 +15,8 @@ export const AppDataSource = new DataSource({
     username: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    synchronize: true,
+    synchronize: false,
     logging: false,
     entities: [User, Question, QuizSession],
+    migrations: ["src/migrations/*.ts", "dist/migrations/*.js"],
 })

@@ -1,4 +1,11 @@
-import { authApi, type LoginCredentials, type RegisterRequest } from '../api/authApi';
+import { authApi, type LoginCredentials } from '../api/authApi';
+
+type RegisterFormPayload = {
+    pseudo: string;
+    email: string;
+    password: string;
+    confirmPassword: string;
+};
 
 const authService = {
     login: async (credentials: LoginCredentials) => {
@@ -15,15 +22,14 @@ const authService = {
         return data;
     },
 
-    register: async (payload: RegisterRequest & { confirmPassword: string }) => {
+    register: async (payload: RegisterFormPayload) => {
         if (payload.password !== payload.confirmPassword) {
             throw new Error('Les mots de passe ne correspondent pas');
         }
 
         const data = await authApi.register({
-            pseudo: payload.pseudo,
+            name: payload.pseudo,
             email: payload.email,
-            role: payload.role,
             password: payload.password
         });
 

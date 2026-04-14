@@ -4,7 +4,6 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 export interface RegisterPayload {
     pseudo: string;
     email: string;
-    role: string;
     password: string;
     confirmPassword: string;
 }
@@ -19,7 +18,6 @@ interface RegisterProps {
 const Register: React.FC<RegisterProps> = ({ onRegister, title, theme, helperText }) => {
     const [pseudo, setPseudo] = useState('');
     const [email, setEmail] = useState('');
-    const [role, setRole] = useState('user');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -38,7 +36,7 @@ const Register: React.FC<RegisterProps> = ({ onRegister, title, theme, helperTex
 
         setIsSubmitting(true);
         try {
-            await onRegister({ pseudo, email, role, password, confirmPassword });
+            await onRegister({ pseudo, email, password, confirmPassword });
         } catch (error) {
             const message = error instanceof Error ? error.message : String(error || "Erreur d'inscription");
             setErrorMessage(message);
@@ -113,11 +111,7 @@ const Register: React.FC<RegisterProps> = ({ onRegister, title, theme, helperTex
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.24 }}
                 >
-                    <label>Role</label>
-                    <select value={role} onChange={(e) => setRole(e.target.value)} disabled={isSubmitting} required>
-                        <option value="user">Utilisateur</option>
-                        <option value="admin">Admin</option>
-                    </select>
+
                 </motion.div>
 
                 <motion.div

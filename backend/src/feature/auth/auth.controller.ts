@@ -4,30 +4,69 @@ import authService from "./auth.service";
 class AuthController {
   async register(req: Request, res: Response) {
     try {
-      const user = await authService.register(req.body);
-      res.status(201).json(user);
+      const { name, email, password } = req.body;
+
+      const user = await authService.register(name, email, password);
+
+      return res.status(201).json(user);
     } catch (e: any) {
-      res.status(400).json({ message: e.message });
+      return res.status(400).json({ error: e.message });
     }
   }
 
   async login(req: Request, res: Response) {
     try {
       const { email, password } = req.body;
+
       const result = await authService.login(email, password);
-      res.json(result);
+
+      console.log("COOKIE SENT:", result.refreshToken);
+
+      res.cookie("refreshToken", result.refreshToken, {
+        httpOnly: true,
+        secure: false,
+        sameSite: "lax",
+      });
+
+      return res.json({
+        user: result.user,
+        accessToken: result.accessToken,
+        refreshToken: result.refreshToken,
+      });
     } catch (e: any) {
-      res.status(401).json({ message: e.message });
+      return res.status(401).json({ error: e.message });
     }
   }
 
   async refresh(req: Request, res: Response) {
     try {
       const { refreshToken } = req.body;
+
+      if (!refreshToken) {
+        return res.status(401).json({ error: "Token manquant" });
+      }
+
       const tokens = await authService.refresh(refreshToken);
-      res.json(tokens);
+
+      return res.json({
+        accessToken: tokens.accessToken,
+      });
     } catch (e: any) {
-      res.status(401).json({ message: "Session expirée" });
+      return res.status(401).json({ error: e.message });
+    }
+  }
+
+  async logout(req: Request, res: Response) {
+    try {
+      const userId = (req as any).userId;
+
+      await authService.logout(userId);
+
+      res.clearCookie("refreshToken");
+
+      return res.json({ message: "Déconnexion réussie" });
+    } catch (e: any) {
+      return res.status(500).json({ error: e.message });
     }
   }
 }
