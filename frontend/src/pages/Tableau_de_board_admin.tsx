@@ -5,17 +5,19 @@ import '../css/dashboard.css';
 import '../css/auth.css';
 import quizService from '../api/quizApi';
 
+// Configuration de l'animation du conteneur (apparition en fondu)
 const containerVariants = {
     hidden: { opacity: 0 },
     show: {
         opacity: 1,
         transition: {
-            staggerChildren: 0.08,
+            staggerChildren: 0.08, // Délai entre l'apparition de chaque enfant
             delayChildren: 0.08
         }
     }
 };
 
+// Configuration de l'animation des éléments (glissement vers le haut + fondu)
 const itemVariants = {
     hidden: { opacity: 0, y: 14 },
     show: {
@@ -27,11 +29,17 @@ const itemVariants = {
 
 const TableauDeBoardAdmin: React.FC = () => {
     const navigate = useNavigate();
-    const shouldReduceMotion = useReducedMotion();
+    const shouldReduceMotion = useReducedMotion(); // Détecte si l'utilisateur préfère moins d'animations
+
+    // Stocke les statistiques globales (total questions, parties jouées)
     const [stats, setStats] = useState({ totalQuestions: 0, totalParties: 0 });
+
+    // Gère l'affichage du petit message de succès ("Toast") après la connexion
     const [loginToast, setLoginToast] = useState<{ name: string; role: string } | null>(null);
 
+
     useEffect(() => {
+        //  Gestion du message de bienvenue de l'utilisateur
         const raw = sessionStorage.getItem('loginSuccess');
         if (raw) {
             sessionStorage.removeItem('loginSuccess');
@@ -39,12 +47,13 @@ const TableauDeBoardAdmin: React.FC = () => {
             setTimeout(() => setLoginToast(null), 3000);
         }
 
+        // Chargement des données réelles depuis l'API
         const loadDashboardData = async () => {
             try {
                 const questions = await quizService.getAllQuestions();
                 setStats((prev) => ({
                     ...prev,
-                    totalQuestions: questions.length
+                    totalQuestions: questions.length // On compte combien de questions existent en base
                 }));
             } catch (error) {
                 console.error('Erreur chargement stats', error);
@@ -53,6 +62,7 @@ const TableauDeBoardAdmin: React.FC = () => {
         loadDashboardData();
     }, []);
 
+    //  Déconnexion de l'utilisateur
     const handleLogout = () => {
         sessionStorage.clear();
         localStorage.clear();
@@ -66,6 +76,7 @@ const TableauDeBoardAdmin: React.FC = () => {
             animate="show"
             variants={containerVariants}
         >
+            {/* MESSAGE DE SUCCÈS : Apparaît en haut de l'écran juste après le login */}
             <AnimatePresence>
                 {loginToast && (
                     <motion.div
@@ -86,6 +97,8 @@ const TableauDeBoardAdmin: React.FC = () => {
                     </motion.div>
                 )}
             </AnimatePresence>
+
+            {/* EN-TÊTE : Titre et boutons d'action principaux */}
             <motion.header className="dashboard-header" variants={itemVariants}>
                 <h1>Tableau de Bord Admin</h1>
                 <div className="header-actions">
@@ -108,6 +121,7 @@ const TableauDeBoardAdmin: React.FC = () => {
                 </div>
             </motion.header>
 
+            {/* GRILLE DE STATISTIQUES : Les chiffres clés du quiz */}
             <motion.div className="stats-grid" variants={containerVariants}>
                 <motion.div
                     className="stat-card"
@@ -133,10 +147,11 @@ const TableauDeBoardAdmin: React.FC = () => {
                     whileHover={shouldReduceMotion ? undefined : { y: -6 }}
                 >
                     <h3>Taux de reussite</h3>
-                    <p className="stat-number">68%</p>
+                    <p className="stat-number">68%</p> {/* Note : Ici c'est une valeur fixe pour l'exemple */}
                 </motion.div>
             </motion.div>
 
+            {/* SECTION ACTIONS RAPIDES : Liens vers les autres parties de l'admin */}
             <motion.section className="quick-actions" variants={itemVariants}>
                 <h2>Gestion rapide</h2>
                 <motion.div className="action-buttons" variants={containerVariants}>
