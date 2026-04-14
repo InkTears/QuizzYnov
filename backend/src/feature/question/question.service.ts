@@ -80,6 +80,23 @@ class QuestionService {
         }
     }
 
+    async importQuestionsBatch(payloads: Array<Partial<CreateQuestionPayload>>) {
+        if (!Array.isArray(payloads) || payloads.length === 0) {
+            throw new Error("Question batch is required")
+        }
+
+        if (payloads.length > 100) {
+            throw new Error("Batch size cannot exceed 100")
+        }
+
+        const normalized = payloads.map((item) =>
+            this.validateAndNormalizePayload(item, true) as CreateQuestionPayload
+        )
+
+        await questionRepository.createManyQuestions(normalized)
+        return { insertedCount: normalized.length }
+    }
+
     private validateAndNormalizePayload(
         payload: Partial<CreateQuestionPayload>,
         requireAll: boolean = true
