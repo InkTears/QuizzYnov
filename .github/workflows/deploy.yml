@@ -23,7 +23,7 @@ jobs:
             git pull origin main
 
             # 3. Mise à jour des dépendances
-            npm install
+            npm install --include=dev
             cd backend
             npm install
             cd ../frontend
