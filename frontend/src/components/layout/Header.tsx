@@ -1,13 +1,24 @@
 import { motion } from "framer-motion";
 
-// 1. Définition du sous-composant (indispensable pour ne pas avoir l'erreur)
-function HeaderLink({ label, href }: { label: string; href: string }) {
+interface HeaderProps {
+  onNavigate: (page: "quiz" | "leaderboard" | "home") => void;
+  currentPage?: "quiz" | "leaderboard" | "home";
+  isQuizActive?: boolean;
+}
+
+function HeaderLink({
+  label,
+  onClick,
+}: {
+  label: string;
+  onClick: () => void;
+}) {
   return (
-    <motion.a
-      href={href}
+    <motion.div
+      onClick={onClick}
       whileHover={{ y: -2, color: "#e0e7ff" }}
       style={{
-        textDecoration: "none",
+        cursor: "pointer",
         color: "white",
         fontSize: "1rem",
         fontWeight: "500",
@@ -15,12 +26,12 @@ function HeaderLink({ label, href }: { label: string; href: string }) {
       }}
     >
       {label}
-    </motion.a>
+    </motion.div>
   );
 }
 
 // 2. Le composant principal
-function QuizHeader() {
+function QuizHeader({ onNavigate, currentPage, isQuizActive }: HeaderProps) {
   return (
     <motion.header
       initial={{ y: -50, opacity: 0 }}
@@ -33,7 +44,7 @@ function QuizHeader() {
         backgroundColor: "#4f46e5",
         color: "white",
         display: "flex",
-        justifyContent: "space-between", // Pour bien écarter logo et menu
+        justifyContent: "space-between",
         alignItems: "center",
         boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
         position: "sticky",
@@ -44,6 +55,7 @@ function QuizHeader() {
     >
       <motion.div 
         whileHover={{ scale: 1.05 }}
+        onClick={() => onNavigate("home")} // 🔥 clique logo = retour home
         style={{ fontSize: "1.5rem", fontWeight: "bold", cursor: "pointer" }}
       >
         QuizzYnov
@@ -51,8 +63,13 @@ function QuizHeader() {
 
       <nav style={{ display: "flex", gap: "2rem", alignItems: "center" }}>
         <div style={{ display: "flex", gap: "1.5rem" }}>
-          <HeaderLink label="Jouer" href="/quiz" />
-          <HeaderLink label="Classement" href="/leaderboard" />
+          {currentPage !== "home" && (
+            <HeaderLink label="Accueil" onClick={() => onNavigate("home")} />
+          )}
+          {!isQuizActive && (
+            <HeaderLink label="Jouer" onClick={() => onNavigate("quiz")} />
+          )}
+          <HeaderLink label="Classement" onClick={() => onNavigate("leaderboard")} />
         </div>
         
         <div style={{ width: "1px", height: "20px", backgroundColor: "rgba(255,255,255,0.3)" }} />

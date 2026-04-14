@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 import QuizPage from './pages/Quiz_page'
+import { Leaderboard } from './pages/Leaderboard';
+import Home from './pages/Home';
 
 interface User {
     id: number;
@@ -8,6 +10,7 @@ interface User {
 
 function App() {
     const [users, setUsers] = useState<User[]>([])
+    const [page, setPage] = useState<"quiz" | "leaderboard" | "home">("home");
 
     useEffect(() => {
         fetch('/api/users')
@@ -16,18 +19,20 @@ function App() {
             .catch(err => console.error(err))
     }, [])
 
-    return (
-        <div style={{ fontFamily: 'sans-serif', minHeight: '100vh' }}>
-            <QuizPage />
+return (
+  <div style={{ fontFamily: 'sans-serif', minHeight: '100vh' }}>
+    
+    {page === "home" && <Home onNavigate={setPage} />}
+    {page === "quiz" && ( <QuizPage key="quiz" onNavigate={setPage} /> )}
+    {page === "leaderboard" && <Leaderboard onNavigate={setPage} />}
 
-            <div style={{ padding: '2rem', borderTop: '1px solid #eee', marginTop: '2rem' }}>
-                <h2 style={{ fontSize: '1.2rem' }}>Debug : Utilisateurs API 🚀</h2>
-                <pre style={{ background: '#f4f4f4', padding: '1rem', borderRadius: '8px', fontSize: '0.8rem' }}>
-                    {JSON.stringify(users, null, 2)}
-                </pre>
-            </div>
-        </div>
-    )
+    <div style={{ padding: '2rem', borderTop: '1px solid #eee', marginTop: '2rem' }}>
+      <pre style={{ background: '#f4f4f4', padding: '1rem', borderRadius: '8px', fontSize: '0.8rem' }}>
+        {JSON.stringify(users, null, 2)}
+      </pre>
+    </div>
+  </div>
+)
 }
 
 export default App
