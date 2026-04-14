@@ -14,6 +14,14 @@ const authService = {
         if (data.accessToken) {
             localStorage.setItem('userToken', data.accessToken);
 
+            if (data.user?.name) {
+                localStorage.setItem('userName', data.user.name);
+            }
+
+            if (typeof data.user?.id === 'number') {
+                localStorage.setItem('userId', String(data.user.id));
+            }
+
             if (data.user?.role) {
                 localStorage.setItem('userRole', data.user.role);
             }
@@ -39,6 +47,8 @@ const authService = {
     logout: () => {
         localStorage.removeItem('userToken');
         localStorage.removeItem('userRole');
+        localStorage.removeItem('userName');
+        localStorage.removeItem('userId');
         window.location.href = '/login';
     },
 

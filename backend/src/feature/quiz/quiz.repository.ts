@@ -31,6 +31,30 @@ class QuizRepository {
         })
         return this.repository.save(session)
     }
+
+    async getUserSessions(userId: number) {
+        return this.repository
+            .createQueryBuilder("session")
+            .innerJoin("session.user", "user")
+            .where("session.userId = :userId", { userId })
+            .select([
+                "session.id AS id",
+                "session.date AS date",
+                "session.score AS score",
+                "session.duration AS duration",
+                "session.completedAt AS completedAt",
+                "user.name AS userName",
+            ])
+            .orderBy("session.completedAt", "DESC")
+            .getRawMany<{
+                id: number
+                date: string
+                score: number
+                duration: number | null
+                completedAt: Date
+                userName: string
+            }>()
+    }
 }
 
 export const quizRepository = new QuizRepository()

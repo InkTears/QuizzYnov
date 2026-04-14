@@ -1,22 +1,41 @@
-import type { Question } from '../types/Question';
+import axios from "axios";
+import type { AnswerOption, Question } from "../types/Question";
 
-export const questions: Question[] = [
-  {
-    id: 1,
-    text: "Quel hook est utilisé pour gérer l'état dans un composant fonctionnel React ?",
-    options: ["useEffect", "useState", "useContext", "useReducer"],
-    correctAnswer: "useState",
+type SubmitQuizResult = {
+  score: number;
+  totalQuestions: number;
+  correctAnswers: number;
+  duration: number;
+};
+
+const quizService = {
+  async getTodayStatus(): Promise<{ hasParticipated: boolean }> {
+    const token = localStorage.getItem("userToken");
+    const response = await axios.get<{ hasParticipated: boolean }>("/api/quiz/today/status", {
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    });
+    return response.data;
   },
-  {
-    id: 2,
-    text: "Quelle propriété CSS est utilisée pour créer une grille ?",
-    options: ["display: flex", "display: block", "display: grid", "float: left"],
-    correctAnswer: "display: grid",
+
+  async getSessionQuestions(limit = 10): Promise<Question[]> {
+    const token = localStorage.getItem("userToken");
+    const response = await axios.get<Question[]>(`/api/quiz/today?limit=${limit}`, {
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    });
+    return response.data;
   },
-  {
-    id: 3,
-    text: "Dans Framer Motion, quelle prop définit l'état initial d'une animation ?",
-    options: ["animate", "exit", "initial", "transition"],
-    correctAnswer: "initial",
+
+  async submitSession(payload: {
+    userId: number;
+    answers: Record<number, AnswerOption>;
+    duration: number;
+  }): Promise<SubmitQuizResult> {
+    const token = localStorage.getItem("userToken");
+    const response = await axios.post<SubmitQuizResult>("/api/quiz/submit", payload, {
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    });
+    return response.data;
   },
-];
+};
+
+export default quizService;
