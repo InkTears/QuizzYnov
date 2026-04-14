@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api/auth';
+const API_URL = '/api/auth';
 
 export interface LoginCredentials {
     email: string;
@@ -8,9 +8,8 @@ export interface LoginCredentials {
 }
 
 export interface RegisterRequest {
-    pseudo: string;
+    name: string;
     email: string;
-    role: string;
     password: string;
 }
 
@@ -20,8 +19,8 @@ export const authApi = {
             const response = await axios.post(`${API_URL}/login`, credentials);
             return response.data;
         } catch (error: unknown) {
-            const axiosError = error as { response?: { data?: { message?: string } } };
-            throw axiosError.response?.data?.message || 'Erreur de connexion au serveur';
+            const axiosError = error as { response?: { data?: { message?: string; error?: string } } };
+            throw axiosError.response?.data?.error || axiosError.response?.data?.message || 'Erreur de connexion au serveur';
         }
     },
 
@@ -30,8 +29,8 @@ export const authApi = {
             const response = await axios.post(`${API_URL}/register`, payload);
             return response.data;
         } catch (error: unknown) {
-            const axiosError = error as { response?: { data?: { message?: string } } };
-            throw axiosError.response?.data?.message || "Erreur d'inscription au serveur";
+            const axiosError = error as { response?: { data?: { message?: string; error?: string } } };
+            throw axiosError.response?.data?.error || axiosError.response?.data?.message || "Erreur d'inscription au serveur";
         }
     },
 

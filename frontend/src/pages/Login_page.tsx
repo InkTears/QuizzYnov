@@ -23,7 +23,7 @@ const LoginPageUser: React.FC = () => {
     const handleUserLogin = async (credentials: { email: string; password: string }) => {
         try {
             const response = await authService.login(credentials);
-            if (response.token) {
+            if (response.accessToken) {
                 const role = String(response.role || response.user?.role || localStorage.getItem('userRole') || '')
                     .toLowerCase()
                     .trim();
