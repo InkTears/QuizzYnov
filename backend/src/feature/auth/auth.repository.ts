@@ -10,12 +10,15 @@ class AuthRepository {
 async findByEmail(email: string): Promise<User | null> {
   return await this.repo.findOne({
     where: { email },
-    select: ["id", "email", "password", "name", "refreshToken"]
+    select: ["id", "email", "password", "name", "refreshToken", "role"]
   });
 }
 
   async findById(id: number): Promise<User | null> {
-    return await this.repo.findOneBy({ id });
+    return await this.repo.findOne({
+      where: { id },
+      select: ["id", "email", "password", "name", "refreshToken", "role"],
+    });
   }
 
   async createUser(userData: Partial<User>): Promise<User> {

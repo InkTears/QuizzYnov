@@ -1,8 +1,17 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import authRepository from "./auth.repository";
+import { isAdminEmail } from "../../utils/role";
 
 class AuthService {
+
+  private resolveRole(user: { email: string; role?: string | null }): "admin" | "user" {
+    if ((user.role || "").toLowerCase() === "admin") {
+      return "admin";
+    }
+
+    return isAdminEmail(user.email) ? "admin" : "user";
+  }
 
 
 async login(email: string, password: string) {
@@ -22,6 +31,7 @@ async login(email: string, password: string) {
       id: user.id,
       email: user.email,
       name: user.name,
+      role: this.resolveRole(user),
     },
     accessToken: tokens.accessToken,
     refreshToken: tokens.refreshToken, 
@@ -47,13 +57,28 @@ async login(email: string, password: string) {
       id: user.id,
       email: user.email,
       name: user.name,
+      role: this.resolveRole(user),
     };
   }
 
   async logout(userId: number) {
   await authRepository.updateRefreshToken(userId, null);
 }
- 
+
+  async me(userId: number) {
+    const user = await authRepository.findById(userId);
+    if (!user) {
+      throw new Error("Utilisateur introuvable");
+    }
+
+    return {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      role: this.resolveRole(user),
+    };
+  }
+
 
   generateTokens(userId: number) {
 
