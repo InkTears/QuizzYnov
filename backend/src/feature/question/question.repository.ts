@@ -24,7 +24,7 @@ class QuestionRepository {
     findRandom(limit: number) {
         return this.repository
             .createQueryBuilder("question")
-            .orderBy("RAND()")
+            .orderBy("RANDOM()")
             .limit(limit)
             .getMany()
     }

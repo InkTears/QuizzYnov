@@ -1,10 +1,9 @@
 import { Router } from "express"
 import { quizController } from "./quiz.controller"
-import { authMiddleware } from "../../middlewares/auth.middleware";
 const quizRouter = Router()
 
-quizRouter.get("/", authMiddleware, (req, res) => {
-  res.json({ message: "Accès autorisé" });
+quizRouter.get("/", (req, res) => {
+  res.json({ message: "API quiz en ligne" });
 });
 
 quizRouter.get("/today", (req, res) => quizController.getTodayQuestions(req, res))

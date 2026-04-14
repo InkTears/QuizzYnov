@@ -26,6 +26,7 @@
     "jsonwebtoken": "^9.0.3",
     "mysql2": "^3.17.1",
     "reflect-metadata": "^0.2.2",
+    "sqlite3": "^5.1.7",
     "typeorm": "^0.3.28"
   },
   "devDependencies": {

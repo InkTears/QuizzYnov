@@ -1,31 +1,30 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm"
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
 
-export type AnswerOption = "A" | "B" | "C" | "D"
+export type AnswerOption = "A" | "B" | "C" | "D";
 
 @Entity()
 export class Question {
     @PrimaryGeneratedColumn()
-    id: number
+    id: number;
 
     @Column({ type: "text" })
-    content: string
+    content: string;
 
     @Column({ name: "option_a" })
-    optionA: string
+    optionA: string;
 
     @Column({ name: "option_b" })
-    optionB: string
+    optionB: string;
 
     @Column({ name: "option_c" })
-    optionC: string
+    optionC: string;
 
     @Column({ name: "option_d" })
-    optionD: string
+    optionD: string;
 
-    @Column({ name: "correct_answer", type: "enum", enum: ["A", "B", "C", "D"] })
-    correctAnswer: AnswerOption
+    @Column({ name: "correct_answer", type: "text" }) // 👈 FIX IMPORTANT
+    correctAnswer: AnswerOption;
 
     @CreateDateColumn({ name: "created_at" })
-    createdAt: Date
+    createdAt: Date;
 }
-

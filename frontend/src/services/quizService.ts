@@ -1,22 +1,22 @@
 import type { Question } from '../types/Question';
+import axios from 'axios';
 
-export const questions: Question[] = [
-  {
-    id: 1,
-    text: "Quel hook est utilisé pour gérer l'état dans un composant fonctionnel React ?",
-    options: ["useEffect", "useState", "useContext", "useReducer"],
-    correctAnswer: "useState",
-  },
-  {
-    id: 2,
-    text: "Quelle propriété CSS est utilisée pour créer une grille ?",
-    options: ["display: flex", "display: block", "display: grid", "float: left"],
-    correctAnswer: "display: grid",
-  },
-  {
-    id: 3,
-    text: "Dans Framer Motion, quelle prop définit l'état initial d'une animation ?",
-    options: ["animate", "exit", "initial", "transition"],
-    correctAnswer: "initial",
-  },
-];
+const API_URL = '/api/quiz/today';
+
+export const fetchQuestions = async (): Promise<Question[]> => {
+    try {
+        const response = await axios.get(API_URL);
+        const data = response.data;
+        return data.map((q: any) => ({
+            id: q.id,
+            text: q.content,
+            options: [q.optionA, q.optionB, q.optionC, q.optionD],
+            correctAnswer: q.correctAnswer,
+        }));
+    } catch (error) {
+        console.error('Erreur lors de la récupération des questions:', error);
+        return [];
+    }
+};
+
+export const questions: Question[] = [];

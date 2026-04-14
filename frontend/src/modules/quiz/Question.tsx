@@ -3,7 +3,7 @@ import type { Question as QuestionType } from "../../types/Question";
 
 interface QuestionProps {
   data: QuestionType;
-  onAnswer: (isCorrect: boolean) => void;
+  onAnswer: (isCorrect: boolean, selectedOption: string) => void;
 }
 
 export const Question = ({ data, onAnswer }: QuestionProps) => {
@@ -40,36 +40,39 @@ export const Question = ({ data, onAnswer }: QuestionProps) => {
         gap: "1.25rem",
         width: "100%"
       }}>
-        {data.options.map((opt: string) => (
-          <motion.button
-            key={opt}
-            whileHover={{ 
-              scale: 1.02, 
-              backgroundColor: "#f9fafb",
-              borderColor: "#6366f1"
-            }}
-            whileTap={{ scale: 0.98 }}
-            onClick={() => onAnswer(opt === data.correctAnswer)}
-            style={{
-              padding: "1.2rem 1rem",
-              textAlign: "center",
-              border: "2px solid #e5e7eb",
-              borderRadius: "0.75rem",
-              backgroundColor: "white",
-              cursor: "pointer",
-              fontSize: "1rem",
-              fontWeight: 600,
-              color: "#4b5563",
-              transition: "border-color 0.2s ease, background-color 0.2s ease",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              minHeight: "80px"
-            }}
-          >
-            {opt}
-          </motion.button>
-        ))}
+        {data.options.map((opt: string, idx: number) => {
+          const optionLetter = ["A", "B", "C", "D"][idx];
+          return (
+            <motion.button
+              key={opt}
+              whileHover={{ 
+                scale: 1.02, 
+                backgroundColor: "#f9fafb",
+                borderColor: "#6366f1"
+              }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => onAnswer(optionLetter === data.correctAnswer, optionLetter)}
+              style={{
+                padding: "1.2rem 1rem",
+                textAlign: "center",
+                border: "2px solid #e5e7eb",
+                borderRadius: "0.75rem",
+                backgroundColor: "white",
+                cursor: "pointer",
+                fontSize: "1rem",
+                fontWeight: 600,
+                color: "#4b5563",
+                transition: "border-color 0.2s ease, background-color 0.2s ease",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                minHeight: "80px"
+              }}
+            >
+              {opt}
+            </motion.button>
+          )
+        })}
       </div>
     </motion.div>
   );

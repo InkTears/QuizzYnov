@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AnimatePresence } from "framer-motion";
 import { Question } from "./Question";
 import { Result } from "./Result";
-import { questions } from "../../services/quizService"; 
+import { fetchQuestions } from "../../services/quizService";
+import { type Question as QuestionType } from "../../types/Question";
+import quizService from "../../api/quizApi";
 
 // ✅ 1. Ajouter les props
 interface QuizProps {
@@ -11,20 +13,53 @@ interface QuizProps {
 
 // ✅ 2. Injecter onNavigate
 export const Quiz = ({ onNavigate }: QuizProps) => {
+  const [questions, setQuestions] = useState<QuestionType[]>([]);
+  const [loading, setLoading] = useState(true);
   const [index, setIndex] = useState(0);
   const [score, setScore] = useState(0);
+  const [answers, setAnswers] = useState<Record<number, string>>({});
+  const [startTime, setStartTime] = useState(Date.now());
+
+  useEffect(() => {
+    const loadQuestions = async () => {
+      const data = await fetchQuestions();
+      setQuestions(data);
+      setLoading(false);
+      setStartTime(Date.now());
+    };
+    loadQuestions();
+  }, []);
 
   const isFinished = index === questions.length;
 
-  const handleAnswer = (isCorrect: boolean) => {
+  const handleAnswer = (isCorrect: boolean, selectedLetter: string) => {
     if (isCorrect) setScore((prev) => prev + 1);
+    setAnswers((prev) => ({ ...prev, [questions[index].id]: selectedLetter }));
     setIndex((prev) => prev + 1);
   };
 
   const resetQuiz = () => {
     setIndex(0);
     setScore(0);
+    setAnswers({});
+    setStartTime(Date.now());
   };
+
+  useEffect(() => {
+    if (isFinished && Object.keys(answers).length > 0) {
+      const duration = Math.floor((Date.now() - startTime) / 1000);
+      // Soumettre le quiz avec un utilisateur invité non présent dans les sessions du jour
+      quizService.submitQuiz(5, answers, duration).catch(console.error);
+    }
+  }, [isFinished, answers, startTime]);
+
+  if (loading) {
+    return <div>Chargement des questions...</div>;
+  }
+
+  if (!loading && questions.length === 0) {
+    return <div>Aucune question disponible pour le moment. Vérifiez que le backend est démarré et que l'API de quiz fonctionne.</div>;
+  }
 
   return (
     <div style={{ 
