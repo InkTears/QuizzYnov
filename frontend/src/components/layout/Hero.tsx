@@ -2,9 +2,11 @@ import { motion } from "framer-motion";
 
 interface HeroProps {
   onStart: () => void;
+  disabled?: boolean;
+  disabledText?: string;
 }
 
-function Hero({ onStart }: HeroProps) {
+function Hero({ onStart, disabled = false, disabledText }: HeroProps) {
   return (
     <motion.section
       initial={{ opacity: 0, y: 20 }}
@@ -31,21 +33,26 @@ function Hero({ onStart }: HeroProps) {
 
         <motion.button
           onClick={onStart}
-          whileHover={{ scale: 1.05, boxShadow: "0 10px 15px -3px rgba(79, 70, 229, 0.4)" }}
+          disabled={disabled}
+          whileHover={disabled ? undefined : { scale: 1.05, boxShadow: "0 10px 15px -3px rgba(79, 70, 229, 0.4)" }}
           whileTap={{ scale: 0.95 }}
           style={{
             padding: "1rem 2.5rem",
-            backgroundColor: "#4f46e5",
+            backgroundColor: disabled ? "#9ca3af" : "#4f46e5",
             color: "white",
             borderRadius: "12px",
             border: "none",
             fontWeight: "bold",
             fontSize: "1.1rem",
-            cursor: "pointer",
+            cursor: disabled ? "not-allowed" : "pointer",
+            opacity: disabled ? 0.8 : 1,
           }}
         >
-          Démarrer le Quiz
+          {disabled ? "Quiz deja joue aujourd'hui" : "Démarrer le Quiz"}
         </motion.button>
+        {disabled && disabledText ? (
+          <p style={{ marginTop: "0.8rem", color: "#6b7280", fontSize: "0.95rem" }}>{disabledText}</p>
+        ) : null}
       </div>
     </motion.section>
   );

@@ -2,13 +2,17 @@ import { Request, Response } from "express"
 import { quizService } from "./quiz.service"
 
 class QuizController {
-    async getTodayQuestions(req: Request, res: Response) {
+    async getTodayStatus(req: Request, res: Response) {
         try {
-            const rawLimit = Number(req.query.limit)
-            const limit = Number.isNaN(rawLimit) ? 5 : rawLimit
+            const userId = (req as any).userId
 
-            const questions = await quizService.getTodayQuestions(limit)
-            res.json(questions)
+            if (typeof userId !== "number" || userId <= 0) {
+                res.status(401).json({ message: "Utilisateur non authentifie" })
+                return
+            }
+
+            const hasParticipated = await quizService.hasUserParticipatedToday(userId)
+            res.json({ hasParticipated })
         } catch (error) {
             if (error instanceof Error) {
                 res.status(500).json({ message: error.message })
@@ -18,12 +22,39 @@ class QuizController {
         }
     }
 
+    async getTodayQuestions(req: Request, res: Response) {
+        try {
+            const userId = (req as any).userId
+            if (typeof userId !== "number" || userId <= 0) {
+                res.status(401).json({ message: "Utilisateur non authentifie" })
+                return
+            }
+
+            const rawLimit = Number(req.query.limit)
+            const limit = Number.isNaN(rawLimit) ? 10 : rawLimit
+
+            const questions = await quizService.getTodayQuestions(userId, limit)
+            res.json(questions)
+        } catch (error) {
+            if (error instanceof Error) {
+                if (error.message.includes("already participated")) {
+                    res.status(409).json({ message: error.message })
+                    return
+                }
+                res.status(500).json({ message: error.message })
+                return
+            }
+            res.status(500).json({ message: "Unexpected error" })
+        }
+    }
+
     async submitQuiz(req: Request, res: Response) {
         try {
-            const { userId, answers, duration } = req.body
+            const { answers, duration } = req.body
+            const userId = (req as any).userId
 
             if (typeof userId !== "number" || userId <= 0) {
-                res.status(400).json({ message: "Invalid userId" })
+                res.status(401).json({ message: "Utilisateur non authentifie" })
                 return
             }
 
@@ -44,6 +75,26 @@ class QuizController {
                 return
             }
 
+            res.status(500).json({ message: "Unexpected error" })
+        }
+    }
+
+    async getMySessions(req: Request, res: Response) {
+        try {
+            const userId = (req as any).userId
+
+            if (typeof userId !== "number" || userId <= 0) {
+                res.status(401).json({ message: "Utilisateur non authentifie" })
+                return
+            }
+
+            const sessions = await quizService.getUserSessions(userId)
+            res.json(sessions)
+        } catch (error) {
+            if (error instanceof Error) {
+                res.status(500).json({ message: error.message })
+                return
+            }
             res.status(500).json({ message: "Unexpected error" })
         }
     }
