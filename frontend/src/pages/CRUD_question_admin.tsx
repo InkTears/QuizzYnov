@@ -33,10 +33,10 @@ const containerVariants = {
 
 // Configuration des animations pour les éléments individuels (cartes, boutons)
 const itemVariants = {
-    hidden: { opacity: 0, y: 12 }, // Part d'un peu plus bas et transparent
+    hidden: { opacity: 0, y: 12 },
     show: {
         opacity: 1,
-        y: 0, // Remonte à sa position normale
+        y: 0,
         transition: { duration: 0.28 }
     }
 };
@@ -58,7 +58,7 @@ const CRUDQuestionAdmin: React.FC = () => {
         fetchQuestions();
     }, []);
 
-    // Fonction pour interroger le serveur et récupérer toutes les questions
+    // Récupérer les questions s'il y en a déjà sur la bdd
     const fetchQuestions = async () => {
         try {
             const data = await quizService.getAllQuestions();
