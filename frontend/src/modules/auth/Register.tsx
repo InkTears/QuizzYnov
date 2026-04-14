@@ -113,11 +113,7 @@ const Register: React.FC<RegisterProps> = ({ onRegister, title, theme, helperTex
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.24 }}
                 >
-                    <label>Role</label>
-                    <select value={role} onChange={(e) => setRole(e.target.value)} disabled={isSubmitting} required>
-                        <option value="user">Utilisateur</option>
-                        <option value="admin">Admin</option>
-                    </select>
+
                 </motion.div>
 
                 <motion.div
