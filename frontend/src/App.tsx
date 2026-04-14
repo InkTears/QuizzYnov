@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import QuizPage from './pages/Quiz_page'
 
 // Import de tes pages
 import LoginPageUser from './pages/Login_page.tsx';
@@ -11,6 +12,11 @@ import Leaderboard from './pages/Leaderboard';*/
 //import ProtectedRoute from './components/ProtectedRoute'; // Ajuste le chemin selon ton choix
 //import Navbar from './modules/Navbar';
 import './App.css';
+
+interface User {
+    id: number;
+    name: string;
+}
 
 function App() {
     return (
