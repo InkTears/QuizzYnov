@@ -150,7 +150,7 @@ Au démarrage du serveur, si les tables sont vides, le seed crée automatiquemen
 - `id` (PK)
 - `content` (TEXT)
 - `option_a, option_b, option_c, option_d` (VARCHAR)
-- `correct_answer` (ENUM: A|B|C|D)
+- `correct_answers` (ENUM: A|B|C|D)
 - `created_at` (TIMESTAMP)
 
 ### QuizSession

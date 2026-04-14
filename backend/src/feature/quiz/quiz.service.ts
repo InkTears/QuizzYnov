@@ -17,8 +17,13 @@ type SubmitQuizResponse = {
 }
 
 class QuizService {
-    async getTodayQuestions(limit: number) {
-        const safeLimit = Number.isFinite(limit) ? Math.min(Math.max(limit, 1), 20) : 5
+    async getTodayQuestions(userId: number, limit: number) {
+        const hasParticipated = await this.hasUserParticipatedToday(userId)
+        if (hasParticipated) {
+            throw new Error("User has already participated today")
+        }
+
+        const safeLimit = Number.isFinite(limit) ? Math.min(Math.max(limit, 1), 10) : 10
         const questions = await questionRepository.findRandom(safeLimit)
 
         return questions.map((question) => ({
@@ -68,6 +73,15 @@ class QuizService {
             correctAnswers: correctCount,
             duration,
         }
+    }
+
+    async hasUserParticipatedToday(userId: number) {
+        const existingSession = await quizRepository.getUserTodaySession(userId)
+        return Boolean(existingSession)
+    }
+
+    async getUserSessions(userId: number) {
+        return quizRepository.getUserSessions(userId)
     }
 }
 

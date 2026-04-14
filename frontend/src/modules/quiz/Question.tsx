@@ -1,12 +1,19 @@
 import { motion } from "framer-motion";
-import type { Question as QuestionType } from "../../types/Question";
+import type { AnswerOption, Question as QuestionType } from "../../types/Question";
 
 interface QuestionProps {
   data: QuestionType;
-  onAnswer: (isCorrect: boolean) => void;
+  onAnswer: (selected: AnswerOption) => void;
 }
 
 export const Question = ({ data, onAnswer }: QuestionProps) => {
+  const options: Array<{ key: AnswerOption; label: string }> = [
+    { key: "A", label: data.optionA },
+    { key: "B", label: data.optionB },
+    { key: "C", label: data.optionC },
+    { key: "D", label: data.optionD },
+  ];
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -31,7 +38,7 @@ export const Question = ({ data, onAnswer }: QuestionProps) => {
         textAlign: "center",
         lineHeight: 1.3
       }}>
-        {data.text}
+        {data.content}
       </h2>
 
       <div style={{
@@ -40,16 +47,16 @@ export const Question = ({ data, onAnswer }: QuestionProps) => {
         gap: "1.25rem",
         width: "100%"
       }}>
-        {data.options.map((opt: string) => (
+        {options.map((opt) => (
           <motion.button
-            key={opt}
+            key={opt.key}
             whileHover={{ 
               scale: 1.02, 
               backgroundColor: "#f9fafb",
               borderColor: "#6366f1"
             }}
             whileTap={{ scale: 0.98 }}
-            onClick={() => onAnswer(opt === data.correctAnswer)}
+            onClick={() => onAnswer(opt.key)}
             style={{
               padding: "1.2rem 1rem",
               textAlign: "center",
@@ -67,7 +74,7 @@ export const Question = ({ data, onAnswer }: QuestionProps) => {
               minHeight: "80px"
             }}
           >
-            {opt}
+            {opt.label}
           </motion.button>
         ))}
       </div>

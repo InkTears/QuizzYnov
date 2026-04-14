@@ -1,10 +1,14 @@
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 
 function HeaderLink({ label, href }: { label: string; href: string }) {
   return (
-    <motion.a
-      href={href}
+    <motion.div
       whileHover={{ y: -2, color: "#e0e7ff" }}
+      style={{ display: "inline-block" }}
+    >
+      <Link
+        to={href}
       style={{
         textDecoration: "none",
         color: "white",
@@ -12,13 +16,16 @@ function HeaderLink({ label, href }: { label: string; href: string }) {
         fontWeight: "500",
         transition: "color 0.2s"
       }}
-    >
-      {label}
-    </motion.a>
+      >
+        {label}
+      </Link>
+    </motion.div>
   );
 }
 
 function QuizHeader() {
+  const playerName = localStorage.getItem("userName") || "Joueur";
+
   return (
     <motion.header
       initial={{ y: -50, opacity: 0 }}
@@ -55,7 +62,7 @@ function QuizHeader() {
         
         <div style={{ width: "1px", height: "20px", backgroundColor: "rgba(255,255,255,0.3)" }} />
 
-        <motion.button
+        <motion.div
           whileHover={{ scale: 1.05, backgroundColor: "#f8fafc" }}
           whileTap={{ scale: 0.95 }}
           style={{
@@ -68,8 +75,17 @@ function QuizHeader() {
             cursor: "pointer",
           }}
         >
-          Connexion
-        </motion.button>
+          <Link
+            to="/profile"
+            style={{
+              textDecoration: "none",
+              color: "#4f46e5",
+              fontWeight: 600,
+            }}
+          >
+            Profil ({playerName})
+          </Link>
+        </motion.div>
       </nav>
     </motion.header>
   );

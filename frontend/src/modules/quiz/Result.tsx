@@ -3,10 +3,9 @@ import { motion } from "framer-motion";
 interface ResultProps {
   score: number;
   total: number;
-  onRestart: () => void;
 }
 
-export const Result = ({ score, total, onRestart }: ResultProps) => {
+export const Result = ({ score, total }: ResultProps) => {
   return (
     <motion.div 
       initial={{ scale: 0.9, opacity: 0 }}
@@ -17,12 +16,6 @@ export const Result = ({ score, total, onRestart }: ResultProps) => {
       <p className="text-lg mb-6">
         Tu as obtenu <span className="font-bold text-indigo-600">{score}</span> sur {total} points !
       </p>
-      <button
-        onClick={onRestart}
-        className="px-6 py-2 bg-indigo-600 text-white rounded-full hover:bg-indigo-700 transition-colors"
-      >
-        Rejouer
-      </button>
     </motion.div>
   );
 };

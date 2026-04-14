@@ -1,7 +1,10 @@
+export type AnswerOption = "A" | "B" | "C" | "D";
+
 export interface Question {
-  id: number; 
-  text: string;
-  options: string[];
-  correctAnswer: string;
-  category?: string;
+  id: number;
+  content: string;
+  optionA: string;
+  optionB: string;
+  optionC: string;
+  optionD: string;
 }
