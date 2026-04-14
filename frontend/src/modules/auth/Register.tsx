@@ -19,7 +19,7 @@ interface RegisterProps {
 const Register: React.FC<RegisterProps> = ({ onRegister, title, theme, helperText }) => {
     const [pseudo, setPseudo] = useState('');
     const [email, setEmail] = useState('');
-    const [role, setRole] = useState('user');
+    const role = 'user';
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
