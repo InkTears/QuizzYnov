@@ -1,38 +1,64 @@
-import QuizPage from './pages/Quiz_page'
-import { Leaderboard } from './pages/Leaderboard';
-import Home from './pages/Home';
-import { useEffect, useState } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 
-interface User {
-    id: number;
-    name: string;
+// Pages
+import Home from './pages/Home';
+import QuizPage from './pages/Quiz_page';
+import { Leaderboard } from './pages/Leaderboard';
+import LoginPageUser from './pages/Login_page';
+import RegisterPageUser from './pages/Register_page_user';
+import PricingPage from './pages/Pricing_page';
+import PaymentPage from './pages/Payment_page';
+import TableauDeBoardAdmin from './pages/Tableau_de_board_admin';
+import CRUDQuestionAdmin from './pages/CRUD_question_admin';
+import './App.css';
+
+function AppRoutes() {
+    const navigate = useNavigate();
+
+    const handleNavigate = (page: 'quiz' | 'leaderboard' | 'home') => {
+        const routeByPage = {
+            home: '/home',
+            quiz: '/quiz',
+            leaderboard: '/leaderboard'
+        } as const;
+
+        navigate(routeByPage[page]);
+    };
+
+    return (
+        <div style={{ fontFamily: 'sans-serif', minHeight: '100vh' }}>
+            <Routes>
+                {/* Redirection par dÃ©faut */}
+                <Route path="/" element={<Navigate to="/login" />} />
+
+                {/* Routes publiques */}
+                <Route path="/login" element={<LoginPageUser />} />
+                <Route path="/register" element={<RegisterPageUser />} />
+                <Route path="/forfaits" element={<PricingPage />} />
+                <Route path="/paiement" element={<PaymentPage />} />
+
+                {/* App utilisateur */}
+                <Route path="/home" element={<Home onNavigate={handleNavigate} />} />
+                <Route path="/quiz" element={<QuizPage onNavigate={handleNavigate} />} />
+                <Route path="/leaderboard" element={<Leaderboard onNavigate={handleNavigate} />} />
+
+                {/* Admin */}
+                <Route path="/admin/dashboard" element={<TableauDeBoardAdmin />} />
+                <Route path="/admin/questions" element={<CRUDQuestionAdmin />} />
+
+                {/* Fallback */}
+                <Route path="*" element={<Navigate to="/login" />} />
+            </Routes>
+        </div>
+    );
 }
 
 function App() {
-    const [users, setUsers] = useState<User[]>([])
-    const [page, setPage] = useState<"quiz" | "leaderboard" | "home">("home");
-
-    useEffect(() => {
-        fetch('/api/users')
-            .then(res => res.json())
-            .then(data => setUsers(data))
-            .catch(err => console.error(err))
-    }, [])
-
-return (
-  <div style={{ fontFamily: 'sans-serif', minHeight: '100vh' }}>
-    
-    {page === "home" && <Home onNavigate={setPage} />}
-    {page === "quiz" && ( <QuizPage key="quiz" onNavigate={setPage} /> )}
-    {page === "leaderboard" && <Leaderboard onNavigate={setPage} />}
-
-    <div style={{ padding: '2rem', borderTop: '1px solid #eee', marginTop: '2rem' }}>
-      <pre style={{ background: '#f4f4f4', padding: '1rem', borderRadius: '8px', fontSize: '0.8rem' }}>
-        {JSON.stringify(users, null, 2)}
-      </pre>
-    </div>
-  </div>
-)
+    return (
+        <Router>
+            <AppRoutes />
+        </Router>
+    );
 }
 
 export default App;

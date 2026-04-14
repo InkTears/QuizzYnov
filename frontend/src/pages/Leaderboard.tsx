@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 interface ScoreEntry {
   name: string;
@@ -16,6 +17,18 @@ const dummyScores: ScoreEntry[] = [
 ];
 
 export const Leaderboard = ({ onNavigate }: LeaderboardProps) => {
+  const navigate = useNavigate();
+  const role = (localStorage.getItem("userRole") || "").toLowerCase().trim();
+
+  const handleBack = () => {
+    if (role === "admin") {
+      navigate("/admin/dashboard");
+      return;
+    }
+
+    onNavigate("home");
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.9 }}
@@ -67,7 +80,7 @@ export const Leaderboard = ({ onNavigate }: LeaderboardProps) => {
       </div>
 
       <motion.button
-        onClick={() => onNavigate("home")}
+        onClick={handleBack}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         style={{

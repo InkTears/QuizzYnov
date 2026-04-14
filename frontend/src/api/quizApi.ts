@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api/questions';
+const API_URL = '/api/questions';
 
 // Types
 interface FrontendQuestion {
@@ -51,20 +51,35 @@ const convertFrontendToBackend = (frontend: FrontendQuestion) => {
 
 export const quizApi = {
     fetchQuestions: async () => {
-        const response = await axios.get<BackendQuestion[]>(API_URL);
-        return response.data.map(convertBackendToFrontend);
+        try {
+            const response = await axios.get<BackendQuestion[]>(API_URL);
+            return response.data.map(convertBackendToFrontend);
+        } catch (error: unknown) {
+            const axiosError = error as { response?: { data?: { message?: string; error?: string } } };
+            throw new Error(axiosError.response?.data?.message || axiosError.response?.data?.error || 'Erreur de recuperation des questions');
+        }
     },
 
     postQuestion: async (questionData: FrontendQuestion) => {
-        const backendData = convertFrontendToBackend(questionData);
-        const response = await axios.post<BackendQuestion>(API_URL, backendData);
-        return convertBackendToFrontend(response.data);
+        try {
+            const backendData = convertFrontendToBackend(questionData);
+            const response = await axios.post<BackendQuestion>(API_URL, backendData);
+            return convertBackendToFrontend(response.data);
+        } catch (error: unknown) {
+            const axiosError = error as { response?: { data?: { message?: string; error?: string } } };
+            throw new Error(axiosError.response?.data?.message || axiosError.response?.data?.error || 'Erreur lors de la creation de la question');
+        }
     },
 
     deleteQuestion: async (id: string | number) => {
         const numId = typeof id === 'string' ? parseInt(id, 10) : id;
-        const response = await axios.delete(`${API_URL}/${numId}`);
-        return response.data;
+        try {
+            const response = await axios.delete(`${API_URL}/${numId}`);
+            return response.data;
+        } catch (error: unknown) {
+            const axiosError = error as { response?: { data?: { message?: string; error?: string } } };
+            throw new Error(axiosError.response?.data?.message || axiosError.response?.data?.error || 'Erreur lors de la suppression de la question');
+        }
     }
 };
 

@@ -10,7 +10,7 @@ class AuthRepository {
 async findByEmail(email: string): Promise<User | null> {
   return await this.repo.findOne({
     where: { email },
-    select: ["id", "email", "password", "name", "refreshToken"]
+    select: ["id", "email", "password", "name", "role", "refreshToken"]
   });
 }
 

@@ -97,7 +97,8 @@ const CRUDQuestionAdmin: React.FC = () => {
             setNewQuestion(EMPTY_QUESTION); // On vide le formulaire
             await fetchQuestions(); // On met à jour la liste affichée
         } catch (err) {
-            alert("Erreur lors de l'ajout");
+            const message = err instanceof Error ? err.message : "Erreur lors de l'ajout";
+            alert(message);
         }
     };
 

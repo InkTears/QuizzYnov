@@ -22,6 +22,7 @@ async login(email: string, password: string) {
       id: user.id,
       email: user.email,
       name: user.name,
+      role: user.role,
     },
     accessToken: tokens.accessToken,
     refreshToken: tokens.refreshToken, 
