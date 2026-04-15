@@ -3,23 +3,23 @@
 :root {
     --quizz-primary: #5849FF;
     --quizz-admin: #e67e22;
-    --bg-light: #f4f7f6;
+    --bg-light: #0a0f1d;
     --text-dark: #1a1a1a;
     --border-color: #eaeaea;
 }
 
 .dashboard-container {
     min-height: 100vh;
-    background-color: var(--bg-light);
+    background: radial-gradient(circle at top, #1d2f56 0%, #0d1324 45%, #0a0f1d 100%);
     font-family: 'Inter', sans-serif;
-    color: var(--text-dark);
+    color: #e8eefc;
     display: flex;
     flex-direction: column;
 }
 
 /* Header style QuizzYnov */
 .dashboard-header {
-    background-color: var(--quizz-primary);
+    background: rgba(9, 14, 30, 0.9);
     padding: 1.2rem 5%;
     display: flex;
     justify-content: space-between;
@@ -74,7 +74,7 @@
 }
 
 .stat-card {
-    background: #ffffff;
+    background: rgba(255, 255, 255, 0.96);
     padding: 30px;
     border-radius: 16px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.03);
@@ -114,12 +114,12 @@
 
 .quick-actions h2 {
     margin: 0 0 16px 0;
-    color: var(--text-dark);
+    color: #e8eefc;
 }
 
 .action-buttons {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 12px;
 }
 

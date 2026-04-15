@@ -1,6 +1,6 @@
 .profile-page {
     min-height: 100vh;
-    background: #f4f7f6;
+    background: radial-gradient(circle at top, #1d2f56 0%, #0d1324 45%, #0a0f1d 100%);
 }
 
 .profile-container {

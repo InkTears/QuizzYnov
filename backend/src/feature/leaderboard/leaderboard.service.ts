@@ -4,15 +4,26 @@ function toIsoDate(date: Date): string {
     return date.toISOString().slice(0, 10)
 }
 
-class LeaderboardService {
-    async getDailyLeaderboard(rawDate?: string, rawLimit?: number) {
-        const date = this.validateDateOrFallback(rawDate)
-        const limit = Number.isFinite(rawLimit) ? Math.min(Math.max(rawLimit!, 1), 50) : 10
+function startOfUtcDay(date: Date): Date {
+    return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()))
+}
 
-        const rows = await leaderboardRepository.getDailyLeaderboard(date, limit)
+function addUtcDays(date: Date, days: number): Date {
+    const result = new Date(date)
+    result.setUTCDate(result.getUTCDate() + days)
+    return result
+}
+
+class LeaderboardService {
+    async getPreviousWeekLeaderboard(rawLimit?: number) {
+        const limit = Number.isFinite(rawLimit) ? Math.min(Math.max(rawLimit!, 1), 50) : 10
+        const { weekStart, weekEnd } = this.getPreviousWeekDateRange()
+
+        const rows = await leaderboardRepository.getWeeklyLeaderboard(weekStart, weekEnd, limit)
 
         return {
-            date,
+            weekStart,
+            weekEnd,
             leaderboard: rows.map((row, index) => ({
                 rank: index + 1,
                 userId: row.userId,
@@ -23,19 +34,19 @@ class LeaderboardService {
         }
     }
 
-    private validateDateOrFallback(rawDate?: string): string {
-        if (!rawDate) {
-            return toIsoDate(new Date())
-        }
+    private getPreviousWeekDateRange(): { weekStart: string; weekEnd: string } {
+        const todayUtc = startOfUtcDay(new Date())
+        const day = todayUtc.getUTCDay()
+        const daysSinceMonday = (day + 6) % 7
+        const currentWeekMonday = addUtcDays(todayUtc, -daysSinceMonday)
+        const previousWeekMonday = addUtcDays(currentWeekMonday, -7)
+        const previousWeekSunday = addUtcDays(previousWeekMonday, 6)
 
-        const datePattern = /^\d{4}-\d{2}-\d{2}$/
-        if (!datePattern.test(rawDate)) {
-            throw new Error("Query param 'date' must use YYYY-MM-DD format")
+        return {
+            weekStart: toIsoDate(previousWeekMonday),
+            weekEnd: toIsoDate(previousWeekSunday),
         }
-
-        return rawDate
     }
 }
 
 export const leaderboardService = new LeaderboardService()
-

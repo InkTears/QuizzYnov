@@ -1,92 +1,40 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import "../../css/header.css";
 
-function HeaderLink({ label, href }: { label: string; href: string }) {
-  return (
-    <motion.div
-      whileHover={{ y: -2, color: "#e0e7ff" }}
-      style={{ display: "inline-block" }}
-    >
-      <Link
-        to={href}
-      style={{
-        textDecoration: "none",
-        color: "white",
-        fontSize: "1rem",
-        fontWeight: "500",
-        transition: "color 0.2s"
-      }}
-      >
-        {label}
-      </Link>
-    </motion.div>
-  );
-}
+const MotionLink = motion(Link);
 
 function QuizHeader() {
   const playerName = localStorage.getItem("userName") || "Joueur";
 
   return (
     <motion.header
-      initial={{ y: -50, opacity: 0 }}
+      initial={{ y: -24, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.6, ease: "easeOut" }}
-      style={{
-        width: "100%",
-        boxSizing: "border-box",
-        padding: "0.8rem 2rem",
-        backgroundColor: "#4f46e5",
-        color: "white",
-        display: "flex",
-        justifyContent: "space-between", // Pour bien écarter logo et menu
-        alignItems: "center",
-        boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
-        position: "sticky",
-        top: 0,
-        left: 0,
-        zIndex: 1000
-      }}
+      transition={{ duration: 0.35, ease: "easeOut" }}
+      className="qy-header"
     >
-      <motion.div 
-        whileHover={{ scale: 1.05 }}
-        style={{ fontSize: "1.5rem", fontWeight: "bold", cursor: "pointer" }}
-      >
-        QuizzYnov
-      </motion.div>
+      <div className="qy-header__inner">
+        <Link className="qy-header__brand" to="/quiz" aria-label="Retour au quiz">
+          <img src="/QuizzYnov1.png" alt="QuizzYnov" className="qy-header__logo" />
+        </Link>
 
-      <nav style={{ display: "flex", gap: "2rem", alignItems: "center" }}>
-        <div style={{ display: "flex", gap: "1.5rem" }}>
-          <HeaderLink label="Jouer" href="/quiz" />
-          <HeaderLink label="Classement" href="/leaderboard" />
-        </div>
-        
-        <div style={{ width: "1px", height: "20px", backgroundColor: "rgba(255,255,255,0.3)" }} />
+        <nav className="qy-header__nav" aria-label="Navigation principale">
+          <Link to="/quiz" className="qy-header__link">Quiz du jour</Link>
+          <Link to="/leaderboard" className="qy-header__link">Classements</Link>
+          <Link to="/profile" className="qy-header__link">Stats</Link>
+          <Link to="/register" className="qy-header__link">Abonnement</Link>
+        </nav>
 
-        <motion.div
-          whileHover={{ scale: 1.05, backgroundColor: "#f8fafc" }}
-          whileTap={{ scale: 0.95 }}
-          style={{
-            padding: "0.5rem 1.5rem",
-            backgroundColor: "white",
-            color: "#4f46e5",
-            border: "none",
-            borderRadius: "8px",
-            fontWeight: "600",
-            cursor: "pointer",
-          }}
+        <MotionLink
+          to="/profile"
+          className="qy-header__profile"
+          whileHover={{ y: -1 }}
+          whileTap={{ scale: 0.99 }}
         >
-          <Link
-            to="/profile"
-            style={{
-              textDecoration: "none",
-              color: "#4f46e5",
-              fontWeight: 600,
-            }}
-          >
-            Profil ({playerName})
-          </Link>
-        </motion.div>
-      </nav>
+          Profil ({playerName})
+        </MotionLink>
+      </div>
     </motion.header>
   );
 }
