@@ -6,11 +6,14 @@ import quizService from "../../services/quizService";
 import type { AnswerOption, Question as QuestionType } from "../../types/Question";
 import "../../css/quiz.css";
 
+const QUESTION_TIME_LIMIT = 20;
+
 export const Quiz = () => {
   const [questions, setQuestions] = useState<QuestionType[]>([]);
   const [index, setIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [answers, setAnswers] = useState<Record<number, AnswerOption>>({});
+  const [timeLeft, setTimeLeft] = useState(QUESTION_TIME_LIMIT);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [startedAt, setStartedAt] = useState<number>(Date.now());
@@ -46,6 +49,34 @@ export const Quiz = () => {
     setAnswers((prev) => ({ ...prev, [current.id]: selected }));
     setIndex((prev) => prev + 1);
   };
+
+  useEffect(() => {
+    if (questions.length === 0 || isFinished) {
+      return;
+    }
+    setTimeLeft(QUESTION_TIME_LIMIT);
+  }, [index, isFinished, questions.length]);
+
+  useEffect(() => {
+    if (questions.length === 0 || isFinished) {
+      return;
+    }
+
+    const timerId = window.setInterval(() => {
+      setTimeLeft((previous) => Math.max(previous - 1, 0));
+    }, 1000);
+
+    return () => {
+      window.clearInterval(timerId);
+    };
+  }, [isFinished, questions.length, index]);
+
+  useEffect(() => {
+    if (timeLeft !== 0 || isFinished) {
+      return;
+    }
+    setIndex((prev) => prev + 1);
+  }, [isFinished, timeLeft]);
 
   useEffect(() => {
     const submit = async () => {
@@ -93,6 +124,12 @@ export const Quiz = () => {
 return (
   <div className="quiz-session">
     <div className="quiz-session__inner">
+      {!isFinished && total > 0 ? (
+        <div className="quiz-session__meta">
+          <p className="quiz-session__progress">Question {index + 1} / {total}</p>
+          <p className="quiz-session__timer">Temps restant : {timeLeft}s</p>
+        </div>
+      ) : null}
       <AnimatePresence mode="wait">
         {!isFinished ? (
           <Question 
@@ -104,6 +141,8 @@ return (
           <Result 
             score={score} 
             total={total}
+            questions={questions}
+            answers={answers}
           />
         )}
       </AnimatePresence>
