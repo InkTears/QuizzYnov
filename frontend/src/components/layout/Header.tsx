@@ -23,7 +23,7 @@ function QuizHeader() {
           <Link to="/quiz" className="qy-header__link">Quiz du jour</Link>
           <Link to="/leaderboard" className="qy-header__link">Classements</Link>
           <Link to="/profile" className="qy-header__link">Stats</Link>
-          <Link to="/register" className="qy-header__link">Abonnement</Link>
+          <Link to="/payment" className="qy-header__link">Abonnement</Link>
         </nav>
 
         <MotionLink
