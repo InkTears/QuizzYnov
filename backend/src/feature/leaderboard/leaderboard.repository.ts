@@ -11,7 +11,7 @@ type LeaderboardRow = {
 class LeaderboardRepository {
     private readonly repository = AppDataSource.getRepository(QuizSession)
 
-    async getDailyLeaderboard(date: string, limit: number): Promise<LeaderboardRow[]> {
+    async getWeeklyLeaderboard(startDate: string, endDate: string, limit: number): Promise<LeaderboardRow[]> {
         const rows = await this.repository
             .createQueryBuilder("quizSession")
             .innerJoin("quizSession.user", "user")
@@ -19,7 +19,7 @@ class LeaderboardRepository {
             .addSelect("user.name", "userName")
             .addSelect("SUM(quizSession.score)", "totalScore")
             .addSelect("COUNT(quizSession.id)", "gamesCount")
-            .where("quizSession.date = :date", { date })
+            .where("quizSession.date BETWEEN :startDate AND :endDate", { startDate, endDate })
             .groupBy("quizSession.userId")
             .addGroupBy("user.name")
             .orderBy("totalScore", "DESC")
@@ -42,4 +42,3 @@ class LeaderboardRepository {
 }
 
 export const leaderboardRepository = new LeaderboardRepository()
-

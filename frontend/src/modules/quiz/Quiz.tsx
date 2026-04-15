@@ -4,6 +4,7 @@ import { Question } from "./Question";
 import { Result } from "./Result";
 import quizService from "../../services/quizService";
 import type { AnswerOption, Question as QuestionType } from "../../types/Question";
+import "../../css/quiz.css";
 
 export const Quiz = () => {
   const [questions, setQuestions] = useState<QuestionType[]>([]);
@@ -82,22 +83,16 @@ export const Quiz = () => {
   const total = useMemo(() => questions.length, [questions.length]);
 
   if (isLoading) {
-    return <p style={{ textAlign: "center", marginTop: "2rem" }}>Chargement des questions...</p>;
+    return <p className="quiz-page__status">Chargement des questions...</p>;
   }
 
   if (error && questions.length === 0) {
-    return <p style={{ textAlign: "center", marginTop: "2rem", color: "#dc2626" }}>{error}</p>;
+    return <p className="quiz-page__status quiz-page__status--error">{error}</p>;
   }
 
 return (
-  <div style={{ 
-    display: "flex", 
-    justifyContent: "center", 
-    width: "100%",
-    marginTop: "3rem",
-    padding: "0 1rem"
-  }}>
-    <div style={{ width: "100%", maxWidth: "800px" }}>
+  <div className="quiz-session">
+    <div className="quiz-session__inner">
       <AnimatePresence mode="wait">
         {!isFinished ? (
           <Question 
@@ -113,7 +108,7 @@ return (
         )}
       </AnimatePresence>
       {error && questions.length > 0 ? (
-        <p style={{ textAlign: "center", marginTop: "1rem", color: "#dc2626" }}>{error}</p>
+        <p className="quiz-page__status quiz-page__status--error">{error}</p>
       ) : null}
     </div>
   </div>
