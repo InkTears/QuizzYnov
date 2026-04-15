@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import { Question } from "./Question";
 import { Result } from "./Result";
@@ -12,13 +12,14 @@ export const Quiz = () => {
   const [questions, setQuestions] = useState<QuestionType[]>([]);
   const [index, setIndex] = useState(0);
   const [score, setScore] = useState(0);
-  const [answers, setAnswers] = useState<Record<number, AnswerOption>>({});
+  const [answers, setAnswers] = useState<Record<number, AnswerOption | null>>({});
   const [timeLeft, setTimeLeft] = useState(QUESTION_TIME_LIMIT);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [startedAt, setStartedAt] = useState<number>(Date.now());
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hasSubmitted, setHasSubmitted] = useState(false);
+  const timedOutIndexRef = useRef<number | null>(null);
 
   useEffect(() => {
     const load = async () => {
@@ -62,21 +63,31 @@ export const Quiz = () => {
       return;
     }
 
-    const timerId = window.setInterval(() => {
+    const timerId = window.setTimeout(() => {
       setTimeLeft((previous) => Math.max(previous - 1, 0));
     }, 1000);
 
     return () => {
-      window.clearInterval(timerId);
+      window.clearTimeout(timerId);
     };
-  }, [isFinished, questions.length, index]);
+  }, [isFinished, questions.length, timeLeft]);
 
   useEffect(() => {
     if (timeLeft !== 0 || isFinished) {
       return;
     }
+
+    if (timedOutIndexRef.current === index) {
+      return;
+    }
+    timedOutIndexRef.current = index;
+
+    const current = questions[index];
+    if (current) {
+      setAnswers((prev) => ({ ...prev, [current.id]: null }));
+    }
     setIndex((prev) => prev + 1);
-  }, [isFinished, timeLeft]);
+  }, [index, isFinished, questions, timeLeft]);
 
   useEffect(() => {
     const submit = async () => {
@@ -93,10 +104,16 @@ export const Quiz = () => {
 
       try {
         setIsSubmitting(true);
+        const submittedAnswers = Object.entries(answers).reduce<Record<number, AnswerOption>>((acc, [questionId, answer]) => {
+          if (answer !== null) {
+            acc[Number(questionId)] = answer;
+          }
+          return acc;
+        }, {});
         const duration = Math.max(0, Math.round((Date.now() - startedAt) / 1000));
         const result = await quizService.submitSession({
           userId,
-          answers,
+          answers: submittedAnswers,
           duration,
         });
         setScore(result.score);
