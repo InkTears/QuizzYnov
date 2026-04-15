@@ -124,10 +124,9 @@
 .login-toast-success {
     position: fixed;
     top: 22px;
-    left: 14px;
-    right: 14px;
-    margin: 0 auto;
-    width: fit-content;
+    left: 50%;
+    transform: translateX(-50%);
+    width: max-content;
     max-width: calc(100vw - 28px);
     display: flex;
     align-items: center;
@@ -184,5 +183,15 @@
 
     .login-container {
         padding: 32px 28px 24px;
+    }
+}
+
+@media (max-width: 480px) {
+    .login-toast-success {
+        top: 10px;
+        left: 14px;
+        right: 14px;
+        transform: none;
+        width: auto;
     }
 }

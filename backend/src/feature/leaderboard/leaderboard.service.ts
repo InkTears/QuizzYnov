@@ -37,6 +37,9 @@ class LeaderboardService {
     private getPreviousWeekDateRange(): { weekStart: string; weekEnd: string } {
         const todayUtc = startOfUtcDay(new Date())
         const day = todayUtc.getUTCDay()
+        // JS renvoie dimanche = 0, lundi = 1, ... samedi = 6.
+        // La formule (day + 6) % 7 convertit ce format en "jours depuis lundi":
+        // lundi(1)->0, mardi(2)->1, ... dimanche(0)->6.
         const daysSinceMonday = (day + 6) % 7
         const currentWeekMonday = addUtcDays(todayUtc, -daysSinceMonday)
         const previousWeekMonday = addUtcDays(currentWeekMonday, -7)
