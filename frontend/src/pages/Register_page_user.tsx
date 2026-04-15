@@ -23,6 +23,7 @@ const RegisterPageUser: React.FC = () => {
     const handleRegister = async (payload: RegisterPayload) => {
         try {
             await authService.register(payload);
+            sessionStorage.setItem('registerSuccess', payload.pseudo);
             navigate('/login');
         } catch (error) {
             throw new Error(`Erreur d'inscription: ${String(error)}`);
@@ -64,6 +65,9 @@ const RegisterPageUser: React.FC = () => {
             >
                 <p>
                     Deja un compte ? <Link to="/login">Se connecter</Link>
+                </p>
+                <p>
+                    Explorer les abonnements : <Link to="/forfaits">Voir les forfaits</Link>
                 </p>
             </motion.div>
         </motion.div>

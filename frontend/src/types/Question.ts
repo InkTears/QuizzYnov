@@ -1,5 +1,12 @@
 export interface Question {
-  id: number; 
+  id?: string | number;
+  text: string;
+  options: string[];
+  correctAnswers: number[];
+}
+
+export interface QuizQuestion {
+  id: number;
   text: string;
   options: string[];
   correctAnswer: string;

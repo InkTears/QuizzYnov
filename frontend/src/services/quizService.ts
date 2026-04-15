@@ -1,9 +1,9 @@
-import type { Question } from '../types/Question';
+import type { QuizQuestion } from '../types/Question';
 import axios from 'axios';
-
+ 
 const API_URL = '/api/quiz/today';
-
-export const fetchQuestions = async (): Promise<Question[]> => {
+ 
+export const fetchQuestions = async (): Promise<QuizQuestion[]> => {
     try {
         const response = await axios.get(API_URL);
         const data = response.data;
@@ -11,12 +11,12 @@ export const fetchQuestions = async (): Promise<Question[]> => {
             id: q.id,
             text: q.content,
             options: [q.optionA, q.optionB, q.optionC, q.optionD],
-            correctAnswer: q.correctAnswer,
+            correctAnswers: q.correctAnswers,
         }));
     } catch (error) {
         console.error('Erreur lors de la récupération des questions:', error);
         return [];
     }
 };
-
-export const questions: Question[] = [];
+ 
+export const questions: QuizQuestion[] = [];

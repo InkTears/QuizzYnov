@@ -1,5 +1,5 @@
-import React, { useRef } from 'react';
-import { motion, useInView, useReducedMotion, useScroll, useSpring, useTransform } from 'framer-motion';
+import React, { useEffect, useRef, useState } from 'react';
+import { AnimatePresence, motion, useInView, useReducedMotion, useScroll, useSpring, useTransform } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import Login from '../modules/auth/Login';
 import authService from '../services/authService';
@@ -10,6 +10,34 @@ const LoginPageUser: React.FC = () => {
     const pageRef = useRef<HTMLDivElement | null>(null);
     const footerRef = useRef<HTMLDivElement | null>(null);
     const shouldReduceMotion = useReducedMotion();
+    const [registerToast, setRegisterToast] = useState<string | null>(null);
+    const [paymentToast, setPaymentToast] = useState<{ plan: string; price: string } | null>(null);
+
+    useEffect(() => {
+        const pseudo = sessionStorage.getItem('registerSuccess');
+        if (pseudo) {
+            sessionStorage.removeItem('registerSuccess');
+            setRegisterToast(pseudo);
+            setTimeout(() => setRegisterToast(null), 3000);
+        }
+
+        const paymentSuccess = sessionStorage.getItem('paymentSimulationSuccess');
+        if (paymentSuccess) {
+            sessionStorage.removeItem('paymentSimulationSuccess');
+
+            try {
+                const parsedPayment = JSON.parse(paymentSuccess) as { plan?: string; price?: string };
+                setPaymentToast({
+                    plan: parsedPayment.plan || 'Abonnement',
+                    price: parsedPayment.price || ''
+                });
+                setTimeout(() => setPaymentToast(null), 4000);
+            } catch {
+                setPaymentToast({ plan: 'Abonnement', price: '' });
+                setTimeout(() => setPaymentToast(null), 4000);
+            }
+        }
+    }, []);
 
     const { scrollYProgress } = useScroll({
         target: pageRef,
@@ -27,16 +55,18 @@ const LoginPageUser: React.FC = () => {
                 const role = String(response.role || response.user?.role || localStorage.getItem('userRole') || '')
                     .toLowerCase()
                     .trim();
+                const name = response.user?.name || response.user?.pseudo || '';
+
+                sessionStorage.setItem('loginSuccess', JSON.stringify({ name, role }));
 
                 if (role === 'admin') {
                     navigate('/admin/dashboard');
-                    return;
+                } else {
+                    navigate('/home');
                 }
-
-                navigate('/quiz');
                 return;
             }
-            throw new Error('Token non recu');
+            throw new Error('Token non reçu');
         } catch (error) {
             throw new Error(`Erreur de connexion: ${String(error)}`);
         }
@@ -61,6 +91,46 @@ const LoginPageUser: React.FC = () => {
                 aria-hidden="true"
             />
 
+            <AnimatePresence>
+                {registerToast && (
+                    <motion.div
+                        className="login-toast-success login-toast-register"
+                        initial={{ opacity: 0, y: -24, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: -16, scale: 0.97 }}
+                        transition={{ duration: 0.3, ease: 'easeOut' }}
+                        role="status"
+                        aria-live="polite"
+                    >
+                        <span className="login-toast-icon">✓</span>
+                        <span>
+                            Compte créé avec succès, {registerToast} !
+                            <br />
+                            <small>Vous pouvez maintenant vous connecter</small>
+                        </span>
+                    </motion.div>
+                )}
+                {paymentToast && (
+                    <motion.div
+                        className="login-toast-success login-toast-register"
+                        initial={{ opacity: 0, y: -24, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: -16, scale: 0.97 }}
+                        transition={{ duration: 0.3, ease: 'easeOut' }}
+                        role="status"
+                        aria-live="polite"
+                    >
+                        <span className="login-toast-icon">✓</span>
+                        <span>
+                            Simulation Stripe validee pour {paymentToast.plan}
+                            {paymentToast.price ? ` (${paymentToast.price})` : ''}.
+                            <br />
+                            <small>Connectez-vous pour finaliser l activation de votre acces</small>
+                        </span>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
             <Login
                 title="Connexion"
                 onLogin={handleUserLogin}
@@ -77,6 +147,9 @@ const LoginPageUser: React.FC = () => {
             >
                 <p>
                     Pas encore de compte ? <Link to="/register">S'inscrire</Link>
+                </p>
+                <p>
+                    Voir les offres quiz : <Link to="/forfaits">Forfaits et abonnements</Link>
                 </p>
             </motion.div>
         </motion.div>

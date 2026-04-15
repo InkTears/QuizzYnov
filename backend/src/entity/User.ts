@@ -16,4 +16,7 @@ export class User {
 
     @Column({ nullable: true })
     refreshToken?: string;
+
+    @Column({ default: "USER" })
+    role: string;
 }

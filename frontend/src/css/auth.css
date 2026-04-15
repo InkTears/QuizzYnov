@@ -137,6 +137,80 @@
     cursor: not-allowed;
 }
 
+.login-toast-success {
+    position: fixed;
+    top: 28px;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    width: fit-content;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 28px;
+    border-radius: 16px;
+    background: #1a2e1a;
+    border: 1px solid #4ade80;
+    color: #bbf7d0;
+    font-size: 1rem;
+    font-weight: 600;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    z-index: 9999;
+    pointer-events: none;
+    white-space: nowrap;
+    line-height: 1.4;
+}
+
+.login-toast-success small {
+    font-size: 0.82rem;
+    font-weight: 400;
+    color: #86efac;
+}
+
+.login-toast-admin {
+    background: #1a1f2e;
+    border-color: #818cf8;
+    color: #c7d2fe;
+}
+
+.login-toast-admin small {
+    color: #a5b4fc;
+}
+
+.login-toast-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #4ade80;
+    color: #14532d;
+    font-size: 1rem;
+    font-weight: 900;
+    flex-shrink: 0;
+}
+
+.login-toast-admin .login-toast-icon {
+    background: #818cf8;
+    color: #1e1b4b;
+}
+
+.login-toast-register {
+    background: #1a2535;
+    border-color: #38bdf8;
+    color: #bae6fd;
+}
+
+.login-toast-register small {
+    color: #7dd3fc;
+}
+
+.login-toast-register .login-toast-icon {
+    background: #38bdf8;
+    color: #0c4a6e;
+}
+
 .login-footer {
     position: relative;
     color: #f1f3f8;

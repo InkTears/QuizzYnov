@@ -9,12 +9,14 @@ interface LeaderboardProps {
 export const Leaderboard = ({ onNavigate }: LeaderboardProps) => {
   const [scores, setScores] = useState<LeaderboardEntry[]>([]);
   const [loading, setLoading] = useState(true);
+  const [leaderboardDate, setLeaderboardDate] = useState<string>("");
 
   useEffect(() => {
     const loadLeaderboard = async () => {
       try {
         const data = await leaderboardApi.getLeaderboard();
         setScores(data.leaderboard);
+        setLeaderboardDate(data.date);
       } catch (error) {
         console.error('Erreur chargement leaderboard:', error);
       } finally {
@@ -23,6 +25,10 @@ export const Leaderboard = ({ onNavigate }: LeaderboardProps) => {
     };
     loadLeaderboard();
   }, []);
+
+  const handleBack = () => {
+    onNavigate("home");
+  };
 
   if (loading) {
     return <div>Chargement du leaderboard...</div>;
@@ -44,9 +50,16 @@ export const Leaderboard = ({ onNavigate }: LeaderboardProps) => {
         textAlign: "center"
       }}
     >
-      <h2 style={{ marginBottom: "2rem", fontSize: "1.8rem", color: "#1f2937" }}>
-        Classement Global
-      </h2>
+      <div style={{ marginBottom: "1.5rem" }}>
+        <h2 style={{ marginBottom: "0.5rem", fontSize: "1.8rem", color: "#1f2937" }}>
+          Classement Global
+        </h2>
+        {leaderboardDate && (
+          <p style={{ margin: 0, color: "#6b7280", fontSize: "0.95rem" }}>
+            Classement du {leaderboardDate}
+          </p>
+        )}
+      </div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: "1rem", marginBottom: "2rem" }}>
         {scores.length === 0 ? (
@@ -85,7 +98,7 @@ export const Leaderboard = ({ onNavigate }: LeaderboardProps) => {
       </div>
 
       <motion.button
-        onClick={() => onNavigate("home")}
+        onClick={handleBack}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         style={{

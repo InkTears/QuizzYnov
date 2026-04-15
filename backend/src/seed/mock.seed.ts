@@ -53,6 +53,7 @@ export async function seedMockData() {
     const questionCount = await questionRepository.count();
 
     if (questionCount === 0) {
+        console.log("❓ Creating questions...")
         await questionRepository.save([
             questionRepository.create({
                 content: "Quelle est la capitale de l'Allemagne ?",
@@ -60,7 +61,7 @@ export async function seedMockData() {
                 optionB: "Munich",
                 optionC: "Hambourg",
                 optionD: "Francfort",
-                correctAnswer: "A",
+                correctAnswers: ["A"],
             }),
             questionRepository.create({
                 content: "Combien de continents existe-t-il ?",
@@ -68,7 +69,7 @@ export async function seedMockData() {
                 optionB: "6",
                 optionC: "7",
                 optionD: "8",
-                correctAnswer: "C",
+                correctAnswers: ["C"],
             }),
             questionRepository.create({
                 content: "Quel langage est exécuté dans le navigateur ?",
@@ -76,7 +77,7 @@ export async function seedMockData() {
                 optionB: "Java",
                 optionC: "C",
                 optionD: "JavaScript",
-                correctAnswer: "D",
+                correctAnswers: ["D"],
             }),
             questionRepository.create({
                 content: "Quel est le résultat de 7 x 8 ?",
@@ -84,7 +85,7 @@ export async function seedMockData() {
                 optionB: "56",
                 optionC: "58",
                 optionD: "64",
-                correctAnswer: "B",
+                correctAnswers: ["B"],
             }),
             questionRepository.create({
                 content: "Quel océan borde la côte ouest de la France ?",
@@ -92,7 +93,7 @@ export async function seedMockData() {
                 optionB: "Pacifique",
                 optionC: "Indien",
                 optionD: "Arctique",
-                correctAnswer: "A",
+                correctAnswers: ["A"],
             }),
             questionRepository.create({
                 content: "Qui a peint la Joconde ?",
@@ -100,7 +101,23 @@ export async function seedMockData() {
                 optionB: "Picasso",
                 optionC: "Léonard de Vinci",
                 optionD: "Monet",
-                correctAnswer: "C",
+                correctAnswers: ["C"],
+            }),
+            questionRepository.create({
+                content: "Quels sont les pays du Benelux ? (Multiple choice)",
+                optionA: "Belgique",
+                optionB: "Pays-Bas",
+                optionC: "Luxembourg",
+                optionD: "France",
+                correctAnswers: ["A", "B", "C"],
+            }),
+            questionRepository.create({
+                content: "Quels nombres sont pairs ?",
+                optionA: "1",
+                optionB: "2",
+                optionC: "3",
+                optionD: "4",
+                correctAnswers: ["B", "D"],
             }),
         ]);
     }

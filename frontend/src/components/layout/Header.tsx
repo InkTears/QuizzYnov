@@ -1,4 +1,6 @@
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+import authService from "../../services/authService";
 
 interface HeaderProps {
   onNavigate: (page: "quiz" | "leaderboard" | "home") => void;
@@ -32,6 +34,18 @@ function HeaderLink({
 
 // 2. Le composant principal
 function QuizHeader({ onNavigate, currentPage, isQuizActive }: HeaderProps) {
+  const navigate = useNavigate();
+  const isAuthenticated = authService.isAuthenticated();
+
+  const handleAuthAction = () => {
+    if (isAuthenticated) {
+      authService.logout();
+      return;
+    }
+
+    navigate("/login");
+  };
+
   return (
     <motion.header
       initial={{ y: -50, opacity: 0 }}
@@ -75,6 +89,8 @@ function QuizHeader({ onNavigate, currentPage, isQuizActive }: HeaderProps) {
         <div style={{ width: "1px", height: "20px", backgroundColor: "rgba(255,255,255,0.3)" }} />
 
         <motion.button
+          type="button"
+          onClick={handleAuthAction}
           whileHover={{ scale: 1.05, backgroundColor: "#f8fafc" }}
           whileTap={{ scale: 0.95 }}
           style={{
@@ -87,7 +103,7 @@ function QuizHeader({ onNavigate, currentPage, isQuizActive }: HeaderProps) {
             cursor: "pointer",
           }}
         >
-          Connexion
+          {isAuthenticated ? "Déconnexion" : "Connexion"}
         </motion.button>
       </nav>
     </motion.header>

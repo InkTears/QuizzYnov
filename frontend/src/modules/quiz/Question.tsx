@@ -1,8 +1,8 @@
 import { motion } from "framer-motion";
-import type { Question as QuestionType } from "../../types/Question";
+import type { QuizQuestion } from "../../types/Question";
 
 interface QuestionProps {
-  data: QuestionType;
+  data: QuizQuestion;
   onAnswer: (isCorrect: boolean, selectedOption: string) => void;
 }
 
@@ -51,7 +51,7 @@ export const Question = ({ data, onAnswer }: QuestionProps) => {
                 borderColor: "#6366f1"
               }}
               whileTap={{ scale: 0.98 }}
-              onClick={() => onAnswer(optionLetter === data.correctAnswer, optionLetter)}
+               onClick={() => onAnswer(data.correctAnswers.includes(optionLetter), optionLetter)}
               style={{
                 padding: "1.2rem 1rem",
                 textAlign: "center",

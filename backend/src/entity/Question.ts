@@ -22,8 +22,8 @@ export class Question {
     @Column({ name: "option_d" })
     optionD: string;
 
-    @Column({ name: "correct_answer", type: "text" }) // 👈 FIX IMPORTANT
-    correctAnswer: AnswerOption;
+    @Column("simple-array", { name: "correct_answers" })
+    correctAnswers: AnswerOption[];
 
     @CreateDateColumn({ name: "created_at" })
     createdAt: Date;
