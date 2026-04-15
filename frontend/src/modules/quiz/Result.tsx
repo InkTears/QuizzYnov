@@ -6,7 +6,7 @@ interface ResultProps {
   score: number;
   total: number;
   questions: Question[];
-  answers: Record<number, AnswerOption>;
+  answers: Record<number, AnswerOption | null>;
 }
 
 export const Result = ({ score, total, questions, answers }: ResultProps) => {
