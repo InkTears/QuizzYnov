@@ -29,7 +29,7 @@ const LoginPageUser: React.FC = () => {
                     .trim();
 
                 if (role === 'admin') {
-                    navigate('/admin/dashboard');
+                    navigate('/quiz');
                     return;
                 }
 
