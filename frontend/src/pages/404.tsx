@@ -6,7 +6,8 @@ const NotFoundPage = () => {
   const navigate = useNavigate();
 
   const handleBack = () => {
-    if (window.history.length > 1) {
+    const historyIndex = typeof window.history.state?.idx === "number" ? window.history.state.idx : 0;
+    if (historyIndex > 0) {
       navigate(-1);
       return;
     }
