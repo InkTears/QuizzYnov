@@ -1,12 +1,10 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { leaderboardApi, type LeaderboardEntry } from "../api/leaderboardApi";
 
-interface LeaderboardProps {
-  onNavigate: (page: "leaderboard" | "home") => void;
-}
-
-export const Leaderboard = ({ onNavigate }: LeaderboardProps) => {
+const Leaderboard = () => {
+  const navigate = useNavigate();
   const [scores, setScores] = useState<LeaderboardEntry[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -85,7 +83,7 @@ export const Leaderboard = ({ onNavigate }: LeaderboardProps) => {
         </div>
 
         <motion.button
-            onClick={() => onNavigate("home")}
+            onClick={() => navigate("/quiz")}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             style={{
@@ -98,8 +96,10 @@ export const Leaderboard = ({ onNavigate }: LeaderboardProps) => {
               cursor: "pointer"
             }}
         >
-          Retour à l'accueil
+          Retour au quiz
         </motion.button>
       </motion.div>
   );
 };
+
+export default Leaderboard;
