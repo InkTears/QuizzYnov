@@ -168,6 +168,15 @@ const TableauDeBoardAdmin: React.FC = () => {
                         variants={itemVariants}
                         whileHover={shouldReduceMotion ? undefined : { y: -1 }}
                         whileTap={shouldReduceMotion ? undefined : { scale: 0.985 }}
+                        onClick={() => navigate('/quiz')}
+                    >
+                        Retourner au quiz
+                    </motion.button>
+                    <motion.button
+                        className="btn-action btn-outline"
+                        variants={itemVariants}
+                        whileHover={shouldReduceMotion ? undefined : { y: -1 }}
+                        whileTap={shouldReduceMotion ? undefined : { scale: 0.985 }}
                         onClick={() => navigate('/leaderboard')}
                     >
                         Voir le classement général

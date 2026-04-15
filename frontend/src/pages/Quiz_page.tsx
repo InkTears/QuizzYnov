@@ -3,6 +3,7 @@ import Header from "../components/layout/Header";
 import Hero from "../components/layout/Hero";
 import Quiz from "../modules/quiz/Quiz";
 import quizService from "../services/quizService";
+import "../css/quiz.css";
 
 export default function QuizPage() {
   const [hasStarted, setHasStarted] = useState(false);
@@ -27,15 +28,15 @@ export default function QuizPage() {
 
   if (isCheckingStatus) {
     return (
-      <>
+      <div className="quiz-page">
         <Header />
-        <p style={{ textAlign: "center", marginTop: "2rem" }}>Verification de votre session...</p>
-      </>
+        <p className="quiz-page__status">Vérification de votre session...</p>
+      </div>
     );
   }
 
   return (
-    <>
+    <div className="quiz-page">
       <Header />
       {!hasStarted ? (
         <Hero
@@ -50,6 +51,6 @@ export default function QuizPage() {
       ) : (
         <Quiz />
       )}
-    </>
+    </div>
   );
 }

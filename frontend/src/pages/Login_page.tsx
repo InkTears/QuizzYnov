@@ -61,6 +61,8 @@ const LoginPageUser: React.FC = () => {
                 aria-hidden="true"
             />
 
+            <img src="/QuizzYnov1.png" alt="QuizzYnov" style={{ width: 'min(80vw, 260px)', zIndex: 1 }} />
+
             <Login
                 title="Connexion"
                 onLogin={handleUserLogin}

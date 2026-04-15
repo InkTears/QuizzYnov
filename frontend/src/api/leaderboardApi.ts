@@ -11,7 +11,8 @@ export interface LeaderboardEntry {
 }
 
 export interface LeaderboardResponse {
-    date: string;
+    weekStart: string;
+    weekEnd: string;
     leaderboard: LeaderboardEntry[];
 }
 

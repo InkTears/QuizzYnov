@@ -6,9 +6,8 @@ class LeaderboardController {
         try {
             const rawLimit = Number(req.query.limit)
             const limit = Number.isNaN(rawLimit) ? undefined : rawLimit
-            const date = typeof req.query.date === "string" ? req.query.date : undefined
 
-            const leaderboard = await leaderboardService.getDailyLeaderboard(date, limit)
+            const leaderboard = await leaderboardService.getPreviousWeekLeaderboard(limit)
             res.json(leaderboard)
         } catch (error) {
             if (error instanceof Error) {
@@ -22,4 +21,3 @@ class LeaderboardController {
 }
 
 export const leaderboardController = new LeaderboardController()
-

@@ -8,14 +8,15 @@
 }
 
 .crud-container {
-    background-color: var(--quizz-bg);
+    background: radial-gradient(circle at top, #1d2f56 0%, #0d1324 45%, #0a0f1d 100%);
     color: var(--text-dark);
     padding-bottom: 40px;
+    min-height: 100vh;
 }
 
 /* Header aligne sur le design du dashboard */
 .crud-header {
-    background-color: var(--quizz-primary);
+    background: rgba(9, 14, 30, 0.9);
     padding: 1.2rem 5%;
     display: flex;
     justify-content: space-between;
@@ -26,7 +27,7 @@
 }
 
 .crud-header h1 {
-    color: #ffffff;
+    color: #e8eefc;
     margin: 0;
     font-size: 1.5rem;
     font-weight: 800;
