@@ -34,6 +34,13 @@ function HeaderLink({
 // 2. Le composant principal
 function QuizHeader({ onNavigate, currentPage, isQuizActive }: HeaderProps) {
   const isAuthenticated = authService.isAuthenticated();
+  const isAdmin = authService.isAdmin();
+
+  const handleLogoClick = () => {
+    const homePath = authService.getHomePageByRole();
+    const path = homePath === '/admin' ? 'home' : 'home';
+    onNavigate(path as "quiz" | "leaderboard" | "home");
+  };
 
   const handleAuthAction = () => {
     if (isAuthenticated) {
@@ -68,21 +75,36 @@ function QuizHeader({ onNavigate, currentPage, isQuizActive }: HeaderProps) {
     >
       <motion.div 
         whileHover={{ scale: 1.05 }}
-        onClick={() => onNavigate("home")} // 🔥 clique logo = retour home
+        onClick={handleLogoClick}
         style={{ fontSize: "1.5rem", fontWeight: "bold", cursor: "pointer" }}
       >
-        QuizzYnov
+        QuizzYnov {isAdmin && <span style={{ fontSize: "0.7rem", marginLeft: "0.5rem" }}>[ADMIN]</span>}
       </motion.div>
 
       <nav style={{ display: "flex", gap: "2rem", alignItems: "center" }}>
         <div style={{ display: "flex", gap: "1.5rem" }}>
-          {currentPage !== "home" && (
-            <HeaderLink label="Accueil" onClick={() => onNavigate("home")} />
+          {/* Navigation USER */}
+          {!isAdmin && (
+            <>
+              {currentPage !== "home" && (
+                <HeaderLink label="Accueil" onClick={() => onNavigate("home")} />
+              )}
+              {!isQuizActive && (
+                <HeaderLink label="Jouer" onClick={() => onNavigate("quiz")} />
+              )}
+              <HeaderLink label="Classement" onClick={() => onNavigate("leaderboard")} />
+            </>
           )}
-          {!isQuizActive && (
-            <HeaderLink label="Jouer" onClick={() => onNavigate("quiz")} />
+
+          {/* Navigation ADMIN */}
+          {isAdmin && (
+            <>
+              {currentPage !== "home" && (
+                <HeaderLink label="Administration" onClick={() => window.location.href = "/admin"} />
+              )}
+              <HeaderLink label="Gérer Questions" onClick={() => window.location.href = "/admin/questions"} />
+            </>
           )}
-          <HeaderLink label="Classement" onClick={() => onNavigate("leaderboard")} />
         </div>
         
         <div style={{ width: "1px", height: "20px", backgroundColor: "rgba(255,255,255,0.3)" }} />

@@ -7,6 +7,8 @@ type RegisterFormPayload = {
     confirmPassword: string;
 };
 
+export type UserRole = 'USER' | 'ADMIN';
+
 const authService = {
     login: async (credentials: LoginCredentials) => {
         const data = await authApi.login(credentials);
@@ -44,6 +46,20 @@ const authService = {
 
     isAuthenticated: () => {
         return !!localStorage.getItem('userToken');
+    },
+
+    getUserRole: (): UserRole => {
+        const role = localStorage.getItem('userRole');
+        return (role as UserRole) || 'USER';
+    },
+
+    isAdmin: (): boolean => {
+        return authService.getUserRole() === 'ADMIN';
+    },
+
+    getHomePageByRole: (role?: UserRole): string => {
+        const userRole = role || authService.getUserRole();
+        return userRole === 'ADMIN' ? '/admin' : '/home';
     }
 };
 

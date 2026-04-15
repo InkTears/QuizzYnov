@@ -12,7 +12,7 @@ export default function QuizPage() {
   return (
     <>
       <Header onNavigate={handleNavigate} currentPage="quiz" isQuizActive={true} />
-      <Quiz onNavigate={handleNavigate} />
+      <Quiz />
     </>
   );
 }

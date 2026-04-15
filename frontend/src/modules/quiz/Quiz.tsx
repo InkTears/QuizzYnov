@@ -7,10 +7,10 @@ import quizService from "../../api/quizApi";
 import type { QuizQuestion } from "../../types/Question";
 
 interface QuizProps {
-  onNavigate: (page: "quiz" | "leaderboard" | "home") => void;
+  // Component handles its own navigation based on user role
 }
 
-export const Quiz = ({ onNavigate }: QuizProps) => {
+export const Quiz = ({}: QuizProps) => {
   const [questions, setQuestions] = useState<QuizQuestion[]>([]);
   const [loading, setLoading] = useState(true);
   const [index, setIndex] = useState(0);
@@ -80,7 +80,6 @@ export const Quiz = ({ onNavigate }: QuizProps) => {
               score={score}
               total={questions.length}
               onRestart={resetQuiz}
-              onNavigate={onNavigate}
             />
           )}
         </AnimatePresence>

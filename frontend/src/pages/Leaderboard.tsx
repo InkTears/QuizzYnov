@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { leaderboardApi, type LeaderboardEntry } from "../api/leaderboardApi";
+import authService from "../services/authService";
 
 export const Leaderboard = () => {
   const navigate = useNavigate();
@@ -25,7 +26,8 @@ export const Leaderboard = () => {
   }, []);
 
   const handleBack = () => {
-    navigate("/home");
+    const homePath = authService.getHomePageByRole();
+    navigate(homePath);
   };
 
   if (loading) {

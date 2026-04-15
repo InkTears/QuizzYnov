@@ -1,15 +1,22 @@
+import { useNavigate } from 'react-router-dom';
 import { motion } from "framer-motion";
+import authService from '../../services/authService';
 
 interface ResultProps {
   score: number;
   total: number;
   onRestart: () => void;
-  onNavigate: (page: "quiz" | "leaderboard" | "home") => void;
 }
 
-export const Result = ({ score, total, onRestart, onNavigate }: ResultProps) => {
+export const Result = ({ score, total, onRestart }: ResultProps) => {
+  const navigate = useNavigate();
   const ratio = score / total;
   const message = ratio >= 0.8 ? "Félicitations !" : ratio >= 0.5 ? "Pas mal !" : "Tu peux mieux faire !";
+
+  const handleBackHome = () => {
+    const homePath = authService.getHomePageByRole();
+    navigate(homePath);
+  };
 
   return (
     <motion.section
@@ -63,7 +70,7 @@ export const Result = ({ score, total, onRestart, onNavigate }: ResultProps) => 
           </motion.button>
 
           <motion.button
-            onClick={() => onNavigate("home")}
+            onClick={handleBackHome}
             whileHover={{ scale: 1.05, backgroundColor: "#f3f4f6" }}
             whileTap={{ scale: 0.95 }}
             style={{
