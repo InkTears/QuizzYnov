@@ -7,4 +7,5 @@ export interface Question {
   optionB: string;
   optionC: string;
   optionD: string;
+  correctAnswer: AnswerOption;
 }
