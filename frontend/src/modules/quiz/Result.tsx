@@ -10,6 +10,19 @@ interface ResultProps {
 }
 
 export const Result = ({ score, total, questions, answers }: ResultProps) => {
+  const getOptionContent = (question: Question, option: AnswerOption) => {
+    if (option === "A") {
+      return question.optionA;
+    }
+    if (option === "B") {
+      return question.optionB;
+    }
+    if (option === "C") {
+      return question.optionC;
+    }
+    return question.optionD;
+  };
+
   return (
     <motion.div 
       initial={{ scale: 0.9, opacity: 0 }}
@@ -35,10 +48,10 @@ export const Result = ({ score, total, questions, answers }: ResultProps) => {
                   {isCorrect ? "Bonne réponse" : "Mauvaise réponse"}
                 </p>
                 <p className="quiz-result__answer">
-                  Ta réponse : <span>{userAnswer ?? "Aucune réponse"}</span>
+                  Ta réponse : <span>{userAnswer ? `${userAnswer} — ${getOptionContent(question, userAnswer)}` : "Aucune réponse"}</span>
                 </p>
                 <p className="quiz-result__answer">
-                  Bonne réponse : <span>{question.correctAnswer}</span>
+                  Bonne réponse : <span>{question.correctAnswer} — {getOptionContent(question, question.correctAnswer)}</span>
                 </p>
               </li>
             );
