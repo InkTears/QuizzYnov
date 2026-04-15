@@ -3,17 +3,15 @@ import { AnimatePresence } from "framer-motion";
 import { Question } from "./Question";
 import { Result } from "./Result";
 import { fetchQuestions } from "../../services/quizService";
-import { type Question as QuestionType } from "../../types/Question";
 import quizService from "../../api/quizApi";
+import type { QuizQuestion } from "../../types/Question";
 
-// ✅ 1. Ajouter les props
 interface QuizProps {
   onNavigate: (page: "quiz" | "leaderboard" | "home") => void;
 }
 
-// ✅ 2. Injecter onNavigate
 export const Quiz = ({ onNavigate }: QuizProps) => {
-  const [questions, setQuestions] = useState<QuestionType[]>([]);
+  const [questions, setQuestions] = useState<QuizQuestion[]>([]);
   const [loading, setLoading] = useState(true);
   const [index, setIndex] = useState(0);
   const [score, setScore] = useState(0);
@@ -62,9 +60,9 @@ export const Quiz = ({ onNavigate }: QuizProps) => {
   }
 
   return (
-    <div style={{ 
-      display: "flex", 
-      justifyContent: "center", 
+    <div style={{
+      display: "flex",
+      justifyContent: "center",
       width: "100%",
       marginTop: "3rem",
       padding: "0 1rem"
@@ -72,17 +70,17 @@ export const Quiz = ({ onNavigate }: QuizProps) => {
       <div style={{ width: "100%", maxWidth: "800px" }}>
         <AnimatePresence mode="wait">
           {!isFinished ? (
-            <Question 
+            <Question
               key={index}
-              data={questions[index]} 
-              onAnswer={handleAnswer} 
+              data={questions[index]}
+              onAnswer={handleAnswer}
             />
           ) : (
-            <Result 
-              score={score} 
-              total={questions.length} 
+            <Result
+              score={score}
+              total={questions.length}
               onRestart={resetQuiz}
-              onNavigate={onNavigate} // ✅ 3. On transmet ici
+              onNavigate={onNavigate}
             />
           )}
         </AnimatePresence>

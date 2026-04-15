@@ -1,15 +1,18 @@
+import { useNavigate } from 'react-router-dom';
 import Header from "../components/layout/Header";
 import Hero from "../components/layout/Hero";
 
-interface HomeProps {
-  onNavigate: (page: "quiz" | "leaderboard" | "home") => void;
-}
+export default function Home() {
+  const navigate = useNavigate();
 
-export default function Home({ onNavigate }: HomeProps) {
+  const handleNavigate = (page: "quiz" | "leaderboard" | "home") => {
+    navigate(`/${page}`);
+  };
+
   return (
     <>
-      <Header onNavigate={onNavigate} currentPage="home" />
-      <Hero onStart={() => onNavigate("quiz")} />
+      <Header onNavigate={handleNavigate} currentPage="home" />
+      <Hero onStart={() => navigate("/quiz")} />
     </>
   );
 }

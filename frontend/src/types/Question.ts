@@ -9,6 +9,6 @@ export interface QuizQuestion {
   id: number;
   text: string;
   options: string[];
-  correctAnswer: string;
+  correctAnswers: string[];
   category?: string;
 }

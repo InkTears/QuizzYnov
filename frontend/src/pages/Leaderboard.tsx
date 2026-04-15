@@ -1,12 +1,10 @@
+import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { leaderboardApi, type LeaderboardEntry } from "../api/leaderboardApi";
 
-interface LeaderboardProps {
-  onNavigate: (page: "leaderboard" | "home") => void;
-}
-
-export const Leaderboard = ({ onNavigate }: LeaderboardProps) => {
+export const Leaderboard = () => {
+  const navigate = useNavigate();
   const [scores, setScores] = useState<LeaderboardEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [leaderboardDate, setLeaderboardDate] = useState<string>("");
@@ -27,7 +25,7 @@ export const Leaderboard = ({ onNavigate }: LeaderboardProps) => {
   }, []);
 
   const handleBack = () => {
-    onNavigate("home");
+    navigate("/home");
   };
 
   if (loading) {

@@ -60,7 +60,7 @@ const LoginPageUser: React.FC = () => {
                 sessionStorage.setItem('loginSuccess', JSON.stringify({ name, role }));
 
                 if (role === 'admin') {
-                    navigate('/admin/dashboard');
+                    navigate('/admin');
                 } else {
                     navigate('/home');
                 }
@@ -149,7 +149,7 @@ const LoginPageUser: React.FC = () => {
                     Pas encore de compte ? <Link to="/register">S'inscrire</Link>
                 </p>
                 <p>
-                    Voir les offres quiz : <Link to="/forfaits">Forfaits et abonnements</Link>
+                    Voir les offres quiz : <Link to="/pricing">Forfaits et abonnements</Link>
                 </p>
             </motion.div>
         </motion.div>

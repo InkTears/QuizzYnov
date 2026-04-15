@@ -1,5 +1,4 @@
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
 import authService from "../../services/authService";
 
 interface HeaderProps {
@@ -34,16 +33,16 @@ function HeaderLink({
 
 // 2. Le composant principal
 function QuizHeader({ onNavigate, currentPage, isQuizActive }: HeaderProps) {
-  const navigate = useNavigate();
   const isAuthenticated = authService.isAuthenticated();
 
   const handleAuthAction = () => {
     if (isAuthenticated) {
       authService.logout();
+      window.location.href = "/";
       return;
     }
 
-    navigate("/login");
+    window.location.href = "/login";
   };
 
   return (

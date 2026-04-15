@@ -28,7 +28,7 @@ class QuizService {
             optionB: question.optionB,
             optionC: question.optionC,
             optionD: question.optionD,
-            correctAnswer: question.correctAnswer,
+            correctAnswers: question.correctAnswers,
         }))
     }
 

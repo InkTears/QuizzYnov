@@ -261,7 +261,7 @@ const CRUDQuestionAdmin: React.FC = () => {
                 <motion.button
                     type="button"
                     className="btn-back-dashboard"
-                    onClick={() => navigate('/admin/dashboard')}
+                    onClick={() => navigate('/admin')}
                     whileHover={shouldReduceMotion ? undefined : { y: -1 }}
                     whileTap={shouldReduceMotion ? undefined : { scale: 0.985 }}
                 >

@@ -1,14 +1,12 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import authService from '../services/authService';
 
 const Navbar: React.FC = () => {
-    const navigate = useNavigate();
     const isAuthenticated = authService.isAuthenticated();
 
     const handleLogout = () => {
         authService.logout(); // Supprime le token
-        navigate('/login');   // Redirige vers la connexion
+        window.location.href = '/login';   // Redirige vers la connexion
     };
 
     if (!isAuthenticated) return null; // Ne pas afficher la barre si on n'est pas connecté

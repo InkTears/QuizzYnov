@@ -44,7 +44,7 @@ export const quizApi = {
         return response.data;
     },
 
-    deleteQuestion: async (id: string) => {
+    deleteQuestion: async (id: string | number) => {
         const response = await axios.delete(`${API_URL}/${id}`);
         return response.data;
     },
@@ -58,7 +58,7 @@ export const quizApi = {
 const quizService = {
     getAllQuestions: async () => quizApi.fetchQuestions(),
     createQuestion: async (questionData: Question) => quizApi.postQuestion(questionData),
-    deleteQuestion: async (id: string) => quizApi.deleteQuestion(id),
+    deleteQuestion: async (id: string | number) => quizApi.deleteQuestion(id),
     submitQuiz: async (userId: number, answers: Record<number, string>, duration: number) => quizApi.submitQuiz(userId, answers, duration),
 };
 

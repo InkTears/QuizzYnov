@@ -1,15 +1,18 @@
+import { useNavigate } from 'react-router-dom';
 import Header from "../components/layout/Header";
 import Quiz from "../modules/quiz/Quiz";
 
-interface QuizPageProps {
-  onNavigate: (page: "quiz" | "leaderboard" | "home") => void;
-}
+export default function QuizPage() {
+  const navigate = useNavigate();
 
-export default function QuizPage({ onNavigate }: QuizPageProps) {
+  const handleNavigate = (page: "quiz" | "leaderboard" | "home") => {
+    navigate(`/${page}`);
+  };
+
   return (
     <>
-      <Header onNavigate={onNavigate} currentPage="quiz" isQuizActive={true} />
-      <Quiz onNavigate={onNavigate} />
+      <Header onNavigate={handleNavigate} currentPage="quiz" isQuizActive={true} />
+      <Quiz onNavigate={handleNavigate} />
     </>
   );
 }
