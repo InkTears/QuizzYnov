@@ -1,6 +1,6 @@
-import type { Question } from '../types/Question';
+import type { QuizQuestion } from '../types/Question';
 
-export const questions: Question[] = [
+export const questions: QuizQuestion[] = [
   {
     id: 1,
     text: "Quel hook est utilisé pour gérer l'état dans un composant fonctionnel React ?",

@@ -1,8 +1,8 @@
 import { motion } from "framer-motion";
-import type { Question as QuestionType } from "../../types/Question";
+import type { QuizQuestion } from "../../types/Question";
 
 interface QuestionProps {
-  data: QuestionType;
+  data: QuizQuestion;
   onAnswer: (isCorrect: boolean) => void;
 }
 

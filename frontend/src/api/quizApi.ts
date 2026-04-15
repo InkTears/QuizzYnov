@@ -1,14 +1,7 @@
 import axios from 'axios';
+import type { Question } from '../types/Question';
 
 const API_URL = '/api/questions';
-
-// Types
-interface FrontendQuestion {
-    id?: string | number;
-    text: string;
-    options: string[];
-    correctAnswers: number[];
-}
 
 interface BackendQuestion {
     id: number;
@@ -21,7 +14,7 @@ interface BackendQuestion {
 }
 
 // Convertir backend → frontend
-const convertBackendToFrontend = (backend: BackendQuestion): FrontendQuestion => {
+const convertBackendToFrontend = (backend: BackendQuestion): Question => {
     const optionsMap: Record<string, number> = {
         A: 0,
         B: 1,
@@ -37,7 +30,7 @@ const convertBackendToFrontend = (backend: BackendQuestion): FrontendQuestion =>
 };
 
 // Convertir frontend → backend
-const convertFrontendToBackend = (frontend: FrontendQuestion) => {
+const convertFrontendToBackend = (frontend: Question) => {
     const answerMap = ['A', 'B', 'C', 'D'] as const;
     return {
         content: frontend.text,
@@ -60,7 +53,7 @@ export const quizApi = {
         }
     },
 
-    postQuestion: async (questionData: FrontendQuestion) => {
+    postQuestion: async (questionData: Question) => {
         try {
             const backendData = convertFrontendToBackend(questionData);
             const response = await axios.post<BackendQuestion>(API_URL, backendData);
@@ -85,7 +78,7 @@ export const quizApi = {
 
 const quizService = {
     getAllQuestions: async () => quizApi.fetchQuestions(),
-    createQuestion: async (questionData: FrontendQuestion) => quizApi.postQuestion(questionData),
+    createQuestion: async (questionData: Question) => quizApi.postQuestion(questionData),
     deleteQuestion: async (id: string | number) => quizApi.deleteQuestion(id)
 };
 

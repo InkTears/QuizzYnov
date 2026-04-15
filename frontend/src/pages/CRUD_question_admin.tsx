@@ -3,14 +3,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import '../css/questions.css';
 import quizService from '../api/quizApi';
-
-// Définition de la structure (le "moule") d'une Question
-interface Question {
-    id?: string | number; // L'ID
-    text: string;         // L'énoncé de la question
-    options: string[];    // Les 4 choix de réponse
-    correctAnswers: number[]; // Les index (0, 1, 2 ou 3) des bonnes réponses
-}
+import type { Question } from '../types/Question';
 
 // Un modèle de question vide pour réinitialiser le formulaire
 const EMPTY_QUESTION: Question = {
