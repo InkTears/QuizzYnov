@@ -7,6 +7,8 @@ import TableauDeBoardAdmin from './pages/Tableau_de_board_admin';
 import CRUDQuestionAdmin from './pages/CRUD_question_admin.tsx'
 import Leaderboard from './pages/Leaderboard';
 import ProfilePage from './pages/Profile_page';
+import PaymentPage from './pages/Payment_page';
+import PricingPage from './pages/Pricing_page';
 import NotFoundPage from './pages/404';
 import ProtectedRoute from './utils/auth';
 import AdminRoute from './utils/admin';
@@ -44,6 +46,9 @@ function App() {
 
                     <Route path="/login" element={<LoginPageUser />} />
                     <Route path="/register" element={<RegisterPageUser />} />
+                    <Route path="/pricing" element={<PricingPage />} />
+                    <Route path="/paiement" element={<PaymentPage />} />
+                    <Route path="/payment" element={<Navigate to="/paiement" replace />} />
                     <Route path="/admin/login" element={<Navigate to="/login" replace />} />
 
                     <Route element={<AdminRoute />}>

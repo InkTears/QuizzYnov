@@ -1,5 +1,5 @@
-import React, { useRef } from 'react';
-import { motion, useInView, useReducedMotion, useScroll, useSpring, useTransform } from 'framer-motion';
+import React, { useEffect, useRef, useState } from 'react';
+import { AnimatePresence, motion, useInView, useReducedMotion, useScroll, useSpring, useTransform } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import Login from '../modules/auth/Login';
 import authService from '../services/authService';
@@ -10,6 +10,28 @@ const LoginPageUser: React.FC = () => {
     const pageRef = useRef<HTMLDivElement | null>(null);
     const footerRef = useRef<HTMLDivElement | null>(null);
     const shouldReduceMotion = useReducedMotion();
+    const [paymentToast, setPaymentToast] = useState<{ plan: string; price: string } | null>(null);
+
+    useEffect(() => {
+        const paymentSuccess = sessionStorage.getItem('paymentSimulationSuccess');
+        if (!paymentSuccess) {
+            return;
+        }
+
+        sessionStorage.removeItem('paymentSimulationSuccess');
+
+        try {
+            const parsedPayment = JSON.parse(paymentSuccess) as { plan?: string; price?: string };
+            setPaymentToast({
+                plan: parsedPayment.plan || 'Abonnement',
+                price: parsedPayment.price || ''
+            });
+            setTimeout(() => setPaymentToast(null), 4000);
+        } catch {
+            setPaymentToast({ plan: 'Abonnement', price: '' });
+            setTimeout(() => setPaymentToast(null), 4000);
+        }
+    }, []);
 
     const { scrollYProgress } = useScroll({
         target: pageRef,
@@ -63,6 +85,28 @@ const LoginPageUser: React.FC = () => {
                 aria-hidden="true"
             />
 
+            <AnimatePresence>
+                {paymentToast && (
+                    <motion.div
+                        className="login-toast-success login-toast-register"
+                        initial={{ opacity: 0, y: -24, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: -16, scale: 0.97 }}
+                        transition={{ duration: 0.3, ease: 'easeOut' }}
+                        role="status"
+                        aria-live="polite"
+                    >
+                        <span className="login-toast-icon">✓</span>
+                        <span>
+                            Simulation Stripe validée pour {paymentToast.plan}
+                            {paymentToast.price ? ` (${paymentToast.price})` : ''}.
+                            <br />
+                            <small>Connectez-vous pour finaliser l'activation de votre accès</small>
+                        </span>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
             <img src="/QuizzYnov1.png" alt="QuizzYnov" style={{ width: 'min(80vw, 260px)', zIndex: 1 }} />
 
             <Login
@@ -81,6 +125,9 @@ const LoginPageUser: React.FC = () => {
             >
                 <p>
                     Pas encore de compte ? <Link to="/register">S'inscrire</Link>
+                </p>
+                <p>
+                    Voir les offres quiz : <Link to="/pricing">Forfaits et abonnements</Link>
                 </p>
             </motion.div>
         </motion.div>
