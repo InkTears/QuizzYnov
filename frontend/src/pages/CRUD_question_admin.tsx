@@ -158,7 +158,7 @@ const CRUDQuestionAdmin: React.FC = () => {
             const data = await quizService.getAllQuestions();
             setQuestions(Array.isArray(data) ? data as AdminQuestion[] : []);
         } catch (err) {
-            console.error('Erreur recuperation', err);
+            console.error('Erreur lors de la récupération des questions', err);
         }
     };
 
@@ -248,7 +248,7 @@ const CRUDQuestionAdmin: React.FC = () => {
         const csvRows = [
             expectedHeader,
             '"Quelle est la capitale de la France ?";"Paris";"Lyon";"Marseille";"Nice";"A"',
-            '"Quel langage est utilise pour typer React ?";"PHP";"TypeScript";"Ruby";"Lua";"B"'
+            '"Quel langage est utilisé pour typer React ?";"PHP";"TypeScript";"Ruby";"Lua";"B"'
         ];
 
         const csvContent = `\uFEFF${csvRows.join('\n')}`;
@@ -257,7 +257,7 @@ const CRUDQuestionAdmin: React.FC = () => {
 
         const link = document.createElement('a');
         link.href = url;
-        link.setAttribute('download', 'template_questions_quizynov.csv');
+        link.setAttribute('download', 'template_questions_quizzynov.csv');
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -322,7 +322,7 @@ const CRUDQuestionAdmin: React.FC = () => {
                                     />
                                     <input
                                         type="text"
-                                        placeholder={`Reponse ${opt.label}`}
+                                        placeholder={`Réponse ${opt.label}`}
                                         value={newQuestion[opt.field]}
                                         onChange={(e) => setNewQuestion({ ...newQuestion, [opt.field]: e.target.value })}
                                         required
@@ -358,7 +358,7 @@ const CRUDQuestionAdmin: React.FC = () => {
                     whileHover={shouldReduceMotion ? undefined : { y: -1 }}
                     whileTap={shouldReduceMotion ? undefined : { scale: 0.985 }}
                 >
-                    Telecharger le template CSV
+                    Télécharger le template CSV
                 </motion.button>
                 <div className="import-row">
                     <input
@@ -386,7 +386,7 @@ const CRUDQuestionAdmin: React.FC = () => {
             </motion.section>
 
             <motion.section className="card questions-list-card" variants={itemVariants}>
-                <h3>Base de donnees ({questions.length})</h3>
+                <h3>Base de données ({questions.length})</h3>
                 <div className="questions-list-wrapper">
                     <AnimatePresence initial={false}>
                         {questions.map((q) => {
@@ -464,7 +464,7 @@ const CRUDQuestionAdmin: React.FC = () => {
                         animate={{ opacity: 1 }}
                         transition={{ duration: 0.3 }}
                     >
-                        <p>Aucune question pour le moment. Creez-en une!</p>
+                        <p>Aucune question pour le moment. Créez-en une!</p>
                     </motion.div>
                 )}
             </motion.section>

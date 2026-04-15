@@ -30,20 +30,21 @@ const TableauDeBoardAdmin: React.FC = () => {
     const navigate = useNavigate();
     const shouldReduceMotion = useReducedMotion();
     const [stats, setStats] = useState({ totalQuestions: 0, totalParties: 0 });
-    const [loginToast, setLoginToast] = useState<{ name: string; role: string } | null>(null);
-
-    useEffect(() => {
+    const [loginToast, setLoginToast] = useState<{ name: string; role: string } | null>(() => {
         const raw = sessionStorage.getItem('loginSuccess');
-        if (raw) {
-            sessionStorage.removeItem('loginSuccess');
-            try {
-                setLoginToast(JSON.parse(raw));
-                setTimeout(() => setLoginToast(null), 3000);
-            } catch {
-                setLoginToast(null);
-            }
+        if (!raw) {
+            return null;
         }
 
+        sessionStorage.removeItem('loginSuccess');
+        try {
+            return JSON.parse(raw);
+        } catch {
+            return null;
+        }
+    });
+
+    useEffect(() => {
         const loadDashboardData = async () => {
             try {
                 const questions = await quizService.getAllQuestions();
@@ -57,6 +58,15 @@ const TableauDeBoardAdmin: React.FC = () => {
         };
         loadDashboardData();
     }, []);
+
+    useEffect(() => {
+        if (!loginToast) {
+            return;
+        }
+
+        const timeoutId = window.setTimeout(() => setLoginToast(null), 3000);
+        return () => window.clearTimeout(timeoutId);
+    }, [loginToast]);
 
     const handleLogout = () => {
         authService.logout();
@@ -82,9 +92,9 @@ const TableauDeBoardAdmin: React.FC = () => {
                     >
                         <span className="login-toast-icon">✓</span>
                         <span>
-                            {loginToast.name ? `Bienvenue, ${loginToast.name} !` : 'Connexion reussie !'}
+                            {loginToast.name ? `Bienvenue, ${loginToast.name} !` : 'Connexion réussie !'}
                             <br />
-                            <small>Connecte en tant qu'administrateur</small>
+                            <small>Connecté en tant qu'administrateur</small>
                         </span>
                     </motion.div>
                 )}
@@ -107,7 +117,7 @@ const TableauDeBoardAdmin: React.FC = () => {
                         whileHover={shouldReduceMotion ? undefined : { y: -1, scale: 1.01 }}
                         whileTap={shouldReduceMotion ? undefined : { scale: 0.985 }}
                     >
-                        Deconnexion
+                        Déconnexion
                     </motion.button>
                 </div>
             </motion.header>
