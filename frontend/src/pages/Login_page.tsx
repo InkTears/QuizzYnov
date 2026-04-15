@@ -98,10 +98,10 @@ const LoginPageUser: React.FC = () => {
                     >
                         <span className="login-toast-icon">✓</span>
                         <span>
-                            Simulation Stripe validee pour {paymentToast.plan}
+                            Simulation Stripe validée pour {paymentToast.plan}
                             {paymentToast.price ? ` (${paymentToast.price})` : ''}.
                             <br />
-                            <small>Connectez-vous pour finaliser l activation de votre acces</small>
+                            <small>Connectez-vous pour finaliser l'activation de votre accès</small>
                         </span>
                     </motion.div>
                 )}

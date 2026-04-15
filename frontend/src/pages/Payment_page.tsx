@@ -8,17 +8,17 @@ const PLAN_DETAILS: Record<PlanKey, { name: string; price: string; description: 
     starter: {
         name: 'Starter',
         price: '0 EUR / mois',
-        description: 'Acces de base pour decouvrir QuizzYnov.'
+        description: 'Accès de base pour découvrir QuizzYnov.'
     },
     pro: {
         name: 'Pro',
         price: '12 EUR / mois',
-        description: 'Le plan le plus choisi pour une pratique reguliere.'
+        description: 'Le plan le plus choisi pour une pratique régulière.'
     },
     team: {
         name: 'Team',
         price: '29 EUR / mois',
-        description: 'Concu pour les equipes, classes et organisations.'
+        description: 'Conçu pour les équipes, classes et organisations.'
     }
 };
 
@@ -60,7 +60,7 @@ const PaymentPage: React.FC = () => {
         }
 
         if (!expiry.trim() || !cvc.trim()) {
-            setErrorMessage('Completez la date d expiration et le CVC.');
+            setErrorMessage("Complétez la date d'expiration et le CVC.");
             return;
         }
 
@@ -72,7 +72,7 @@ const PaymentPage: React.FC = () => {
 
         if (normalizedCardNumber === '4000000000000002') {
             setIsSubmitting(false);
-            setErrorMessage('Simulation refusee: utilisez 4242 4242 4242 4242 pour un paiement test valide.');
+            setErrorMessage('Simulation refusée: utilisez 4242 4242 4242 4242 pour un paiement test valide.');
             return;
         }
 
@@ -91,13 +91,13 @@ const PaymentPage: React.FC = () => {
         <main className="payment-page">
             <section className="payment-card">
                 <header className="payment-hero">
-                    <p className="payment-kicker">Paiement securise Stripe</p>
+                    <p className="payment-kicker">Paiement sécurisé Stripe</p>
                     <h1>Finaliser votre abonnement</h1>
                     <p className="payment-plan-name">{plan.name}</p>
                     <p className="payment-price">{plan.price}</p>
                     <p className="payment-description">{plan.description}</p>
                     <p className="payment-note">
-                        Mode simulation: aucun debit reel n&apos;est effectue. Cette page imite un paiement Stripe
+                        Mode simulation: aucun débit réel n&apos;est effectué. Cette page imite un paiement Stripe
                         test puis vous renvoie vers la connexion.
                     </p>
                 </header>
@@ -115,7 +115,7 @@ const PaymentPage: React.FC = () => {
                     </label>
 
                     <label className="payment-field">
-                        <span>Numero de carte de test</span>
+                        <span>Numéro de carte de test</span>
                         <input
                             type="text"
                             value={cardNumber}
@@ -159,7 +159,7 @@ const PaymentPage: React.FC = () => {
                             className="payment-chip"
                             onClick={() => setCardNumber(SIMULATION_CARD.success)}
                         >
-                            4242 4242 4242 4242 = Succes
+                            4242 4242 4242 4242 = Succès
                         </button>
                         <button
                             type="button"
@@ -172,7 +172,7 @@ const PaymentPage: React.FC = () => {
 
                     {isStarterPlan ? (
                         <p className="payment-warning">
-                            Le plan Starter est gratuit. La simulation valide simplement l activation puis renvoie
+                            Le plan Starter est gratuit. La simulation valide simplement l'activation puis renvoie
                             vers la connexion.
                         </p>
                     ) : null}

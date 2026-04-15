@@ -9,15 +9,15 @@ const plans = [
         price: '0 EUR',
         period: '/mois',
         description: 'Ideal pour tester la plateforme et lancer tes premiers quiz.',
-        features: ['5 quiz par mois', 'Acces au classement public', 'Support standard']
+        features: ['5 quiz par mois', 'Accès au classement public', 'Support standard']
     },
     {
         id: 'pro',
         name: 'Pro',
         price: '12 EUR',
         period: '/mois',
-        description: 'Pour les joueurs reguliers qui veulent progresser rapidement.',
-        features: ['Quiz illimites', 'Statistiques detaillees', 'Themes exclusifs'],
+        description: 'Pour les joueurs réguliers qui veulent progresser rapidement.',
+        features: ['Quiz illimités', 'Statistiques détaillées', 'Thèmes exclusifs'],
         highlighted: true
     },
     {
@@ -25,8 +25,8 @@ const plans = [
         name: 'Team',
         price: '29 EUR',
         period: '/mois',
-        description: 'Concu pour les groupes, classes ou equipes en entreprise.',
-        features: ['Jusqu a 25 comptes', 'Tableau de bord equipe', 'Support prioritaire']
+        description: 'Conçu pour les groupes, classes ou équipes en entreprise.',
+        features: ["Jusqu'à 25 comptes", 'Tableau de bord équipe', 'Support prioritaire']
     }
 ];
 
@@ -37,7 +37,7 @@ const PricingPage: React.FC = () => {
                 <p className="plans-kicker">Abonnements QuizzYnov</p>
                 <h1>Choisis le forfait quiz qui te correspond</h1>
                 <p className="plans-subtitle">
-                    Passe du mode decouverte a une experience complete avec analyses, objectifs et competition.
+                    Passe du mode découverte à une expérience complète avec analyses, objectifs et compétition.
                 </p>
             </section>
 
@@ -67,7 +67,7 @@ const PricingPage: React.FC = () => {
             </section>
 
             <section className="plans-footer-cta">
-                <p>Tu as deja un compte? Connecte-toi ici</p>
+                <p>Tu as déjà un compte? Connecte-toi ici</p>
                 <Link to="/login">Se connecter</Link>
             </section>
         </main>
