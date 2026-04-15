@@ -1,47 +1,35 @@
-import { Link } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import "../css/notfound.css";
 
 const NotFoundPage = () => {
-  return (
-    <main
-      style={{
-        minHeight: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '24px',
-      }}
-    >
-      <section
-        style={{
-          textAlign: 'center',
-          maxWidth: '420px',
-          width: '100%',
-        }}
-      >
-        <h1 style={{ fontSize: '56px', margin: '0 0 8px' }}>404</h1>
-        <h2 style={{ margin: '0 0 12px' }}>Page not found</h2>
-        <p style={{ margin: '0 0 24px', color: '#555' }}>
-          The page you are looking for does not exist.
-        </p>
+  const navigate = useNavigate();
 
-        <Link
-          to="/login"
-          style={{
-            display: 'inline-block',
-            padding: '10px 16px',
-            borderRadius: '8px',
-            textDecoration: 'none',
-            background: '#111827',
-            color: '#fff',
-            fontWeight: 600,
-          }}
-        >
-          Back to login
-        </Link>
-      </section>
+  const handleBack = () => {
+    const historyIndex = typeof window.history.state?.idx === "number" ? window.history.state.idx : 0;
+    if (historyIndex > 0) {
+      navigate(-1);
+      return;
+    }
+    navigate("/quiz", { replace: true });
+  };
+
+  return (
+    <main className="notfound-page">
+      <motion.section
+        className="notfound-card"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+      >
+        <h1>404</h1>
+        <h2>Page introuvable</h2>
+        <p>La page demandée n'existe pas ou a été déplacée.</p>
+        <button type="button" onClick={handleBack}>
+          Retour arrière
+        </button>
+      </motion.section>
     </main>
   );
 };
 
 export default NotFoundPage;
-

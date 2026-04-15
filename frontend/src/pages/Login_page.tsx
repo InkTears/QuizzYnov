@@ -27,9 +27,11 @@ const LoginPageUser: React.FC = () => {
                 const role = String(response.role || response.user?.role || localStorage.getItem('userRole') || '')
                     .toLowerCase()
                     .trim();
+                const name = String(response.user?.name || localStorage.getItem('userName') || '');
+                sessionStorage.setItem('loginSuccess', JSON.stringify({ name, role }));
 
                 if (role === 'admin') {
-                    navigate('/admin/dashboard');
+                    navigate('/quiz');
                     return;
                 }
 
@@ -60,6 +62,8 @@ const LoginPageUser: React.FC = () => {
                 style={shouldReduceMotion ? undefined : { y: orbY, opacity: orbOpacity }}
                 aria-hidden="true"
             />
+
+            <img src="/QuizzYnov1.png" alt="QuizzYnov" style={{ width: 'min(80vw, 260px)', zIndex: 1 }} />
 
             <Login
                 title="Connexion"

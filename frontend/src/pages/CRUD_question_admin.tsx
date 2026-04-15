@@ -1,17 +1,59 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import '../css/questions.css';
 import quizService from '../api/quizApi';
 
-type CsvQuestion = {
+type AdminQuestion = {
+    id: number;
+    content: string;
+    optionA: string;
+    optionB: string;
+    optionC: string;
+    optionD: string;
+};
+
+type CorrectAnswer = 'A' | 'B' | 'C' | 'D';
+
+type CsvQuestionRow = {
     content: string;
     option_a: string;
     option_b: string;
     option_c: string;
     option_d: string;
-    correct_answers: 'A' | 'B' | 'C' | 'D';
+    correct_answers: CorrectAnswer;
 };
 
 const BATCH_SIZE = 100;
+
+const EMPTY_QUESTION = {
+    content: '',
+    optionA: '',
+    optionB: '',
+    optionC: '',
+    optionD: '',
+    correctAnswer: 'A' as CorrectAnswer
+};
+
+const containerVariants = {
+    hidden: { opacity: 0 },
+    show: {
+        opacity: 1,
+        transition: {
+            staggerChildren: 0.08,
+            delayChildren: 0.08
+        }
+    }
+};
+
+const itemVariants = {
+    hidden: { opacity: 0, y: 12 },
+    show: {
+        opacity: 1,
+        y: 0,
+        transition: { duration: 0.28 }
+    }
+};
 
 const splitCsvLine = (line: string): string[] => {
     const values: string[] = [];
@@ -39,7 +81,7 @@ const splitCsvLine = (line: string): string[] => {
     return values.map((value) => value.replace(/^"(.*)"$/, '$1').trim());
 };
 
-const parseCsv = (content: string): { rows: CsvQuestion[]; invalidCount: number } => {
+const parseCsv = (content: string): { rows: CsvQuestionRow[]; invalidCount: number } => {
     const lines = content
         .split(/\r?\n/)
         .map((line) => line.trim())
@@ -57,7 +99,7 @@ const parseCsv = (content: string): { rows: CsvQuestion[]; invalidCount: number 
         throw new Error('En-tetes invalides. Attendu: content,option_a,option_b,option_c,option_d,correct_answers');
     }
 
-    const rows: CsvQuestion[] = [];
+    const rows: CsvQuestionRow[] = [];
     let invalidCount = 0;
 
     for (let i = 1; i < lines.length; i += 1) {
@@ -68,7 +110,7 @@ const parseCsv = (content: string): { rows: CsvQuestion[]; invalidCount: number 
         }
 
         const [contentCell, a, b, c, d, correctRaw] = columns;
-        const correct = (correctRaw || '').toUpperCase() as CsvQuestion['correct_answers'];
+        const correct = (correctRaw || '').toUpperCase() as CorrectAnswer;
 
         if (!contentCell || !a || !b || !c || !d || !['A', 'B', 'C', 'D'].includes(correct)) {
             invalidCount += 1;
@@ -81,7 +123,7 @@ const parseCsv = (content: string): { rows: CsvQuestion[]; invalidCount: number 
             option_b: b,
             option_c: c,
             option_d: d,
-            correct_answers: correct,
+            correct_answers: correct
         });
     }
 
@@ -97,52 +139,96 @@ const toBatches = <T,>(items: T[], size: number): T[][] => {
 };
 
 const CRUDQuestionAdmin: React.FC = () => {
+    const shouldReduceMotion = useReducedMotion();
     const navigate = useNavigate();
-    const [questionCount, setQuestionCount] = useState(0);
+
+    const [questions, setQuestions] = useState<AdminQuestion[]>([]);
+    const [newQuestion, setNewQuestion] = useState(EMPTY_QUESTION);
     const [isImporting, setIsImporting] = useState(false);
-    const [message, setMessage] = useState('');
-
-    const role = (localStorage.getItem('userRole') || '').toLowerCase().trim();
-    const isAdmin = role === 'admin';
-
-    const refreshCount = async () => {
-        const data = await quizService.getAllQuestions();
-        setQuestionCount(Array.isArray(data) ? data.length : 0);
-    };
-
-    useEffect(() => {
-        refreshCount().catch(() => {
-            setMessage('Impossible de charger le nombre de questions.');
-        });
-    }, []);
+    const [importMessage, setImportMessage] = useState('');
+    const [actionMessage, setActionMessage] = useState('');
+    const [expandedQuestions, setExpandedQuestions] = useState<Set<number>>(new Set());
 
     const expectedHeader = useMemo(
         () => 'content,option_a,option_b,option_c,option_d,correct_answers',
         []
     );
 
-    const handleFile = async (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0];
-        event.target.value = '';
-
-        if (!file) {
-            return;
+    const fetchQuestions = async () => {
+        try {
+            const data = await quizService.getAllQuestions();
+            setQuestions(Array.isArray(data) ? data as AdminQuestion[] : []);
+        } catch (err) {
+            console.error('Erreur lors de la récupération des questions', err);
         }
+    };
+
+    useEffect(() => {
+        fetchQuestions();
+    }, []);
+
+    const handleAddQuestion = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        try {
+            await quizService.createQuestion(newQuestion);
+            setNewQuestion(EMPTY_QUESTION);
+            await fetchQuestions();
+            setActionMessage('Question ajoutée avec succès.');
+        } catch (err) {
+            const message = err instanceof Error ? err.message : "Erreur lors de l'ajout";
+            alert(message);
+        }
+    };
+
+    const handleDelete = async (id: number | undefined) => {
+        if (!id) return;
+        if (window.confirm('Supprimer cette question ?')) {
+            try {
+                await quizService.deleteQuestion(String(id));
+                await fetchQuestions();
+                setActionMessage('Question supprimée avec succès.');
+            } catch (error) {
+                console.error('Erreur lors de la suppression de la question', error);
+                setActionMessage("Échec de la suppression de la question.");
+            }
+        }
+    };
+
+    const toggleQuestionExpanded = (id: number | undefined) => {
+        if (!id) return;
+        setExpandedQuestions((prev) => {
+            const newSet = new Set(prev);
+            if (newSet.has(id)) {
+                newSet.delete(id);
+            } else {
+                newSet.add(id);
+            }
+            return newSet;
+        });
+    };
+
+    const handleImportFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        setActionMessage('');
+        setImportMessage('');
 
         if (!file.name.toLowerCase().endsWith('.csv')) {
-            setMessage('Fichier invalide. Importez un CSV.');
+            setImportMessage('Format non pris en charge. Utilisez un CSV.');
+            e.target.value = '';
             return;
         }
 
         setIsImporting(true);
-        setMessage('');
-
         try {
-            const csvContent = await file.text();
-            const { rows, invalidCount } = parseCsv(csvContent);
+            const content = await file.text();
+            const { rows, invalidCount } = parseCsv(content);
 
             if (rows.length === 0) {
-                setMessage('Aucune ligne valide dans le CSV.');
+                setImportMessage('Aucune ligne valide dans le CSV.');
+                e.target.value = '';
                 return;
             }
 
@@ -155,45 +241,246 @@ const CRUDQuestionAdmin: React.FC = () => {
                 inserted += batch.length;
             }
 
-            await refreshCount();
-            setMessage(
-                `Import termine: ${inserted} questions ajoutees en ${batches.length} batch(es) de max ${BATCH_SIZE}. ${invalidCount} ligne(s) ignoree(s).`
+            setImportMessage(
+                `Import termine: ${inserted} questions ajoutees. ${invalidCount} ligne(s) ignoree(s).`
             );
+            await fetchQuestions();
         } catch (error) {
-            setMessage(error instanceof Error ? error.message : "Erreur pendant l'import CSV.");
+            console.error(error);
+            setImportMessage("Erreur pendant l'import du fichier.");
         } finally {
             setIsImporting(false);
+            e.target.value = '';
         }
     };
 
-    if (!isAdmin) {
-        return <p style={{ padding: '2rem', textAlign: 'center' }}>Acces refuse.</p>;
-    }
+    const handleDownloadTemplate = () => {
+        const csvRows = [
+            expectedHeader,
+            '"Quelle est la capitale de la France ?","Paris","Lyon","Marseille","Nice","A"',
+            '"Quel langage est utilisé pour typer React ?","PHP","TypeScript","Ruby","Lua","B"'
+        ];
+
+        // BOM UTF-8 pour une ouverture correcte dans Excel (accents/contenu Unicode).
+        const csvContent = `\uFEFF${csvRows.join('\n')}`;
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'template_questions_quizzynov.csv');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    };
+
+    const questionOptions = (q: AdminQuestion) => [
+        { key: 'A' as CorrectAnswer, value: q.optionA },
+        { key: 'B' as CorrectAnswer, value: q.optionB },
+        { key: 'C' as CorrectAnswer, value: q.optionC },
+        { key: 'D' as CorrectAnswer, value: q.optionD }
+    ];
 
     return (
-        <div style={{ maxWidth: '760px', margin: '2rem auto', padding: '0 1rem', textAlign: 'left' }}>
-            <h1>Administration - Import CSV</h1>
-            <p>Questions en base: <strong>{questionCount}</strong></p>
+        <motion.div className="crud-container" initial="hidden" animate="show" variants={containerVariants}>
+            <motion.div className="crud-header" variants={itemVariants}>
+                <h1>Gestion des Questions</h1>
+                <motion.button
+                    type="button"
+                    className="btn-back-dashboard"
+                    onClick={() => navigate('/admin/dashboard')}
+                    whileHover={shouldReduceMotion ? undefined : { y: -1 }}
+                    whileTap={shouldReduceMotion ? undefined : { scale: 0.985 }}
+                >
+                    Retour au dashboard
+                </motion.button>
+            </motion.div>
 
-            <button
-                type="button"
-                onClick={() => navigate('/profile')}
-                style={{ marginBottom: '1rem', padding: '0.5rem 1rem', cursor: 'pointer' }}
-            >
-                Retour profil
-            </button>
+            <motion.section className="card" variants={itemVariants}>
+                <h3>Nouvelle Question</h3>
+                <form onSubmit={handleAddQuestion}>
+                    <motion.input
+                        className="main-input"
+                        placeholder="Enoncez votre question ici..."
+                        value={newQuestion.content}
+                        onChange={(e) => setNewQuestion({ ...newQuestion, content: e.target.value })}
+                        required
+                        whileFocus={shouldReduceMotion ? undefined : { scale: 1.005 }}
+                    />
 
-            <div style={{ padding: '1rem', border: '1px solid #ddd', borderRadius: '8px' }}>
-                <p style={{ marginTop: 0 }}>
-                    En-tete CSV attendu: <code>{expectedHeader}</code>
+                    <div className="options-grid">
+                        {([
+                            { label: 'A', field: 'optionA' },
+                            { label: 'B', field: 'optionB' },
+                            { label: 'C', field: 'optionC' },
+                            { label: 'D', field: 'optionD' }
+                        ] as const).map((opt) => {
+                            const isSelected = newQuestion.correctAnswer === opt.label;
+                            return (
+                                <motion.div
+                                    key={opt.label}
+                                    className={`option-field ${isSelected ? 'is-correct' : 'is-incorrect'}`}
+                                    layout
+                                    whileHover={shouldReduceMotion ? undefined : { y: -1 }}
+                                >
+                                    <input
+                                        type="radio"
+                                        name="correctAnswer"
+                                        id={`opt-${opt.label}`}
+                                        checked={isSelected}
+                                        onChange={() => setNewQuestion({ ...newQuestion, correctAnswer: opt.label })}
+                                    />
+                                    <input
+                                        type="text"
+                                        placeholder={`Réponse ${opt.label}`}
+                                        value={newQuestion[opt.field]}
+                                        onChange={(e) => setNewQuestion({ ...newQuestion, [opt.field]: e.target.value })}
+                                        required
+                                    />
+                                    <label htmlFor={`opt-${opt.label}`} className="radio-label">
+                                        {isSelected ? 'CORRECTE' : 'INCORRECTE'}
+                                    </label>
+                                </motion.div>
+                            );
+                        })}
+                    </div>
+
+                    <motion.button
+                        type="submit"
+                        className="btn-save"
+                        whileHover={shouldReduceMotion ? undefined : { y: -1 }}
+                        whileTap={shouldReduceMotion ? undefined : { scale: 0.985 }}
+                    >
+                        Enregistrer la question
+                    </motion.button>
+                </form>
+                {actionMessage ? <p className="import-message">{actionMessage}</p> : null}
+            </motion.section>
+
+            <motion.section className="card import-card" variants={itemVariants}>
+                <h3>Importer via Excel (CSV)</h3>
+                <p className="import-help">
+                    En-tete attendu: <code>{expectedHeader}</code>
                 </p>
-                <p>Chaque ligne represente une question. La colonne <code>correct_answers</code> accepte A, B, C ou D.</p>
+                <motion.button
+                    type="button"
+                    className="btn-template"
+                    onClick={handleDownloadTemplate}
+                    whileHover={shouldReduceMotion ? undefined : { y: -1 }}
+                    whileTap={shouldReduceMotion ? undefined : { scale: 0.985 }}
+                >
+                    Télécharger le template CSV
+                </motion.button>
+                <div className="import-row">
+                    <input
+                        type="file"
+                        accept=".csv"
+                        onChange={handleImportFile}
+                        disabled={isImporting}
+                        className="file-input"
+                    />
+                </div>
+                <AnimatePresence mode="wait" initial={false}>
+                    {importMessage && (
+                        <motion.p
+                            key={importMessage}
+                            className="import-message"
+                            initial={{ opacity: 0, y: -6 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -6 }}
+                            transition={{ duration: 0.2 }}
+                        >
+                            {importMessage}
+                        </motion.p>
+                    )}
+                </AnimatePresence>
+            </motion.section>
 
-                <input type="file" accept=".csv" onChange={handleFile} disabled={isImporting} />
-            </div>
+            <motion.section className="card questions-list-card" variants={itemVariants}>
+                <h3>Base de données ({questions.length})</h3>
+                <div className="questions-list-wrapper">
+                    <AnimatePresence initial={false}>
+                        {questions.map((q) => {
+                            const isExpanded = expandedQuestions.has(q.id);
+                            return (
+                                <motion.div
+                                    key={q.id}
+                                    className="question-card"
+                                    layout
+                                    initial={{ opacity: 0, y: 8 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -8 }}
+                                    transition={{ duration: 0.22 }}
+                                >
+                                    <div className="question-row">
+                                        <div className="question-content">
+                                            <motion.button
+                                                type="button"
+                                                className="btn-expand"
+                                                onClick={() => toggleQuestionExpanded(q.id)}
+                                                whileHover={shouldReduceMotion ? undefined : { scale: 1.1 }}
+                                                whileTap={shouldReduceMotion ? undefined : { scale: 0.9 }}
+                                            >
+                                                {isExpanded ? '▼' : '▶'}
+                                            </motion.button>
+                                            <div className="question-text">
+                                                <p className="question-title">{q.content}</p>
+                                                <p className="question-stats">4 options • 1 correcte</p>
+                                            </div>
+                                        </div>
+                                        <motion.button
+                                            className="btn-delete"
+                                            onClick={() => handleDelete(q.id)}
+                                            whileHover={shouldReduceMotion ? undefined : { y: -1 }}
+                                            whileTap={shouldReduceMotion ? undefined : { scale: 0.985 }}
+                                        >
+                                            Supprimer
+                                        </motion.button>
+                                    </div>
 
-            {message ? <p style={{ marginTop: '1rem' }}>{message}</p> : null}
-        </div>
+                                    <AnimatePresence>
+                                        {isExpanded && (
+                                            <motion.div
+                                                className="question-details"
+                                                initial={{ opacity: 0, height: 0 }}
+                                                animate={{ opacity: 1, height: 'auto' }}
+                                                exit={{ opacity: 0, height: 0 }}
+                                                transition={{ duration: 0.2 }}
+                                            >
+                                                <div className="answers-section">
+                                                    {questionOptions(q).map((option) => (
+                                                        <div
+                                                            key={option.key}
+                                                            className="answer-row neutral"
+                                                        >
+                                                            <span className="answer-badge">•</span>
+                                                            <span className="option-letter">{option.key}.</span>
+                                                            <span className="answer-text">{option.value}</span>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
+                                </motion.div>
+                            );
+                        })}
+                    </AnimatePresence>
+                </div>
+
+                {questions.length === 0 && (
+                    <motion.div
+                        className="empty-state"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.3 }}
+                    >
+                        <p>Aucune question pour le moment. Créez-en une!</p>
+                    </motion.div>
+                )}
+            </motion.section>
+        </motion.div>
     );
 };
 
