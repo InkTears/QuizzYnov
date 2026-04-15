@@ -11,16 +11,13 @@ interface ResultProps {
 
 export const Result = ({ score, total, questions, answers }: ResultProps) => {
   const getOptionContent = (question: Question, option: AnswerOption) => {
-    if (option === "A") {
-      return question.optionA;
-    }
-    if (option === "B") {
-      return question.optionB;
-    }
-    if (option === "C") {
-      return question.optionC;
-    }
-    return question.optionD;
+    const options: Record<AnswerOption, string> = {
+      A: question.optionA,
+      B: question.optionB,
+      C: question.optionC,
+      D: question.optionD,
+    };
+    return options[option];
   };
 
   return (
