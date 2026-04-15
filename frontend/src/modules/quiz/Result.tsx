@@ -9,13 +9,6 @@ interface ResultProps {
   answers: Record<number, AnswerOption>;
 }
 
-const answerLabels: Record<AnswerOption, string> = {
-  A: "A",
-  B: "B",
-  C: "C",
-  D: "D",
-};
-
 export const Result = ({ score, total, questions, answers }: ResultProps) => {
   return (
     <motion.div 
@@ -42,10 +35,10 @@ export const Result = ({ score, total, questions, answers }: ResultProps) => {
                   {isCorrect ? "Bonne réponse" : "Mauvaise réponse"}
                 </p>
                 <p className="quiz-result__answer">
-                  Ta réponse : <span>{userAnswer ? answerLabels[userAnswer] : "Aucune réponse"}</span>
+                  Ta réponse : <span>{userAnswer ?? "Aucune réponse"}</span>
                 </p>
                 <p className="quiz-result__answer">
-                  Bonne réponse : <span>{answerLabels[question.correctAnswer]}</span>
+                  Bonne réponse : <span>{question.correctAnswer}</span>
                 </p>
               </li>
             );
