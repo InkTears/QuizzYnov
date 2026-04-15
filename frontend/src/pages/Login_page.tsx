@@ -27,6 +27,8 @@ const LoginPageUser: React.FC = () => {
                 const role = String(response.role || response.user?.role || localStorage.getItem('userRole') || '')
                     .toLowerCase()
                     .trim();
+                const name = String(response.user?.name || localStorage.getItem('userName') || '');
+                sessionStorage.setItem('loginSuccess', JSON.stringify({ name, role }));
 
                 if (role === 'admin') {
                     navigate('/quiz');

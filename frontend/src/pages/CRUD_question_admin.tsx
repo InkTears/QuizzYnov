@@ -146,6 +146,7 @@ const CRUDQuestionAdmin: React.FC = () => {
     const [newQuestion, setNewQuestion] = useState(EMPTY_QUESTION);
     const [isImporting, setIsImporting] = useState(false);
     const [importMessage, setImportMessage] = useState('');
+    const [actionMessage, setActionMessage] = useState('');
     const [expandedQuestions, setExpandedQuestions] = useState<Set<number>>(new Set());
 
     const expectedHeader = useMemo(
@@ -173,6 +174,7 @@ const CRUDQuestionAdmin: React.FC = () => {
             await quizService.createQuestion(newQuestion);
             setNewQuestion(EMPTY_QUESTION);
             await fetchQuestions();
+            setActionMessage('Question ajoutée avec succès.');
         } catch (err) {
             const message = err instanceof Error ? err.message : "Erreur lors de l'ajout";
             alert(message);
@@ -182,8 +184,14 @@ const CRUDQuestionAdmin: React.FC = () => {
     const handleDelete = async (id: number | undefined) => {
         if (!id) return;
         if (window.confirm('Supprimer cette question ?')) {
-            await quizService.deleteQuestion(String(id));
-            await fetchQuestions();
+            try {
+                await quizService.deleteQuestion(String(id));
+                await fetchQuestions();
+                setActionMessage('Question supprimée avec succès.');
+            } catch (error) {
+                console.error('Erreur lors de la suppression de la question', error);
+                setActionMessage("Échec de la suppression de la question.");
+            }
         }
     };
 
@@ -204,6 +212,7 @@ const CRUDQuestionAdmin: React.FC = () => {
         const file = e.target.files?.[0];
         if (!file) return;
 
+        setActionMessage('');
         setImportMessage('');
 
         if (!file.name.toLowerCase().endsWith('.csv')) {
@@ -219,6 +228,7 @@ const CRUDQuestionAdmin: React.FC = () => {
 
             if (rows.length === 0) {
                 setImportMessage('Aucune ligne valide dans le CSV.');
+                e.target.value = '';
                 return;
             }
 
@@ -247,10 +257,11 @@ const CRUDQuestionAdmin: React.FC = () => {
     const handleDownloadTemplate = () => {
         const csvRows = [
             expectedHeader,
-            '"Quelle est la capitale de la France ?";"Paris";"Lyon";"Marseille";"Nice";"A"',
-            '"Quel langage est utilisé pour typer React ?";"PHP";"TypeScript";"Ruby";"Lua";"B"'
+            '"Quelle est la capitale de la France ?","Paris","Lyon","Marseille","Nice","A"',
+            '"Quel langage est utilisé pour typer React ?","PHP","TypeScript","Ruby","Lua","B"'
         ];
 
+        // BOM UTF-8 pour une ouverture correcte dans Excel (accents/contenu Unicode).
         const csvContent = `\uFEFF${csvRows.join('\n')}`;
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
         const url = URL.createObjectURL(blob);
@@ -344,6 +355,7 @@ const CRUDQuestionAdmin: React.FC = () => {
                         Enregistrer la question
                     </motion.button>
                 </form>
+                {actionMessage ? <p className="import-message">{actionMessage}</p> : null}
             </motion.section>
 
             <motion.section className="card import-card" variants={itemVariants}>
