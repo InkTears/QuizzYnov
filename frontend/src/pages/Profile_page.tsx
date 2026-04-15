@@ -43,7 +43,7 @@ export default function ProfilePage() {
                     setRole(sessionUser.role.toLowerCase());
                 }
             } catch {
-                // On garde les donnees locales si la synchro echoue.
+                // On garde les données locales si la synchro échoue.
             }
 
             try {
@@ -90,7 +90,7 @@ export default function ProfilePage() {
                     {isLoading ? <p className="profile-info">Chargement de votre historique...</p> : null}
                     {!isLoading && error ? <p className="profile-error">{error}</p> : null}
                     {!isLoading && !error && sessions.length === 0 ? (
-                        <p className="profile-info">Aucune partie enregistree pour le moment.</p>
+                        <p className="profile-info">Aucune partie enregistrée pour le moment.</p>
                     ) : null}
 
                     {!isLoading && !error && sessions.length > 0 ? (
@@ -100,7 +100,7 @@ export default function ProfilePage() {
                                     <tr>
                                         <th>Date</th>
                                         <th>Score</th>
-                                        <th>Duree (s)</th>
+                                        <th>Durée (s)</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -120,12 +120,12 @@ export default function ProfilePage() {
                 <section className="profile-actions">
                     {isAdmin ? (
                         <button type="button" className="profile-btn profile-btn-primary" onClick={() => navigate('/admin/dashboard')}>
-                            Acceder a l'administration
+                            Accéder à l'administration
                         </button>
                     ) : null}
 
                     <button type="button" className="profile-btn profile-btn-danger" onClick={() => authService.logout()}>
-                        Deconnexion
+                        Déconnexion
                     </button>
                 </section>
             </motion.main>
