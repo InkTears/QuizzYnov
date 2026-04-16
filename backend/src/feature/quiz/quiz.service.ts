@@ -38,13 +38,11 @@ class QuizService {
     }
 
     async submitQuiz(payload: SubmitQuizRequest): Promise<SubmitQuizResponse> {
-        // Validation 1: Vérifier que l'utilisateur n'a pas déjà participé aujourd'hui
         const existingSession = await quizRepository.getUserTodaySession(payload.userId)
         if (existingSession) {
             throw new Error("User has already participated today")
         }
 
-        // Validation 2: Récupérer toutes les questions et vérifier les réponses
         const allQuestions = await AppDataSource.getRepository(Question).find()
         const answeredQuestions = Object.keys(payload.answers).map((id) => Number(id))
 
@@ -61,10 +59,8 @@ class QuizService {
             }
         }
 
-        // Calcul du score: 1 point par bonne réponse
         const score = correctCount
 
-        // Enregistrer la session
         const duration = Math.max(0, Math.min(payload.duration || 0, 3600))
         await quizRepository.createSession(payload.userId, score, duration)
 
