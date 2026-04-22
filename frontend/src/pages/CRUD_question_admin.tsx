@@ -261,7 +261,6 @@ const CRUDQuestionAdmin: React.FC = () => {
             '"Quel langage est utilisé pour typer React ?","PHP","TypeScript","Ruby","Lua","B"'
         ];
 
-        // BOM UTF-8 pour une ouverture correcte dans Excel (accents/contenu Unicode).
         const csvContent = `\uFEFF${csvRows.join('\n')}`;
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
         const url = URL.createObjectURL(blob);
