@@ -1,0 +1,50 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: quizzynov_app
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - JWT_SECRET=${JWT_SECRET}
+    networks:
+      - app-network
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: mysql:8.0
+    container_name: quizzynov_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - db-data:/var/lib/mysql
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 5s
+      retries: 5
+      interval: 10s
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  db-data:
+    driver: local
