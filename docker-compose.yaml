@@ -1,9 +1,9 @@
 services:
-  app:
+  backend:
     build:
-      context: .
+      context: ./backend
       dockerfile: Dockerfile
-    container_name: quizzynov_app
+    container_name: quizzynov_backend
     restart: always
     ports:
       - "3000:3000"
@@ -21,6 +21,17 @@ services:
     depends_on:
       db:
         condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: quizzynov_frontend
+    restart: always
+    ports:
+      - "80:80"
+    networks:
+      - app-network
 
   db:
     image: mysql:8.0
