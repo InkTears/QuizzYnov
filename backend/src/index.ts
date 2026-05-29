@@ -40,8 +40,3 @@ AppDataSource.initialize().then(async () => {
 
     app.listen(3000, () => console.log("🚀 Serveur sur le port 3000"))
 }).catch(err => console.error("❌ Erreur DB :", err))
-<<<<<<< HEAD
-
-/*test*/
-=======
->>>>>>> 70bf866 (Add question and quiz backend functionality with leaderboard support)

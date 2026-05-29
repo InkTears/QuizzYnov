@@ -17,18 +17,6 @@ export const AppDataSource = new DataSource({
     database: process.env.DB_NAME,
     synchronize: false,
     logging: false,
-<<<<<<< HEAD
-<<<<<<< HEAD
     entities: [User, Question, QuizSession],
-<<<<<<< HEAD
-=======
-    entities: [User, Question],
->>>>>>> 076696d (projet front presque complet( manque framer-motion))
-=======
-    entities: [User],
->>>>>>> 9d119a5 (revert changes backend)
-=======
     migrations: ["src/migrations/*.ts", "dist/migrations/*.js"],
->>>>>>> 576a9a9 (Refactor authentication API and registration flow to improve error handling and update payload structure)
 })
-/* test de voir si ça change*/
