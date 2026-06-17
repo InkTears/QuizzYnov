@@ -1,0 +1,77 @@
+# Global Configurations
+replicaCount: 1
+
+# Configuration du Front-end
+front:
+  replicaCount: 1
+  image:
+    repository: "egorkhaybulov/quizzy-front"
+    tag: "latest"
+  service:
+    type: NodePort
+    port: 80
+    targetPort: 80
+    nodePort: 30082
+  resources:
+    requests:
+      memory: "64Mi"
+      cpu: "50m"
+    limits:
+      memory: "128Mi"
+      cpu: "100m"
+
+# Configuration de l'API Backend
+api:
+  replicaCount: 1
+  image:
+    repository: "egorkhaybulov/quizzy-api"
+    tag: "latest"
+  service:
+    type: NodePort
+    port: 3000
+    targetPort: 3000
+    nodePort: 30081
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "250m"
+
+# Configuration de MySQL Database
+mysql:
+  replicaCount: 1
+  image:
+    repository: "mysql"
+    tag: "8.0"
+  storage:
+    size: "1Gi"
+  service:
+    type: ClusterIP
+    port: 3306
+    targetPort: 3306
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "250m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"
+
+# Configuration exposée (ConfigMap)
+appConfig:
+  dbHost: "mysql-service"
+  dbPort: "3306"
+  dbName: "quizzy_db"
+
+# Secrets (Mots de passe stockés en clair, Helm les encodera en Base64)
+appSecret:
+  dbUser: "user"
+  dbPassword: "password"
+  dbRootPassword: "rootpassword"
+
+# Ingress Activation/Désactivation et Hôte associé
+ingress:
+  enabled: true
+  host: "quizzy.local"

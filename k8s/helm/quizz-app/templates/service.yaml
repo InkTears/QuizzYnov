@@ -1,0 +1,56 @@
+# --- SERVICE DU FRONT ---
+apiVersion: v1
+kind: Service
+metadata:
+  name: front-service
+  namespace: {{ .Release.Namespace }}
+spec:
+  type: {{ .Values.front.service.type }}
+  selector:
+    app: front
+  ports:
+    - port: {{ .Values.front.service.port }}
+      targetPort: {{ .Values.front.service.targetPort }}
+      nodePort: {{ .Values.front.service.nodePort }}
+---
+# --- SERVICE DE L'API ---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-service
+  namespace: {{ .Release.Namespace }}
+spec:
+  type: {{ .Values.api.service.type }}
+  selector:
+    app: api
+  ports:
+    - port: {{ .Values.api.service.port }}
+      targetPort: {{ .Values.api.service.targetPort }}
+      nodePort: {{ .Values.api.service.nodePort }}
+---
+# --- SERVICE DE MYSQL ---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-service
+  namespace: {{ .Release.Namespace }}
+spec:
+  type: {{ .Values.mysql.service.type }}
+  selector:
+    app: mysql
+  ports:
+    - port: {{ .Values.mysql.service.port }}
+      targetPort: {{ .Values.mysql.service.targetPort }}
+---
+# --- PERSISTENT VOLUME CLAIM (STORAGE MYSQL) ---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysql-pvc
+  namespace: {{ .Release.Namespace }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.mysql.storage.size | quote }}
