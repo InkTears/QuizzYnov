@@ -35,6 +35,7 @@ Afin d'assurer une résilience maximale de l'application, des sondes de santé s
 Pour déployer l'intégralité de l'infrastructure sur le cluster, l'ordre des manifestes est géré par le dossier Kustomize/Classic. Il suffit d'exécuter :
 
 ```bash```
+kubectl apply -f k8s/classic/
 
 ## 6. Choix Techniques & Industrialisation Helm
 
