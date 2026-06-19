@@ -1,0 +1,7 @@
+---
+- name: Atelier - Deploiement applicatif avec Ansible
+  hosts: all
+  gather_facts: yes
+
+  roles:
+    - role: deploy_app
