@@ -2,6 +2,7 @@
 debian_target ansible_host=127.0.0.1
 
 [all:vars]
+ansible_python_interpreter=/usr/bin/python3
 ansible_user="{{ lookup('env', 'USER') }}"
 ansible_become=yes
 ansible_become_method=sudo
